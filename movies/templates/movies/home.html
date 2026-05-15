@@ -284,7 +284,7 @@
         {% endfor %}
     </div>
 
-    <p class="section-title">Todas las Películas</p>
+    <p class="section-title" id="section-title">Todas las Películas</p>
 
     <div class="movies-grid" id="moviesGrid">
         {% for movie in movies %}
@@ -317,6 +317,10 @@
         function filterGenre(genre, btn) {
             document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            
+            const titulo = document.getElementById('section-title');
+            titulo.textContent = genre === 'all' ? 'Todas las Películas' : 'Películas de ' + btn.textContent;
+            
             document.querySelectorAll('.movie-card').forEach(card => {
                 card.style.display = (genre === 'all' || card.dataset.genres.includes(genre)) ? 'block' : 'none';
             });
