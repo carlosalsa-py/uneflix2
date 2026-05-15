@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uneflix - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #141414;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            color: #e50914;
+            font-size: 48px;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .card h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 6px;
+        }
+
+        .field input {
+            width: 100%;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px;
+            padding: 10px 14px;
+            color: white;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: border 0.2s;
+        }
+
+        .field input:focus {
+            outline: none;
+            border-color: #e50914;
+        }
+
+        .btn {
+            width: 100%;
+            background: #e50914;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background: #c40812; }
+
+        .link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        .link a {
+            color: #e50914;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .errors {
+            background: rgba(229,9,20,0.15);
+            border: 1px solid rgba(229,9,20,0.3);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #ff6b6b;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <span class="logo">UNEFLIX</span>
+    <div class="card">
+        <h2>Iniciar Sesión</h2>
+        {% if form.errors %}
+        <div class="errors">Usuario o contraseña incorrectos.</div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="field">
+                <label>Usuario</label>
+                <input type="text" name="username" autofocus>
+            </div>
+            <div class="field">
+                <label>Contraseña</label>
+                <input type="password" name="password">
+            </div>
+            <button type="submit" class="btn">Entrar</button>
+        </form>
+        <div class="link">
+            ¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate</a>
+        </div>
+    </div>
+</body>
+</html>

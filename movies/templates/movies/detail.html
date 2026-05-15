@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }} - Uneflix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #141414;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: #141414;
+            padding: 16px 4%;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid #222;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            color: #e50914;
+            font-size: 28px;
+            letter-spacing: 3px;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .hero {
+            height: 60vh;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 4% 40px;
+            margin-top: 60px;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.4);
+        }
+
+        .hero-gradient {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 30%, #141414 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(32px, 6vw, 64px);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .meta span {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .badge {
+            background: rgba(229,9,20,0.8);
+            color: white;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 40px 4%;
+        }
+
+        .description {
+            font-size: 15px;
+            color: #ccc;
+            font-weight: 300;
+            line-height: 1.8;
+            max-width: 700px;
+            margin-bottom: 40px;
+        }
+
+        .player-container {
+            background: #000;
+            border-radius: 10px;
+            aspect-ratio: 16/9;
+            max-width: 900px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+            margin-bottom: 40px;
+        }
+
+        .player-placeholder {
+            text-align: center;
+            color: #555;
+        }
+
+        .player-placeholder p {
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .hero { height: 45vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="{% url 'home' %}" class="logo">UNEFLIX</a>
+        <a href="{% url 'home' %}" class="back-btn">← Volver</a>
+    </nav>
+
+    <div class="hero">
+        {% if movie.poster %}
+        <div class="hero-bg" style="background-image: url('{% if movie.backdrop %}{{ movie.backdrop.url }}{% else %}{{ movie.poster.url }}{% endif %}');"></div>
+        {% else %}
+        <div class="hero-bg" style="background: linear-gradient(135deg, #1a0a0a, #2d0505);"></div>
+        {% endif %}
+        <div class="hero-gradient"></div>
+        <div class="hero-content">
+            <h1>{{ movie.title }}</h1>
+            <div class="meta">
+                <span>{{ movie.year }}</span>
+                <span>{{ movie.get_type_display }}</span>
+                {% for genre in movie.genres.all %}
+                <span class="badge">{{ genre.name }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <p class="description">{{ movie.description }}</p>
+
+        <div class="player-container">
+            <div class="player-placeholder">
+                <p>▶ Reproductor próximamente</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
