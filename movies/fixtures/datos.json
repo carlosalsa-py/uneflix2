@@ -3,7 +3,7 @@
   "model": "movies.genre",
   "pk": 1,
   "fields": {
-    "name": "Acción"
+    "name": "Accion"
   }
 },
 {
@@ -11,13 +11,6 @@
   "pk": 2,
   "fields": {
     "name": "Drama"
-  }
-},
-{
-  "model": "movies.genre",
-  "pk": 3,
-  "fields": {
-    "name": "Comedia"
   }
 },
 {
@@ -31,7 +24,7 @@
   "model": "movies.genre",
   "pk": 5,
   "fields": {
-    "name": "Ciencia Ficción"
+    "name": "Ciencia Ficcion"
   }
 },
 {
@@ -73,7 +66,70 @@
   "model": "movies.genre",
   "pk": 12,
   "fields": {
-    "name": "Fantasía"
+    "name": "Fantasia"
+  }
+},
+{
+  "model": "movies.genre",
+  "pk": 13,
+  "fields": {
+    "name": "Comedia"
+  }
+},
+{
+  "model": "movies.genre",
+  "pk": 14,
+  "fields": {
+    "name": "Animación Para Adultos"
+  }
+},
+{
+  "model": "movies.genre",
+  "pk": 15,
+  "fields": {
+    "name": "Musical"
+  }
+},
+{
+  "model": "movies.genre",
+  "pk": 16,
+  "fields": {
+    "name": "Sátira"
+  }
+},
+{
+  "model": "movies.genre",
+  "pk": 17,
+  "fields": {
+    "name": "Aventura"
+  }
+},
+{
+  "model": "movies.genre",
+  "pk": 18,
+  "fields": {
+    "name": "Supervivencia"
+  }
+},
+{
+  "model": "movies.genre",
+  "pk": 19,
+  "fields": {
+    "name": "Misterio"
+  }
+},
+{
+  "model": "movies.genre",
+  "pk": 20,
+  "fields": {
+    "name": "Superheroes"
+  }
+},
+{
+  "model": "movies.genre",
+  "pk": 21,
+  "fields": {
+    "name": "Coreano"
   }
 },
 {
@@ -92,6 +148,343 @@
       1,
       4,
       8
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 2,
+  "fields": {
+    "title": "Como si fuera la primera vez",
+    "description": "La historia sigue a Henry, un biólogo marino que se enamora de Lucy, una chica que sufre de amnesia anterógrada (pierde la memoria cada noche). Esto genera una mezcla perfecta entre momentos de humor característicos del género cómico y una emotiva trama donde él debe conquistarla todos los días.",
+    "year": 2004,
+    "poster": "posters/como_si_fuer_XINxLt4.png",
+    "type": "movie",
+    "video_url": "https://www.imdb.com/es/video/vi867434777/?playlistId=tt0343660&ref_=tt_ov_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/back_drop.jpg",
+    "genres": [
+      2,
+      11,
+      13
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 3,
+  "fields": {
+    "title": "Click: Perdiendo el Control",
+    "description": "Un arquitecto adicto al trabajo encuentra un control remoto universal que le permite avanzar y retroceder a diferentes partes de su vida. Las complicaciones surgen cuando el control remoto comienza a anular sus elecciones.",
+    "year": 2006,
+    "poster": "posters/poster_GTONjzC.jpg",
+    "type": "movie",
+    "video_url": "https://www.imdb.com/es/video/vi2763915545/?playlistId=tt0389860&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/backdrop_PkAo9oI.jpg",
+    "genres": [
+      2,
+      12,
+      13
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 4,
+  "fields": {
+    "title": "Teen Wolf",
+    "description": "Relata la historia de un chico tímido de instituto cuya existencia pasa del anonimato a la popularidad al ser mordido por un hombre lobo en la oscuridad del bosque. Su vida nunca volverá a ser la misma",
+    "year": 2011,
+    "poster": "posters/poster_JCIJjw7.jpg",
+    "type": "series",
+    "video_url": "https://www.imdb.com/es/video/vi3872307481/?playlistId=tt1567432&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/backdrop.webp",
+    "genres": [
+      2,
+      11,
+      12,
+      13
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 5,
+  "fields": {
+    "title": "Una Esposa de Mentira",
+    "description": "En un viaje a Hawai, un cirujano plástico convence a su leal asistente para que se haga pasar por su casi ex esposa con el fin de encubrir una mentira que le contó a su novia.",
+    "year": 2011,
+    "poster": "posters/poster_Rqzub2b.jpg",
+    "type": "movie",
+    "video_url": "https://www.imdb.com/es/video/vi1443666457/?playlistId=tt1564367&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/backdrop_5meiUMt.jpg",
+    "genres": [
+      11,
+      13
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 6,
+  "fields": {
+    "title": "Mortadelo y Filemón contra Jimmy el Cachondo",
+    "description": "Los no tan superagentes Mortadelo y Filemón entran en acción cuando un trío de villanos amenaza con sembrar el caos en su amada agencia de espionaje, la TIA.",
+    "year": 2014,
+    "poster": "posters/back.jpg",
+    "type": "movie",
+    "video_url": "https://www.imdb.com/es/video/vi581745433/?playlistId=tt2857458&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/descarga.jpg",
+    "genres": [
+      14
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 7,
+  "fields": {
+    "title": "La Ultima Cancion",
+    "description": "Una chica rebelde para el verano en la casa de su padre en un pueblo costero. A través de su compartida pasión por la música, ambos reconectan.",
+    "year": 2010,
+    "poster": "posters/the_last_song-620416793-large.jpg",
+    "type": "movie",
+    "video_url": "https://www.imdb.com/es/video/vi1365181465/?playlistId=tt1294226&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/cancion.jpg",
+    "genres": [
+      2,
+      11,
+      15
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 8,
+  "fields": {
+    "title": "La La Land: ciudad de sueños",
+    "description": "Sebastian, un pianista de jazz, y Mia, una aspirante a actriz, se enamoran locamente; pero la ambición desmedida que tienen por triunfar en sus respectivas carreras, en una ciudad como Los Ángeles, repleta de competencia y carente de piedad, pone en peligro su amor.",
+    "year": 2016,
+    "poster": "posters/La_La_Land_film.png",
+    "type": "movie",
+    "video_url": "https://www.imdb.com/es/video/vi2514728473/?playlistId=tt3783958&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/WhatsApp-Image-2024-09-19-at-12.03.05.jpeg",
+    "genres": [
+      2,
+      13,
+      15
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 9,
+  "fields": {
+    "title": "The Boys",
+    "description": "Un grupo de vigilantes se dispuso a acabar con los superhéroes corruptos que abusan de sus superpoderes.",
+    "year": 2019,
+    "poster": "posters/The_Boys_Season_2.jpg",
+    "type": "series",
+    "video_url": "https://www.imdb.com/es/video/vi1673186073/?playlistId=tt1190634&ref_=tt_ov_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/backdrop_7cqKGQMnNabzOpi7qaIgZvQ7NGV.jpg",
+    "genres": [
+      13,
+      16
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 10,
+  "fields": {
+    "title": "Divergente",
+    "description": "En un mundo dividido en facciones según virtudes, a Tris le dicen que es Divergente y no encajará. Cuando descubre que hay una trama para destruir a los Divergentes, Tris y los Misteriosos Cuatro deberán descubrir porqué los Divergentes son peligrosos antes de que sea tarde.",
+    "year": 2014,
+    "poster": "posters/Divergente-707619981-large.jpg",
+    "type": "movie",
+    "video_url": "https://www.imdb.com/es/video/vi2683742745/?playlistId=tt1840309&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/650_1200.jpg",
+    "genres": [
+      1,
+      2,
+      10
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 11,
+  "fields": {
+    "title": "Los Juegos del Hambre",
+    "description": "Katniss Everdeen toma voluntariamente el lugar de su hermana menor en los Juegos del Hambre: una competencia televisada en la que dos adolescentes de cada uno de los doce distritos de Panem son elegidos al azar para luchar hasta la muerte.",
+    "year": 2012,
+    "poster": "posters/MV5BNjAyNGMwMjktNTkzYy00MzZmLWJiOTUtNWQ2NjUyZTJiYmZiXkEyXkFqcGc._V1_.jpg",
+    "type": "movie",
+    "video_url": "https://www.imdb.com/es/video/vi3358368281/?playlistId=tt1392170&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/hunger-games-background-h3x6cit6n2aqvt8y.jpg",
+    "genres": [
+      1,
+      10,
+      18
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 12,
+  "fields": {
+    "title": "Maze Runner: correr o morir",
+    "description": "Thomas es dejado en una comunidad de niños después de que se borra su memoria, y pronto se entera de que todos están atrapados en un laberinto que le obligará a unir fuerzas con sus compañeros para intentar escapar.",
+    "year": 2014,
+    "poster": "posters/MV5BNTM4OTZlNzYtODA2NS00NmQ5LTg2OGQtN2ViZGE2YzE1ZGYwXkEyXkFqcGc._V1_FMjpg_UX1000_.jpg",
+    "type": "movie",
+    "video_url": "https://www.imdb.com/es/video/vi1344318489/?playlistId=tt1790864&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/a.jpg",
+    "genres": [
+      1,
+      4,
+      5,
+      18
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 13,
+  "fields": {
+    "title": "El verano en que me enamoré",
+    "description": "Un triángulo amoroso entre una chica y dos hermanos. Una historia sobre el primer amor, el primer desamor y la magia de ese verano perfecto.",
+    "year": 2022,
+    "poster": "posters/.jpg",
+    "type": "series",
+    "video_url": "https://www.imdb.com/es/video/vi2418657305/?playlistId=tt14016500&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/.avif",
+    "genres": [
+      2,
+      11,
+      13
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 14,
+  "fields": {
+    "title": "From",
+    "description": "Revela el misterio de un pueblo del centro de los EE.UU que atrapa a todos los que entran. Mientras sus residentes luchan por mantener una sensación de normalidad y buscan una salida, deben sobrevivir a las amenazas del bosque circundante.",
+    "year": 2022,
+    "poster": "posters/From_Serie_de_TV-265636059-large.jpg",
+    "type": "series",
+    "video_url": "https://www.imdb.com/es/video/vi1472252697/?playlistId=tt9813792&ref_=tt_ov_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/from-695739328-large.jpg",
+    "genres": [
+      2,
+      5,
+      9,
+      19
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 15,
+  "fields": {
+    "title": "Dr. House",
+    "description": "Un antisocial doctor especialista en medicina de diagnóstico hace todo lo que sea para resolver enigmáticos casos junto con su equipo de doctores.",
+    "year": 2004,
+    "poster": "posters/954fd525-781a-472b-8bf6-3b8f052e3a8b.jpg",
+    "type": "series",
+    "video_url": "https://www.imdb.com/es/video/vi51488537/?playlistId=tt0412142&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/house-md-evzr2ufxppqcnc6t.jpg",
+    "genres": [
+      2,
+      13
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 16,
+  "fields": {
+    "title": "Diarios de vampiros",
+    "description": "Cuenta las vidas, amores, peligros y desastres de Mystic Falls, Virginia. Criaturas de horror invaden el pueblo mientras que una chica se enamora de dos hermanos vampiros.",
+    "year": 2009,
+    "poster": "posters/aaa.jpg",
+    "type": "series",
+    "video_url": "https://www.imdb.com/es/video/vi594457369/?playlistId=tt1405406&ref_=tt_ov_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/ss.jpg",
+    "genres": [
+      2,
+      12
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 17,
+  "fields": {
+    "title": "El stand de los besos",
+    "description": "Una estudiante de instituto se ve forzada a hacer frente a su amor secreto en el stand de los besos.",
+    "year": 2018,
+    "poster": "posters/MV5BNjQ0Mzk0OTE5MF5BMl5BanBnXkFtZTgwNDkyOTI0NTM._V1_QL75_UX190_CR00190281_.jpg",
+    "type": "movie",
+    "video_url": "https://www.imdb.com/es/video/vi3378427929/?playlistId=tt3799232&ref_=tt_ov_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/s.jpg",
+    "genres": [
+      11,
+      13
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 18,
+  "fields": {
+    "title": "El sorprendente Hombre Araña",
+    "description": "Después de que Peter Parker es mordido por una araña alterada genéticamente, como resultado obtiene nuevos poderes de araña y se aventura a resolver la misteriosa muerte de su padre.",
+    "year": 2012,
+    "poster": "posters/Captura_de_pantalla_2026-05-15_235720.png",
+    "type": "movie",
+    "video_url": "https://www.imdb.com/es/video/vi717595161/?playlistId=tt0948470&ref_=tt_ov_pr_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/andrew-garfield-the-amazing-spider-man-i0afw95b1nz42ozo.jpg",
+    "genres": [
+      1,
+      20
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 19,
+  "fields": {
+    "title": "True Beauty",
+    "description": "Después de ser intimidada y discriminada por su aspecto feo, una chica de secundaria se transforma en una hermosa \"diosa\" y rápidamente se eleva a la fama después de dominar el arte del maquillaje a través de videos tutoriales en línea.",
+    "year": 2020,
+    "poster": "posters/saa.jpg",
+    "type": "series",
+    "video_url": "https://www.imdb.com/es/video/vi1678819609/?playlistId=tt13274038&ref_=tt_ov_ov_vi",
+    "featured": false,
+    "backdrop": "backdrops/b39552a31cb04b43b45580db6bffddbf.avif",
+    "genres": [
+      2,
+      13,
+      21
     ]
   }
 }
