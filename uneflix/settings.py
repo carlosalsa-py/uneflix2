@@ -125,3 +125,4 @@ LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/'
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+ALLOWED_HOSTS = ['*']
