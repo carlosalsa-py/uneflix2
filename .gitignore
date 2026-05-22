@@ -10,3 +10,8 @@ staticfiles/
 .idea/
 .DS_Store
 *.log
+media/videos/
+*.mkv
+*.mp4
+*.avi
+*.mov
