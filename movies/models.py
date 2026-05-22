@@ -21,9 +21,11 @@ class Movie(models.Model):
     poster = models.ImageField(upload_to='posters/')
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=MOVIE)
     genres = models.ManyToManyField(Genre)
-    video_url = models.URLField()
+    video_url = models.URLField(blank=True, null=True)
+    video_file = models.FileField(upload_to='videos/', blank=True, null=True)
     featured = models.BooleanField(default=False)
     backdrop = models.ImageField(upload_to='backdrops/', blank=True, null=True)
+    
 
     def __str__(self):
         return self.title
