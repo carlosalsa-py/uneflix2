@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from embed_video.fields import EmbedVideoField
 
 class Genre(models.Model):
     name = models.CharField(max_length=100)
@@ -21,11 +22,15 @@ class Movie(models.Model):
     poster = models.ImageField(upload_to='posters/')
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=MOVIE)
     genres = models.ManyToManyField(Genre)
-    video_url = models.URLField(blank=True, null=True)
     video_file = models.FileField(upload_to='videos/', blank=True, null=True)
     featured = models.BooleanField(default=False)
     backdrop = models.ImageField(upload_to='backdrops/', blank=True, null=True)
-    
+    director = models.CharField(max_length=200, blank=True, null=True)
+    cast = models.TextField(blank=True, null=True)
+    rotten_tomatoes_url = models.URLField(blank=True, null=True)
+    imdb_url = models.URLField(blank=True, null=True)
+    duration = models.IntegerField(blank=True, null=True, help_text="Duración en minutos")
+    trailer_url = EmbedVideoField(blank=True, null=True, help_text="Pega cualquier enlace de Vimeo aquí")
 
     def __str__(self):
         return self.title

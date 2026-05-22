@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'movies',
     'users',
+    'embed_video',
 ]
 
 MIDDLEWARE = [

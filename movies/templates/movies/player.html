@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }} - Reproduciendo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: rgba(0,0,0,0.9);
+            padding: 14px 4%;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid #222;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            color: #e50914;
+            font-size: 26px;
+            letter-spacing: 3px;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .movie-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #ddd;
+        }
+
+        .player-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 4%;
+        }
+
+        .player-container {
+            width: 100%;
+            max-width: 1100px;
+            aspect-ratio: 16/9;
+            background: #111;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+
+        .player-container video {
+            width: 100%;
+            height: 100%;
+        }
+
+        .player-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .no-video {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            gap: 12px;
+        }
+
+        .no-video p { font-size: 18px; }
+
+        .movie-info-bar {
+            width: 100%;
+            max-width: 1100px;
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .movie-info-bar h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+
+        .movie-meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .movie-meta span {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .badge {
+            background: rgba(229,9,20,0.8);
+            color: white;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .player-wrapper { padding: 10px 2%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="{% url 'home' %}" class="logo">UNEFLIX</a>
+        <a href="{% url 'movie_detail' movie.pk %}" class="back-btn">← Info</a>
+        <span class="movie-title">{{ movie.title }}</span>
+    </nav>
+
+    <div class="player-wrapper">
+        <div class="player-container">
+            {% if movie.video_file %}
+            <video controls autoplay>
+                <source src="{{ movie.video_file.url }}" type="video/mp4">
+                Tu navegador no soporta el reproductor.
+            </video>
+            {% elif movie.video_url %}
+            <iframe src="{{ movie.video_url }}" allowfullscreen></iframe>
+            {% else %}
+            <div class="no-video">
+                <p style="font-size:48px;">🎬</p>
+                <p>Próximamente</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="movie-info-bar">
+            <div>
+                <h2>{{ movie.title }}</h2>
+                <div class="movie-meta">
+                    <span>{{ movie.year }}</span>
+                    {% if movie.duration %}<span>{{ movie.duration }} min</span>{% endif %}
+                    {% for genre in movie.genres.all %}
+                    <span class="badge">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
