@@ -6,11 +6,11 @@ from .models import Movie, Genre, Watchlist
 def home(request):
     movies = Movie.objects.all()
     genres = Genre.objects.all()
-    featured = Movie.objects.filter(featured=True).first()
+    featured_movies = Movie.objects.filter(featured=True)
     return render(request, 'movies/home.html', {
         'movies': movies,
         'genres': genres,
-        'featured': featured,
+        'featured_movies': featured_movies,
     })
 
 @login_required(login_url='/users/login/')
@@ -37,3 +37,8 @@ def watchlist_toggle(request, pk):
 def watchlist_view(request):
     items = Watchlist.objects.filter(user=request.user)
     return render(request, 'movies/watchlist.html', {'items': items})
+
+@login_required(login_url='/users/login/')
+def player_view(request, pk):
+    movie = get_object_or_404(Movie, pk=pk)
+    return render(request, 'movies/player.html', {'movie': movie})

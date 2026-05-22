@@ -42,10 +42,22 @@
         .banner {
             height: 85vh;
             position: relative;
+            overflow: hidden;
+        }
+
+        .banner-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1s ease;
             display: flex;
             align-items: flex-end;
             padding: 0 4% 80px;
-            overflow: hidden;
+        }
+
+        .banner-slide.active {
+            display: flex !important;
+            opacity: 1;
         }
 
         .banner-bg {
@@ -134,9 +146,35 @@
             cursor: pointer;
             font-family: 'Inter', sans-serif;
             transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn-play:hover { background: rgba(255,255,255,0.85); }
+
+        .banner-dots {
+            position: absolute;
+            bottom: 20px;
+            right: 4%;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: #e50914;
+            width: 24px;
+            border-radius: 4px;
+        }
 
         /* FILTROS */
         .genres-filter {
@@ -230,7 +268,7 @@
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .banner { height: 65vh; padding-bottom: 60px; }
+            .banner { height: 65vh; }
             .movies-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
         }
 
@@ -255,24 +293,36 @@
         </div>
     </nav>
 
-    {% if featured %}
-    <div class="banner">
-        {% if featured.poster %}
-        <div class="banner-bg" style="background-image: url('{% if featured.backdrop %}{{ featured.backdrop.url }}{% else %}{{ featured.poster.url }}{% endif %}');"></div>
-        {% else %}
-        <div class="banner-bg" style="background: linear-gradient(135deg, #1a0a0a, #2d0505);"></div>
-        {% endif %}
-        <div class="banner-gradient"></div>
-        <div class="banner-content">
-            <h1>{{ featured.title }}</h1>
-            <div class="banner-meta">
-                <span class="banner-year">{{ featured.year }}</span>
-                {% for genre in featured.genres.all %}
-                <span class="banner-genre">{{ genre.name }}</span>
-                {% endfor %}
+    {% if featured_movies %}
+    <div class="banner" id="banner">
+        {% for movie in featured_movies %}
+        <div class="banner-slide" data-index="{{ forloop.counter0 }}" style="display:none;">
+            {% if movie.backdrop %}
+            <div class="banner-bg" style="background-image: url('{{ movie.backdrop.url }}');"></div>
+            {% elif movie.poster %}
+            <div class="banner-bg" style="background-image: url('{{ movie.poster.url }}');"></div>
+            {% else %}
+            <div class="banner-bg" style="background: linear-gradient(135deg, #1a0a0a, #2d0505);"></div>
+            {% endif %}
+            <div class="banner-gradient"></div>
+            <div class="banner-content">
+                <h1>{{ movie.title }}</h1>
+                <div class="banner-meta">
+                    <span class="banner-year">{{ movie.year }}</span>
+                    {% for genre in movie.genres.all %}
+                    <span class="banner-genre">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
+                <p>{{ movie.description }}</p>
+                <a href="{% url 'movie_detail' movie.pk %}" class="btn-play">▶ Ver Ahora</a>
             </div>
-            <p>{{ featured.description }}</p>
-            <a href="{% url 'movie_detail' featured.pk %}" class="btn-play" style="text-decoration:none;">▶ Ver Ahora</a>
+        </div>
+        {% endfor %}
+
+        <div class="banner-dots">
+            {% for movie in featured_movies %}
+            <span class="dot" data-index="{{ forloop.counter0 }}"></span>
+            {% endfor %}
         </div>
     </div>
     {% endif %}
@@ -314,15 +364,43 @@
             document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
         });
 
+        // Carrusel
+        const slides = document.querySelectorAll('.banner-slide');
+        const dots = document.querySelectorAll('.dot');
+        let current = 0;
+
+        function showSlide(index) {
+            slides.forEach(s => { s.classList.remove('active'); s.style.opacity = 0; });
+            dots.forEach(d => d.classList.remove('active'));
+            slides[index].classList.add('active');
+            slides[index].style.opacity = 1;
+            dots[index].classList.add('active');
+            current = index;
+        }
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => showSlide(parseInt(dot.dataset.index)));
+        });
+
+        if (slides.length > 0) {
+            showSlide(0);
+            setInterval(() => {
+                showSlide((current + 1) % slides.length);
+            }, 6000);
+        }
+
         function filterGenre(genre, btn) {
             document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
             const titulo = document.getElementById('section-title');
             titulo.textContent = genre === 'all' ? 'Todas las Películas' : 'Películas de ' + btn.textContent;
-            
             document.querySelectorAll('.movie-card').forEach(card => {
-                card.style.display = (genre === 'all' || card.dataset.genres.includes(genre)) ? 'block' : 'none';
+                const link = card.closest('a');
+                if (genre === 'all' || card.dataset.genres.includes(genre)) {
+                    link.style.display = 'block';
+                } else {
+                    link.style.display = 'none';
+                }
             });
         }
     </script>
