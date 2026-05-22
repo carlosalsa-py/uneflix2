@@ -80,7 +80,7 @@
   "model": "movies.genre",
   "pk": 14,
   "fields": {
-    "name": "Animación Para Adultos"
+    "name": "Animaciï¿½n Para Adultos"
   }
 },
 {
@@ -94,7 +94,7 @@
   "model": "movies.genre",
   "pk": 16,
   "fields": {
-    "name": "Sátira"
+    "name": "Sï¿½tira"
   }
 },
 {
@@ -156,7 +156,7 @@
   "pk": 2,
   "fields": {
     "title": "Como si fuera la primera vez",
-    "description": "La historia sigue a Henry, un biólogo marino que se enamora de Lucy, una chica que sufre de amnesia anterógrada (pierde la memoria cada noche). Esto genera una mezcla perfecta entre momentos de humor característicos del género cómico y una emotiva trama donde él debe conquistarla todos los días.",
+    "description": "La historia sigue a Henry, un biï¿½logo marino que se enamora de Lucy, una chica que sufre de amnesia anterï¿½grada (pierde la memoria cada noche). Esto genera una mezcla perfecta entre momentos de humor caracterï¿½sticos del gï¿½nero cï¿½mico y una emotiva trama donde ï¿½l debe conquistarla todos los dï¿½as.",
     "year": 2004,
     "poster": "posters/como_si_fuer_XINxLt4.png",
     "type": "movie",
@@ -194,7 +194,7 @@
   "pk": 4,
   "fields": {
     "title": "Teen Wolf",
-    "description": "Relata la historia de un chico tímido de instituto cuya existencia pasa del anonimato a la popularidad al ser mordido por un hombre lobo en la oscuridad del bosque. Su vida nunca volverá a ser la misma",
+    "description": "Relata la historia de un chico tï¿½mido de instituto cuya existencia pasa del anonimato a la popularidad al ser mordido por un hombre lobo en la oscuridad del bosque. Su vida nunca volverï¿½ a ser la misma",
     "year": 2011,
     "poster": "posters/poster_JCIJjw7.jpg",
     "type": "series",
@@ -214,7 +214,7 @@
   "pk": 5,
   "fields": {
     "title": "Una Esposa de Mentira",
-    "description": "En un viaje a Hawai, un cirujano plástico convence a su leal asistente para que se haga pasar por su casi ex esposa con el fin de encubrir una mentira que le contó a su novia.",
+    "description": "En un viaje a Hawai, un cirujano plï¿½stico convence a su leal asistente para que se haga pasar por su casi ex esposa con el fin de encubrir una mentira que le contï¿½ a su novia.",
     "year": 2011,
     "poster": "posters/poster_Rqzub2b.jpg",
     "type": "movie",
@@ -231,8 +231,8 @@
   "model": "movies.movie",
   "pk": 6,
   "fields": {
-    "title": "Mortadelo y Filemón contra Jimmy el Cachondo",
-    "description": "Los no tan superagentes Mortadelo y Filemón entran en acción cuando un trío de villanos amenaza con sembrar el caos en su amada agencia de espionaje, la TIA.",
+    "title": "Mortadelo y Filemï¿½n contra Jimmy el Cachondo",
+    "description": "Los no tan superagentes Mortadelo y Filemï¿½n entran en acciï¿½n cuando un trï¿½o de villanos amenaza con sembrar el caos en su amada agencia de espionaje, la TIA.",
     "year": 2014,
     "poster": "posters/back.jpg",
     "type": "movie",
@@ -249,7 +249,7 @@
   "pk": 7,
   "fields": {
     "title": "La Ultima Cancion",
-    "description": "Una chica rebelde para el verano en la casa de su padre en un pueblo costero. A través de su compartida pasión por la música, ambos reconectan.",
+    "description": "Una chica rebelde para el verano en la casa de su padre en un pueblo costero. A travï¿½s de su compartida pasiï¿½n por la mï¿½sica, ambos reconectan.",
     "year": 2010,
     "poster": "posters/the_last_song-620416793-large.jpg",
     "type": "movie",
@@ -267,8 +267,8 @@
   "model": "movies.movie",
   "pk": 8,
   "fields": {
-    "title": "La La Land: ciudad de sueños",
-    "description": "Sebastian, un pianista de jazz, y Mia, una aspirante a actriz, se enamoran locamente; pero la ambición desmedida que tienen por triunfar en sus respectivas carreras, en una ciudad como Los Ángeles, repleta de competencia y carente de piedad, pone en peligro su amor.",
+    "title": "La La Land: ciudad de sueï¿½os",
+    "description": "Sebastian, un pianista de jazz, y Mia, una aspirante a actriz, se enamoran locamente; pero la ambiciï¿½n desmedida que tienen por triunfar en sus respectivas carreras, en una ciudad como Los ï¿½ngeles, repleta de competencia y carente de piedad, pone en peligro su amor.",
     "year": 2016,
     "poster": "posters/La_La_Land_film.png",
     "type": "movie",
@@ -287,7 +287,7 @@
   "pk": 9,
   "fields": {
     "title": "The Boys",
-    "description": "Un grupo de vigilantes se dispuso a acabar con los superhéroes corruptos que abusan de sus superpoderes.",
+    "description": "Un grupo de vigilantes se dispuso a acabar con los superhï¿½roes corruptos que abusan de sus superpoderes.",
     "year": 2019,
     "poster": "posters/The_Boys_Season_2.jpg",
     "type": "series",
@@ -305,7 +305,7 @@
   "pk": 10,
   "fields": {
     "title": "Divergente",
-    "description": "En un mundo dividido en facciones según virtudes, a Tris le dicen que es Divergente y no encajará. Cuando descubre que hay una trama para destruir a los Divergentes, Tris y los Misteriosos Cuatro deberán descubrir porqué los Divergentes son peligrosos antes de que sea tarde.",
+    "description": "En un mundo dividido en facciones segï¿½n virtudes, a Tris le dicen que es Divergente y no encajarï¿½. Cuando descubre que hay una trama para destruir a los Divergentes, Tris y los Misteriosos Cuatro deberï¿½n descubrir porquï¿½ los Divergentes son peligrosos antes de que sea tarde.",
     "year": 2014,
     "poster": "posters/Divergente-707619981-large.jpg",
     "type": "movie",
@@ -343,7 +343,7 @@
   "pk": 12,
   "fields": {
     "title": "Maze Runner: correr o morir",
-    "description": "Thomas es dejado en una comunidad de niños después de que se borra su memoria, y pronto se entera de que todos están atrapados en un laberinto que le obligará a unir fuerzas con sus compañeros para intentar escapar.",
+    "description": "Thomas es dejado en una comunidad de niï¿½os despuï¿½s de que se borra su memoria, y pronto se entera de que todos estï¿½n atrapados en un laberinto que le obligarï¿½ a unir fuerzas con sus compaï¿½eros para intentar escapar.",
     "year": 2014,
     "poster": "posters/MV5BNTM4OTZlNzYtODA2NS00NmQ5LTg2OGQtN2ViZGE2YzE1ZGYwXkEyXkFqcGc._V1_FMjpg_UX1000_.jpg",
     "type": "movie",
@@ -362,8 +362,8 @@
   "model": "movies.movie",
   "pk": 13,
   "fields": {
-    "title": "El verano en que me enamoré",
-    "description": "Un triángulo amoroso entre una chica y dos hermanos. Una historia sobre el primer amor, el primer desamor y la magia de ese verano perfecto.",
+    "title": "El verano en que me enamorï¿½",
+    "description": "Un triï¿½ngulo amoroso entre una chica y dos hermanos. Una historia sobre el primer amor, el primer desamor y la magia de ese verano perfecto.",
     "year": 2022,
     "poster": "posters/.jpg",
     "type": "series",
@@ -382,7 +382,7 @@
   "pk": 14,
   "fields": {
     "title": "From",
-    "description": "Revela el misterio de un pueblo del centro de los EE.UU que atrapa a todos los que entran. Mientras sus residentes luchan por mantener una sensación de normalidad y buscan una salida, deben sobrevivir a las amenazas del bosque circundante.",
+    "description": "Revela el misterio de un pueblo del centro de los EE.UU que atrapa a todos los que entran. Mientras sus residentes luchan por mantener una sensaciï¿½n de normalidad y buscan una salida, deben sobrevivir a las amenazas del bosque circundante.",
     "year": 2022,
     "poster": "posters/From_Serie_de_TV-265636059-large.jpg",
     "type": "series",
@@ -402,7 +402,7 @@
   "pk": 15,
   "fields": {
     "title": "Dr. House",
-    "description": "Un antisocial doctor especialista en medicina de diagnóstico hace todo lo que sea para resolver enigmáticos casos junto con su equipo de doctores.",
+    "description": "Un antisocial doctor especialista en medicina de diagnï¿½stico hace todo lo que sea para resolver enigmï¿½ticos casos junto con su equipo de doctores.",
     "year": 2004,
     "poster": "posters/954fd525-781a-472b-8bf6-3b8f052e3a8b.jpg",
     "type": "series",
@@ -455,8 +455,8 @@
   "model": "movies.movie",
   "pk": 18,
   "fields": {
-    "title": "El sorprendente Hombre Araña",
-    "description": "Después de que Peter Parker es mordido por una araña alterada genéticamente, como resultado obtiene nuevos poderes de araña y se aventura a resolver la misteriosa muerte de su padre.",
+    "title": "El sorprendente Hombre Araï¿½a",
+    "description": "Despuï¿½s de que Peter Parker es mordido por una araï¿½a alterada genï¿½ticamente, como resultado obtiene nuevos poderes de araï¿½a y se aventura a resolver la misteriosa muerte de su padre.",
     "year": 2012,
     "poster": "posters/Captura_de_pantalla_2026-05-15_235720.png",
     "type": "movie",
@@ -474,7 +474,7 @@
   "pk": 19,
   "fields": {
     "title": "True Beauty",
-    "description": "Después de ser intimidada y discriminada por su aspecto feo, una chica de secundaria se transforma en una hermosa \"diosa\" y rápidamente se eleva a la fama después de dominar el arte del maquillaje a través de videos tutoriales en línea.",
+    "description": "Despuï¿½s de ser intimidada y discriminada por su aspecto feo, una chica de secundaria se transforma en una hermosa \"diosa\" y rï¿½pidamente se eleva a la fama despuï¿½s de dominar el arte del maquillaje a travï¿½s de videos tutoriales en lï¿½nea.",
     "year": 2020,
     "poster": "posters/saa.jpg",
     "type": "series",
