@@ -66,6 +66,8 @@ python manage.py runserver
 
 Entra a **http://127.0.0.1:8000**
 
+Luego de hacer cambios en la base de datos correr python manage.py dumpdata movies --indent 2 --natural-foreign --natural-primary -o movies/fixtures/datos.json
+
 ---
 
 ## Notas importantes
