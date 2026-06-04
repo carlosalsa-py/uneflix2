@@ -49,4 +49,11 @@ def membresias(request):
 
 @login_required(login_url='/users/login/')
 def pago(request):
-    return render(request, 'movies/pago.html')
+    # Capturamos los parámetros que vienen del link en membresias.html
+    plan = request.GET.get('plan', 'Desconocido')
+    precio = request.GET.get('precio', '0.00')
+    
+    return render(request, 'movies/pago.html', {
+        'plan': plan,
+        'precio': precio
+    })

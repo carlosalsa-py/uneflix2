@@ -9,10 +9,10 @@
     <style>
         :root {
             /* COLORES DEL ESCUDO UNEFA */
-            --bg-dark: #070b12;        /* Fondo oscuro azulado */
-            --unefa-blue: #004bca;     /* Azul Rey brillante */
-            --unefa-bronze: #d19a4e;   /* Ocre/Bronce del marco */
-            --unefa-yellow: #ffcc00;   /* Amarillo de la bandera */
+            --bg-dark: #070b12;        
+            --unefa-blue: #004bca;     
+            --unefa-bronze: #d19a4e;   
+            --unefa-yellow: #ffcc00;   
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,7 +26,6 @@
             flex-direction: column;
         }
 
-        /* NAV REUTILIZADO */
         nav {
             background: var(--bg-dark);
             padding: 16px 4%;
@@ -34,7 +33,7 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            border-bottom: 2px solid var(--unefa-bronze); /* Línea unefista */
+            border-bottom: 2px solid var(--unefa-bronze);
         }
         
         .logo {
@@ -76,7 +75,6 @@
             font-weight: 300;
         }
 
-        /* GRID DE PLANES */
         .planes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -86,7 +84,7 @@
         }
 
         .plan-card {
-            background: rgba(255, 255, 255, 0.03); /* Fondo ligeramente más claro que el negro */
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 8px;
             padding: 32px 24px;
             display: flex;
@@ -101,7 +99,6 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
-        /* Plan Destacado */
         .plan-card.featured {
             border-color: var(--unefa-bronze);
             background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%);
@@ -159,7 +156,7 @@
 
         .plan-features li::before {
             content: "✓";
-            color: var(--unefa-blue); /* Checkmark azul rey */
+            color: var(--unefa-blue);
             font-weight: bold;
         }
 
@@ -192,7 +189,6 @@
             color: black;
         }
 
-        /* Botón del plan destacado */
         .featured .btn-select {
             background: var(--unefa-blue);
             border-color: var(--unefa-blue);
@@ -220,7 +216,7 @@
 
         <div class="planes-grid">
             <div class="plan-card">
-                <div class="plan-title">Plan Estudiante (Gratis)</div>
+                <div class="plan-title">Plan Unefista</div>
                 <div class="plan-price">$0<span>/por siempre</span></div>
                 <ul class="plan-features">
                     <li>Acceso al catálogo completo</li>
@@ -234,7 +230,7 @@
 
             <div class="plan-card featured">
                 <div class="badge">Más Popular</div>
-                <div class="plan-title">Plan Cinephile</div>
+                <div class="plan-title">Plan Cinefilo</div>
                 <div class="plan-price">$2.99<span>/mes</span></div>
                 <ul class="plan-features">
                     <li>Acceso al catálogo completo</li>
@@ -243,11 +239,11 @@
                     <li>Descargar películas a tu PC</li>
                     <li class="disabled">Ver en 3 pantallas al mismo tiempo</li>
                 </ul>
-                <a href="{% url 'pago' %}?plan=Cinephile&precio=2.99" class="btn-select">Cambiar Plan</a>
+                <a href="{% url 'pago' %}?plan=Cinefilo&precio=2.99" class="btn-select">Cambiar Plan</a>
             </div>
 
             <div class="plan-card">
-                <div class="plan-title">Plan Ultra</div>
+                <div class="plan-title">Plan Zerpanito</div>
                 <div class="plan-price">$4.99<span>/mes</span></div>
                 <ul class="plan-features">
                     <li>Acceso al catálogo completo</li>
@@ -256,7 +252,7 @@
                     <li>Descargar películas a tu PC</li>
                     <li>Ver hasta en 3 pantallas a la vez</li>
                 </ul>
-                <a href="{% url 'pago' %}?plan=Ultra&precio=4.99" class="btn-select">Cambiar Plan</a>
+                <a href="{% url 'pago' %}?plan=Zerpanito&precio=4.99" class="btn-select">Cambiar Plan</a>
             </div>
         </div>
     </div>
