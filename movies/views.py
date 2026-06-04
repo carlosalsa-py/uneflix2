@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Movie, Genre, Watchlist, Season, Episode
+from users.models import Membership
 
 @login_required(login_url='/users/login/')
 def home(request):
@@ -51,9 +52,26 @@ def player_view(request, pk):
 def membresias(request):
     return render(request, 'movies/membresias.html')
 
-@login_required(login_url='/users/login/')
 def pago(request):
-    return render(request, 'movies/pago.html')
+    plan = request.GET.get('plan', 'medium')
+    precio = request.GET.get('precio', '2.99')
+    
+    plan_map = {
+        'Cinephile': 'medium',
+        'Ultra': 'premium',
+    }
+    
+    if request.method == 'POST':
+        plan_code = plan_map.get(plan, 'medium')
+        membership, created = Membership.objects.get_or_create(user=request.user)
+        membership.plan = plan_code
+        membership.status = 'pending'
+        membership.save()
+    
+    return render(request, 'movies/pago.html', {
+        'plan': plan,
+        'precio': precio,
+    })
 
 @login_required(login_url='/users/login/')
 def episode_player(request, pk):

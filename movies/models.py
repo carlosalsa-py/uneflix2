@@ -31,6 +31,12 @@ class Movie(models.Model):
     imdb_url = models.URLField(blank=True, null=True)
     duration = models.IntegerField(blank=True, null=True, help_text="Duración en minutos")
     trailer_url = models.URLField(blank=True, null=True, help_text="Pega cualquier enlace de YouTube aquí")
+    TIER_CHOICES = [
+        ('free', 'Gratuito'),
+        ('medium', 'Cinephile'),
+        ('premium', 'Ultra - Estreno'),
+    ]
+    tier = models.CharField(max_length=10, choices=TIER_CHOICES, default='free')
 
     def __str__(self):
         return self.title
