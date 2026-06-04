@@ -3,17 +3,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ movie.title }} - Uneflix</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* COLORES DEL ESCUDO UNEFA */
-            --bg-dark: #070b12;        /* Fondo oscuro azulado */
-            --unefa-blue: #004bca;     /* Azul Rey brillante */
-            --unefa-bronze: #d19a4e;   /* Ocre/Bronce del marco */
-            --unefa-yellow: #ffcc00;   /* Amarillo de la bandera */
+            --bg-dark: #070b12;
+            --unefa-blue: #004bca;
+            --unefa-bronze: #d19a4e;
+            --unefa-yellow: #ffcc00;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -32,7 +32,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 2px solid var(--unefa-bronze); /* Línea unefista */
+            border-bottom: 2px solid var(--unefa-bronze);
             position: fixed;
             width: 100%;
             top: 0;
@@ -47,9 +47,7 @@
             text-decoration: none;
         }
 
-        .logo span {
-            color: var(--unefa-bronze);
-        }
+        .logo span { color: var(--unefa-bronze); }
 
         .back-btn {
             background: rgba(255,255,255,0.05);
@@ -64,10 +62,7 @@
             transition: all 0.2s;
         }
 
-        .back-btn:hover { 
-            background: rgba(255,255,255,0.15); 
-            color: white;
-        }
+        .back-btn:hover { background: rgba(255,255,255,0.15); color: white; }
 
         .hero {
             height: 60vh;
@@ -137,10 +132,7 @@
             display: inline-block;
         }
 
-        .btn-play:hover { 
-            background: var(--unefa-bronze);
-            color: black;
-        }
+        .btn-play:hover { background: var(--unefa-bronze); color: black; }
 
         .btn-watchlist {
             background: rgba(255, 255, 255, 0.03);
@@ -156,10 +148,7 @@
             transition: all 0.2s;
         }
 
-        .btn-watchlist:hover { 
-            background: rgba(209, 154, 78, 0.15);
-            color: white;
-        }
+        .btn-watchlist:hover { background: rgba(209, 154, 78, 0.15); color: white; }
 
         .content { padding: 40px 4%; }
 
@@ -180,16 +169,13 @@
         }
 
         .info-label {
-            color: #66748f; /* Tono azul grisáceo sutil */
+            color: #66748f;
             font-size: 14px;
             min-width: 80px;
             font-weight: 500;
         }
 
-        .info-value {
-            color: #ddd;
-            font-size: 14px;
-        }
+        .info-value { color: #ddd; font-size: 14px; }
 
         .external-links {
             display: flex;
@@ -208,21 +194,10 @@
         }
 
         .ext-btn:hover { opacity: 0.8; }
+        .imdb { background: #f5c518; color: black; }
+        .rt { background: #fa320a; color: white; }
 
-        .imdb {
-            background: #f5c518;
-            color: black;
-        }
-
-        .rt {
-            background: #fa320a;
-            color: white;
-        }
-
-        .trailer-container {
-            margin-top: 40px;
-            max-width: 700px;
-        }
+        .trailer-container { margin-top: 40px; max-width: 700px; }
 
         .trailer-title {
             font-family: 'Bebas Neue', sans-serif;
@@ -242,11 +217,73 @@
             border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .trailer-wrapper iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .trailer-wrapper iframe { width: 100%; height: 100%; border: none; }
+
+        .seasons-container { margin-top: 40px; max-width: 700px; }
+
+        .season-item {
+            border: 1px solid #1a2540;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
         }
+
+        .season-header {
+            background: #0d1526;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: background 0.2s;
+        }
+
+        .season-header:hover { background: #111e35; }
+
+        .season-arrow {
+            transition: transform 0.3s;
+            font-size: 12px;
+            color: var(--unefa-bronze);
+        }
+
+        .season-arrow.open { transform: rotate(180deg); }
+
+        .season-episodes { background: #090e1a; }
+
+        .episode-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 20px;
+            border-bottom: 1px solid #111e35;
+            text-decoration: none;
+            color: white;
+            transition: background 0.2s;
+        }
+
+        .episode-item:hover { background: #0d1526; }
+        .episode-item:last-child { border-bottom: none; }
+
+        .episode-number {
+            background: #1a2540;
+            color: #aaa;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .episode-info { flex: 1; }
+        .episode-title { font-size: 14px; font-weight: 500; color: #ddd; }
+        .episode-meta { font-size: 12px; color: #666; margin-top: 2px; }
+        .episode-play { color: var(--unefa-blue); font-size: 14px; }
 
         @media (max-width: 768px) {
             .hero { height: 45vh; }
@@ -257,7 +294,9 @@
 <body>
 
     <nav>
-        <a href="{% url 'home' %}" class="logo">UNE<span>FLIX</span></a>
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" height="40" alt="Uneflix">
+        </a>
         <a href="{% url 'home' %}" class="back-btn">← Volver</a>
     </nav>
 
@@ -295,7 +334,7 @@
         <div class="info-grid">
             <div class="info-main">
                 <p class="description">{{ movie.description }}</p>
-                
+
                 {% if movie.director %}
                 <div class="info-row">
                     <span class="info-label">Director</span>
@@ -325,8 +364,52 @@
                     </div>
                 </div>
                 {% endif %}
+
+                {% if seasons %}
+                <div class="seasons-container">
+                    <h3 class="trailer-title">Temporadas y Episodios</h3>
+                    {% for season in seasons %}
+                    <div class="season-item">
+                        <div class="season-header" onclick="toggleSeason({{ season.number }})">
+                            <span>Temporada {{ season.number }}</span>
+                            <span class="season-arrow" id="arrow-{{ season.number }}">▼</span>
+                        </div>
+                        <div class="season-episodes" id="season-{{ season.number }}" style="display:none;">
+                            {% for episode in season.episodes.all %}
+                            <a href="{% url 'episode_player' episode.pk %}" class="episode-item">
+                                <div class="episode-number">{{ episode.number }}</div>
+                                <div class="episode-info">
+                                    <p class="episode-title">{{ episode.title }}</p>
+                                    <p class="episode-meta">T{{ season.number }} · E{{ episode.number }}</p>
+                                </div>
+                                <span class="episode-play">▶</span>
+                            </a>
+                            {% empty %}
+                            <p style="color:#555; padding:16px;">No hay episodios disponibles.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
             </div>
         </div>
     </div>
+
+    <script>
+    function toggleSeason(number) {
+        const episodes = document.getElementById('season-' + number);
+        const arrow = document.getElementById('arrow-' + number);
+        if (episodes.style.display === 'none') {
+            episodes.style.display = 'block';
+            arrow.classList.add('open');
+        } else {
+            episodes.style.display = 'none';
+            arrow.classList.remove('open');
+        }
+    }
+    </script>
+
 </body>
 </html>

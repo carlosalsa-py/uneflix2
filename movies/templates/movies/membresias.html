@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Membresías - Uneflix</title>
@@ -208,7 +209,9 @@
 <body>
 
     <nav>
-        <a href="{% url 'home' %}" class="logo">UNE<span>FLIX</span></a>
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" height="40" alt="Uneflix">
+        </a>
         <a href="{% url 'home' %}" style="color:#ccc; text-decoration:none; font-size:14px;">Volver al Inicio</a>
     </nav>
 
