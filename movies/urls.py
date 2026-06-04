@@ -7,4 +7,8 @@ urlpatterns = [
     path('movie/<int:pk>/watchlist/', views.watchlist_toggle, name='watchlist_toggle'),
     path('watchlist/', views.watchlist_view, name='watchlist'),
     path('movie/<int:pk>/play/', views.player_view, name='player'),
+    
+    # Nuevas rutas para las membresías y la página de pago
+    path('membresias/', views.membresias, name='membresias'),
+    path('pago/', views.pago, name='pago'),
 ]

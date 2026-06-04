@@ -7,17 +7,25 @@
     <title>Uneflix</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* COLORES DEL ESCUDO UNEFA */
+            --bg-dark: #070b12;        /* Fondo oscuro azulado */
+            --unefa-blue: #004bca;     /* Azul Rey brillante */
+            --unefa-bronze: #d19a4e;   /* Ocre/Bronce del marco */
+            --unefa-yellow: #ffcc00;   /* Amarillo de la bandera */
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: #141414;
+            background-color: var(--bg-dark);
             font-family: 'Inter', sans-serif;
             color: white;
         }
 
         /* NAV */
         nav {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent);
+            background: linear-gradient(to bottom, rgba(7,11,18,0.95), transparent);
             padding: 16px 4%;
             display: flex;
             justify-content: space-between;
@@ -29,13 +37,20 @@
             transition: background 0.4s;
         }
 
-        nav.scrolled { background: #141414; }
+        nav.scrolled { 
+            background: var(--bg-dark); 
+            border-bottom: 2px solid var(--unefa-bronze); /* Detalle unefista al hacer scroll */
+        }
 
         .logo {
-            color: #e50914;
+            color: white;
             font-family: 'Bebas Neue', sans-serif;
             font-size: 32px;
             letter-spacing: 4px;
+        }
+        
+        .logo span {
+            color: var(--unefa-bronze); /* Toque de color en el texto del logo */
         }
 
         /* BANNER */
@@ -80,8 +95,8 @@
             background: linear-gradient(
                 to bottom,
                 transparent 40%,
-                rgba(20,20,20,0.6) 70%,
-                #141414 100%
+                rgba(7,11,18,0.6) 70%,
+                var(--bg-dark) 100%
             );
         }
 
@@ -127,7 +142,7 @@
         }
 
         .banner-genre {
-            background: rgba(229,9,20,0.8);
+            background: rgba(0, 75, 202, 0.8); /* Azul rey con opacidad */
             color: white;
             font-size: 12px;
             padding: 3px 10px;
@@ -150,7 +165,10 @@
             display: inline-block;
         }
 
-        .btn-play:hover { background: rgba(255,255,255,0.85); }
+        .btn-play:hover { 
+            background: var(--unefa-bronze); 
+            color: white;
+        }
 
         .banner-dots {
             position: absolute;
@@ -171,7 +189,7 @@
         }
 
         .dot.active {
-            background: #e50914;
+            background: var(--unefa-bronze);
             width: 24px;
             border-radius: 4px;
         }
@@ -198,8 +216,8 @@
         }
 
         .genre-btn:hover, .genre-btn.active {
-            background: #e50914;
-            border-color: #e50914;
+            background: var(--unefa-blue);
+            border-color: var(--unefa-blue);
         }
 
         /* SECCIÓN */
@@ -257,7 +275,7 @@
 
         .badge-genre {
             display: inline-block;
-            background: rgba(229,9,20,0.7);
+            background: rgba(0, 75, 202, 0.7); /* Azul rey transparente */
             color: white;
             font-size: 10px;
             padding: 2px 7px;
@@ -282,8 +300,13 @@
 <body>
 
     <nav id="navbar">
-        <span class="logo">UNEFLIX</span>
+        <span class="logo">UNE<span>FLIX</span></span>
         <div style="display:flex; align-items:center; gap:16px;">
+            <!-- AQUÍ ESTÁ LA NUEVA PESTAÑA AÑADIDA -->
+            <a href="{% url 'membresias' %}" style="color:var(--unefa-yellow); text-decoration:none; font-size:14px; font-weight:600;">
+                ⭐ Planes
+            </a>
+            <!-- PESTAÑAS ORIGINALES -->
             <a href="{% url 'watchlist' %}" style="color:#ccc; text-decoration:none; font-size:14px;">
                 ♥ Mi Lista
             </a>
@@ -302,7 +325,8 @@
             {% elif movie.poster %}
             <div class="banner-bg" style="background-image: url('{{ movie.poster.url }}');"></div>
             {% else %}
-            <div class="banner-bg" style="background: linear-gradient(135deg, #1a0a0a, #2d0505);"></div>
+            <!-- Actualizado para usar colores de la unefa en caso de no haber imagen -->
+            <div class="banner-bg" style="background: linear-gradient(135deg, #070b12, #004bca);"></div>
             {% endif %}
             <div class="banner-gradient"></div>
             <div class="banner-content">
@@ -343,7 +367,8 @@
             {% if movie.poster %}
             <img src="{{ movie.poster.url }}" alt="{{ movie.title }}">
             {% else %}
-            <img src="https://via.placeholder.com/160x240/1a1a1a/555?text={{ movie.title }}" alt="{{ movie.title }}">
+            <!-- Placeholder adaptado al nuevo fondo oscuro -->
+            <img src="https://via.placeholder.com/160x240/070b12/555?text={{ movie.title }}" alt="{{ movie.title }}">
             {% endif %}
             <div class="movie-info">
                 <h4>{{ movie.title }}</h4>

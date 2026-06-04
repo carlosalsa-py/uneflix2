@@ -1,0 +1,265 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membresías - Uneflix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* COLORES DEL ESCUDO UNEFA */
+            --bg-dark: #070b12;        /* Fondo oscuro azulado */
+            --unefa-blue: #004bca;     /* Azul Rey brillante */
+            --unefa-bronze: #d19a4e;   /* Ocre/Bronce del marco */
+            --unefa-yellow: #ffcc00;   /* Amarillo de la bandera */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAV REUTILIZADO */
+        nav {
+            background: var(--bg-dark);
+            padding: 16px 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            border-bottom: 2px solid var(--unefa-bronze); /* Línea unefista */
+        }
+        
+        .logo {
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            letter-spacing: 4px;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--unefa-bronze);
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 4%;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-section h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(32px, 5vw, 54px);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .header-section p {
+            color: #aaa;
+            font-size: clamp(14px, 1.5vw, 18px);
+            font-weight: 300;
+        }
+
+        /* GRID DE PLANES */
+        .planes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .plan-card {
+            background: rgba(255, 255, 255, 0.03); /* Fondo ligeramente más claro que el negro */
+            border-radius: 8px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid transparent;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        /* Plan Destacado */
+        .plan-card.featured {
+            border-color: var(--unefa-bronze);
+            background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%);
+        }
+
+        .badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--unefa-bronze);
+            color: black;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .plan-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .plan-price {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #fff;
+        }
+
+        .plan-price span {
+            font-size: 14px;
+            color: #888;
+            font-weight: 300;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 32px;
+            flex: 1;
+        }
+
+        .plan-features li {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plan-features li::before {
+            content: "✓";
+            color: var(--unefa-blue); /* Checkmark azul rey */
+            font-weight: bold;
+        }
+
+        .plan-features li.disabled {
+            color: #555;
+            text-decoration: line-through;
+        }
+
+        .plan-features li.disabled::before {
+            content: "✕";
+            color: #444;
+        }
+
+        .btn-select {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-select:hover {
+            background: white;
+            color: black;
+        }
+
+        /* Botón del plan destacado */
+        .featured .btn-select {
+            background: var(--unefa-blue);
+            border-color: var(--unefa-blue);
+        }
+
+        .featured .btn-select:hover {
+            background: var(--unefa-bronze);
+            border-color: var(--unefa-bronze);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="{% url 'home' %}" class="logo">UNE<span>FLIX</span></a>
+        <a href="{% url 'home' %}" style="color:#ccc; text-decoration:none; font-size:14px;">Volver al Inicio</a>
+    </nav>
+
+    <div class="main-container">
+        <div class="header-section">
+            <h1>Elige cómo quieres ver Uneflix</h1>
+            <p>Disfruta de todo nuestro catálogo en calidad DVD Rip adaptada para cualquier conexión.</p>
+        </div>
+
+        <div class="planes-grid">
+            <div class="plan-card">
+                <div class="plan-title">Plan Estudiante (Gratis)</div>
+                <div class="plan-price">$0<span>/por siempre</span></div>
+                <ul class="plan-features">
+                    <li>Acceso al catálogo completo</li>
+                    <li>Calidad fluida optimizada (DVD Rip)</li>
+                    <li>Incluye anuncios en la plataforma</li>
+                    <li class="disabled">Descarga directa de archivos</li>
+                    <li class="disabled">Reproducción simultánea</li>
+                </ul>
+                <a href="{% url 'home' %}" class="btn-select">Plan Actual</a>
+            </div>
+
+            <div class="plan-card featured">
+                <div class="badge">Más Popular</div>
+                <div class="plan-title">Plan Cinephile</div>
+                <div class="plan-price">$2.99<span>/mes</span></div>
+                <ul class="plan-features">
+                    <li>Acceso al catálogo completo</li>
+                    <li>Máxima fidelidad de audio y video</li>
+                    <li>Navegación 100% sin anuncios</li>
+                    <li>Descargar películas a tu PC</li>
+                    <li class="disabled">Ver en 3 pantallas al mismo tiempo</li>
+                </ul>
+                <a href="{% url 'pago' %}?plan=Cinephile&precio=2.99" class="btn-select">Cambiar Plan</a>
+            </div>
+
+            <div class="plan-card">
+                <div class="plan-title">Plan Ultra</div>
+                <div class="plan-price">$4.99<span>/mes</span></div>
+                <ul class="plan-features">
+                    <li>Acceso al catálogo completo</li>
+                    <li>Máxima fidelidad de audio y video</li>
+                    <li>Navegación 100% sin anuncios</li>
+                    <li>Descargar películas a tu PC</li>
+                    <li>Ver hasta en 3 pantallas a la vez</li>
+                </ul>
+                <a href="{% url 'pago' %}?plan=Ultra&precio=4.99" class="btn-select">Cambiar Plan</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

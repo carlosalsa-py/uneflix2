@@ -7,6 +7,14 @@
     <title>Uneflix - Registro</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* COLORES DEL ESCUDO UNEFA */
+            --bg-dark: #070b12;        /* Fondo oscuro azulado */
+            --unefa-blue: #004bca;     /* Azul Rey brillante */
+            --unefa-bronze: #d19a4e;   /* Ocre/Bronce del marco */
+            --unefa-yellow: #ffcc00;   /* Amarillo de la bandera */
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
@@ -15,12 +23,13 @@
             min-height: 100vh;
             display: flex;
             background: url("{% static 'images/fondo_uneflix.jpg' %}") center/cover no-repeat;
+            background-color: var(--bg-dark);
         }
 
         .overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.6);
+            background: linear-gradient(135deg, rgba(7, 11, 18, 0.7) 0%, rgba(0, 0, 0, 0.85) 100%);
         }
 
         .right-panel {
@@ -30,20 +39,26 @@
             width: 100%;
             max-width: 420px;
             min-height: 100vh;
-            background: rgba(0,0,0,0.85);
+            background: rgba(7, 11, 18, 0.92);
+            backdrop-filter: blur(8px);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 60px 40px;
+            border-left: 2px solid var(--unefa-bronze);
         }
 
         .logo {
             font-family: 'Bebas Neue', sans-serif;
-            color: #e50914;
+            color: white;
             font-size: 48px;
             letter-spacing: 4px;
             margin-bottom: 40px;
+        }
+
+        .logo span {
+            color: var(--unefa-bronze);
         }
 
         h2 {
@@ -51,6 +66,8 @@
             font-weight: 600;
             margin-bottom: 24px;
             align-self: flex-start;
+            border-left: 3px solid var(--unefa-blue);
+            padding-left: 10px;
         }
 
         .field { margin-bottom: 16px; width: 100%; }
@@ -58,30 +75,32 @@
         .field label {
             display: block;
             font-size: 13px;
-            color: #aaa;
+            color: #8898b5;
             margin-bottom: 6px;
         }
 
         .field input {
             width: 100%;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 6px;
             padding: 10px 14px;
             color: white;
             font-size: 14px;
             font-family: 'Inter', sans-serif;
-            transition: border 0.2s;
+            transition: all 0.2s;
         }
 
         .field input:focus {
             outline: none;
-            border-color: #e50914;
+            border-color: var(--unefa-blue);
+            background: rgba(0, 75, 202, 0.05);
+            box-shadow: 0 0 8px rgba(0, 75, 202, 0.3);
         }
 
         .btn {
             width: 100%;
-            background: #e50914;
+            background: var(--unefa-blue);
             color: white;
             border: none;
             padding: 12px;
@@ -94,42 +113,53 @@
             transition: background 0.2s;
         }
 
-        .btn:hover { background: #c40812; }
+        .btn:hover { 
+            background: var(--unefa-bronze);
+            color: black;
+        }
 
         .link {
             text-align: center;
             margin-top: 20px;
             font-size: 13px;
-            color: #888;
+            color: #66748f;
         }
 
         .link a {
-            color: #e50914;
+            color: var(--unefa-bronze);
             text-decoration: none;
             font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .link a:hover {
+            color: white;
         }
 
         .errors {
-            background: rgba(229,9,20,0.15);
-            border: 1px solid rgba(229,9,20,0.3);
+            background: rgba(255, 74, 74, 0.1);
+            border: 1px solid rgba(255, 74, 74, 0.3);
             border-radius: 6px;
             padding: 10px 14px;
             font-size: 13px;
             color: #ff6b6b;
             margin-bottom: 16px;
             width: 100%;
+            line-height: 1.5;
         }
 
         .help-text {
             font-size: 11px;
-            color: #555;
-            margin-top: 4px;
+            color: #55647e;
+            margin-top: 5px;
         }
 
         @media (max-width: 480px) {
             .right-panel {
                 max-width: 100%;
                 padding: 40px 24px;
+                border-left: none;
+                border-top: 4px solid var(--unefa-bronze);
             }
         }
     </style>
@@ -137,29 +167,34 @@
 <body>
     <div class="overlay"></div>
     <div class="right-panel">
-        <span class="logo">UNEFLIX</span>
+        <span class="logo">UNE<span>FLIX</span></span>
         <h2>Crear Cuenta</h2>
+        
         {% if form.errors %}
         <div class="errors">
             {% for field in form %}
-                {% for error in field.errors %}{{ error }}{% endfor %}
+                {% for error in field.errors %}{{ error }}<br>{% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                {{ error }}<br>
             {% endfor %}
         </div>
         {% endif %}
+        
         <form method="post" style="width:100%;">
             {% csrf_token %}
             <div class="field">
                 <label>Usuario</label>
-                <input type="text" name="username">
+                <input type="text" name="username" required autocomplete="off">
             </div>
             <div class="field">
                 <label>Contraseña</label>
-                <input type="password" name="password1">
+                <input type="password" name="password1" required>
                 <p class="help-text">Mínimo 8 caracteres.</p>
             </div>
             <div class="field">
                 <label>Confirmar Contraseña</label>
-                <input type="password" name="password2">
+                <input type="password" name="password2" required>
             </div>
             <button type="submit" class="btn">Registrarse</button>
         </form>

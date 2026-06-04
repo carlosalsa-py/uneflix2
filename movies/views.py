@@ -42,3 +42,11 @@ def watchlist_view(request):
 def player_view(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
     return render(request, 'movies/player.html', {'movie': movie})
+
+@login_required(login_url='/users/login/')
+def membresias(request):
+    return render(request, 'movies/membresias.html')
+
+@login_required(login_url='/users/login/')
+def pago(request):
+    return render(request, 'movies/pago.html')

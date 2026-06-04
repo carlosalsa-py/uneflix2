@@ -7,22 +7,31 @@
     <title>Mi Lista - Uneflix</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* COLORES DEL ESCUDO UNEFA */
+            --bg-dark: #070b12;        /* Fondo oscuro azulado */
+            --unefa-blue: #004bca;     /* Azul Rey brillante */
+            --unefa-bronze: #d19a4e;   /* Ocre/Bronce del marco */
+            --unefa-yellow: #ffcc00;   /* Amarillo de la bandera */
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: #141414;
+            background: var(--bg-dark);
             font-family: 'Inter', sans-serif;
             color: white;
             min-height: 100vh;
         }
 
         nav {
-            background: #141414;
+            background: rgba(7, 11, 18, 0.9);
+            backdrop-filter: blur(8px);
             padding: 16px 4%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #222;
+            border-bottom: 2px solid var(--unefa-bronze);
             position: fixed;
             width: 100%;
             top: 0;
@@ -31,10 +40,14 @@
 
         .logo {
             font-family: 'Bebas Neue', sans-serif;
-            color: #e50914;
+            color: white;
             font-size: 28px;
             letter-spacing: 3px;
             text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--unefa-bronze);
         }
 
         .nav-links {
@@ -50,10 +63,10 @@
             transition: color 0.2s;
         }
 
-        .nav-links a:hover { color: white; }
+        .nav-links a:hover { color: var(--unefa-bronze); }
 
         .content {
-            padding: 100px 4% 60px;
+            padding: 120px 4% 60px;
         }
 
         h1 {
@@ -61,12 +74,14 @@
             font-size: 36px;
             letter-spacing: 2px;
             margin-bottom: 30px;
+            border-left: 3px solid var(--unefa-blue);
+            padding-left: 12px;
         }
 
         .movies-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 16px;
+            gap: 20px;
         }
 
         .movie-card {
@@ -75,7 +90,7 @@
             transition: transform 0.3s;
         }
 
-        .movie-card:hover { transform: scale(1.05); }
+        .movie-card:hover { transform: scale(1.04); }
 
         .movie-card img {
             width: 100%;
@@ -84,6 +99,7 @@
             border-radius: 6px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.6);
             display: block;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .movie-info {
@@ -97,11 +113,16 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            transition: color 0.2s;
+        }
+
+        .movie-card:hover .movie-info h4 {
+            color: var(--unefa-bronze);
         }
 
         .movie-info .year {
             font-size: 12px;
-            color: #666;
+            color: #66748f;
             margin-top: 2px;
         }
 
@@ -109,34 +130,45 @@
             position: absolute;
             top: 8px;
             right: 8px;
-            background: rgba(229,9,20,0.8);
-            color: white;
-            border: none;
+            background: rgba(7, 11, 18, 0.85);
+            color: #ff4a4a;
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 50%;
             width: 28px;
             height: 28px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            backdrop-filter: blur(4px);
         }
 
-        .remove-btn:hover { background: #e50914; }
+        .remove-btn:hover { 
+            background: #ff4a4a; 
+            color: white;
+            border-color: #ff4a4a;
+            transform: scale(1.1);
+        }
 
         .empty {
             text-align: center;
             padding: 80px 0;
-            color: #555;
+            color: #44516a;
         }
 
         .empty p { font-size: 16px; margin-bottom: 16px; }
 
         .empty a {
-            color: #e50914;
+            color: var(--unefa-blue);
             text-decoration: none;
             font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .empty a:hover {
+            color: var(--unefa-bronze);
         }
 
         @media (max-width: 480px) {
@@ -147,7 +179,7 @@
 <body>
 
     <nav>
-        <a href="{% url 'home' %}" class="logo">UNEFLIX</a>
+        <a href="{% url 'home' %}" class="logo">UNE<span>FLIX</span></a>
         <div class="nav-links">
             <a href="{% url 'home' %}">Inicio</a>
             <a href="{% url 'logout' %}">{{ request.user.username }} · Salir</a>
@@ -165,7 +197,7 @@
                     {% if item.movie.poster %}
                     <img src="{{ item.movie.poster.url }}" alt="{{ item.movie.title }}">
                     {% else %}
-                    <img src="https://via.placeholder.com/160x240/1a1a1a/555?text={{ item.movie.title }}" alt="{{ item.movie.title }}">
+                    <img src="https://via.placeholder.com/160x240/070b12/555?text={{ item.movie.title }}" alt="{{ item.movie.title }}">
                     {% endif %}
                     <div class="movie-info">
                         <h4>{{ item.movie.title }}</h4>
@@ -174,7 +206,7 @@
                 </a>
                 <form method="post" action="{% url 'watchlist_toggle' item.movie.pk %}">
                     {% csrf_token %}
-                    <button type="submit" class="remove-btn">✕</button>
+                    <button type="submit" class="remove-btn" title="Quitar de mi lista">✕</button>
                 </form>
             </div>
             {% endfor %}
