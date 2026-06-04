@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Lista - Uneflix</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* COLORES DEL ESCUDO UNEFA */
-            --bg-dark: #070b12;        /* Fondo oscuro azulado */
-            --unefa-blue: #004bca;     /* Azul Rey brillante */
-            --unefa-bronze: #d19a4e;   /* Ocre/Bronce del marco */
-            --unefa-yellow: #ffcc00;   /* Amarillo de la bandera */
+            --bg-dark: #070b12;        
+            --unefa-blue: #004bca;     
+            --unefa-bronze: #d19a4e;   
+            --unefa-yellow: #ffcc00;   
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -38,36 +38,28 @@
             z-index: 1000;
         }
 
+        /* LOGO CON "CAMBIAZO" A IMAGEN */
         .logo {
-            font-family: 'Bebas Neue', sans-serif;
-            color: white;
-            font-size: 28px;
-            letter-spacing: 3px;
+            display: block;
+            width: 140px;
+            height: 35px;
+            background-image: url("{% static 'images/logo.png' %}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            text-indent: -9999px;
+            overflow: hidden;
+            line-height: 0;
+            color: transparent !important;
             text-decoration: none;
         }
+        .logo span { display: none; }
 
-        .logo span {
-            color: var(--unefa-bronze);
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .nav-links a {
-            color: #ccc;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.2s;
-        }
-
+        .nav-links { display: flex; align-items: center; gap: 16px; }
+        .nav-links a { color: #ccc; text-decoration: none; font-size: 14px; transition: color 0.2s; }
         .nav-links a:hover { color: var(--unefa-bronze); }
 
-        .content {
-            padding: 120px 4% 60px;
-        }
+        .content { padding: 120px 4% 60px; }
 
         h1 {
             font-family: 'Bebas Neue', sans-serif;
@@ -78,102 +70,41 @@
             padding-left: 12px;
         }
 
-        .movies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
-        }
+        .movies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
 
-        .movie-card {
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
+        .movie-card { position: relative; cursor: pointer; transition: transform 0.3s; }
         .movie-card:hover { transform: scale(1.04); }
 
         .movie-card img {
-            width: 100%;
-            aspect-ratio: 2/3;
-            object-fit: cover;
-            border-radius: 6px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            display: block;
-            border: 1px solid rgba(255,255,255,0.05);
+            width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6); display: block; border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .movie-info {
-            padding: 8px 2px;
-        }
-
+        .movie-info { padding: 8px 2px; }
         .movie-info h4 {
-            font-size: 13px;
-            font-weight: 500;
-            color: #ddd;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 13px; font-weight: 500; color: #ddd;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             transition: color 0.2s;
         }
-
-        .movie-card:hover .movie-info h4 {
-            color: var(--unefa-bronze);
-        }
-
-        .movie-info .year {
-            font-size: 12px;
-            color: #66748f;
-            margin-top: 2px;
-        }
+        .movie-card:hover .movie-info h4 { color: var(--unefa-bronze); }
+        .movie-info .year { font-size: 12px; color: #66748f; margin-top: 2px; }
 
         .remove-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(7, 11, 18, 0.85);
-            color: #ff4a4a;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            backdrop-filter: blur(4px);
+            position: absolute; top: 8px; right: 8px;
+            background: rgba(7, 11, 18, 0.85); color: #ff4a4a;
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 50%;
+            width: 28px; height: 28px; cursor: pointer; font-size: 12px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; backdrop-filter: blur(4px);
         }
+        .remove-btn:hover { background: #ff4a4a; color: white; border-color: #ff4a4a; transform: scale(1.1); }
 
-        .remove-btn:hover { 
-            background: #ff4a4a; 
-            color: white;
-            border-color: #ff4a4a;
-            transform: scale(1.1);
-        }
-
-        .empty {
-            text-align: center;
-            padding: 80px 0;
-            color: #44516a;
-        }
-
+        .empty { text-align: center; padding: 80px 0; color: #44516a; }
         .empty p { font-size: 16px; margin-bottom: 16px; }
+        .empty a { color: var(--unefa-blue); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .empty a:hover { color: var(--unefa-bronze); }
 
-        .empty a {
-            color: var(--unefa-blue);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .empty a:hover {
-            color: var(--unefa-bronze);
-        }
-
-        @media (max-width: 480px) {
-            .movies-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-        }
+        @media (max-width: 480px) { .movies-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); } }
     </style>
 </head>
 <body>

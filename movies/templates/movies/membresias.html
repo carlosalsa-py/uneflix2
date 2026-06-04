@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Membresías - Uneflix</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* COLORES DEL ESCUDO UNEFA */
             --bg-dark: #070b12;        
             --unefa-blue: #004bca;     
             --unefa-bronze: #d19a4e;   
@@ -26,6 +26,24 @@
             flex-direction: column;
         }
 
+        /* LOGO CON "CAMBIAZO" A IMAGEN */
+        .logo {
+            display: inline-block;
+            width: 200px;
+            height: 50px;
+            background-image: url("{% static 'images/logo.png' %}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            text-indent: -9999px;
+            overflow: hidden;
+            line-height: 0;
+            color: transparent !important;
+            text-decoration: none;
+        }
+
+        .logo span { display: none; }
+
         nav {
             background: var(--bg-dark);
             padding: 16px 4%;
@@ -34,18 +52,6 @@
             align-items: center;
             width: 100%;
             border-bottom: 2px solid var(--unefa-bronze);
-        }
-        
-        .logo {
-            color: white;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 32px;
-            letter-spacing: 4px;
-            text-decoration: none;
-        }
-        
-        .logo span {
-            color: var(--unefa-bronze);
         }
 
         .main-container {
@@ -57,23 +63,9 @@
             padding: 40px 4%;
         }
 
-        .header-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .header-section h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: clamp(32px, 5vw, 54px);
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-
-        .header-section p {
-            color: #aaa;
-            font-size: clamp(14px, 1.5vw, 18px);
-            font-weight: 300;
-        }
+        .header-section { text-align: center; margin-bottom: 40px; }
+        .header-section h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(32px, 5vw, 54px); letter-spacing: 2px; margin-bottom: 10px; }
+        .header-section p { color: #aaa; font-size: clamp(14px, 1.5vw, 18px); font-weight: 300; }
 
         .planes-grid {
             display: grid;
@@ -94,111 +86,34 @@
             position: relative;
         }
 
-        .plan-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .plan-card.featured {
-            border-color: var(--unefa-bronze);
-            background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%);
-        }
+        .plan-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .plan-card.featured { border-color: var(--unefa-bronze); background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%); }
 
         .badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--unefa-bronze);
-            color: black;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            background: var(--unefa-bronze); color: black; font-size: 11px;
+            font-weight: 700; padding: 4px 12px; border-radius: 20px;
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
-        .plan-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 28px;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
+        .plan-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 8px; }
+        .plan-price { font-size: 36px; font-weight: 600; margin-bottom: 24px; color: #fff; }
+        .plan-price span { font-size: 14px; color: #888; font-weight: 300; }
 
-        .plan-price {
-            font-size: 36px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            color: #fff;
-        }
-
-        .plan-price span {
-            font-size: 14px;
-            color: #888;
-            font-weight: 300;
-        }
-
-        .plan-features {
-            list-style: none;
-            margin-bottom: 32px;
-            flex: 1;
-        }
-
-        .plan-features li {
-            font-size: 14px;
-            color: #ccc;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .plan-features li::before {
-            content: "✓";
-            color: var(--unefa-blue);
-            font-weight: bold;
-        }
-
-        .plan-features li.disabled {
-            color: #555;
-            text-decoration: line-through;
-        }
-
-        .plan-features li.disabled::before {
-            content: "✕";
-            color: #444;
-        }
+        .plan-features { list-style: none; margin-bottom: 32px; flex: 1; }
+        .plan-features li { font-size: 14px; color: #ccc; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .plan-features li::before { content: "✓"; color: var(--unefa-blue); font-weight: bold; }
+        .plan-features li.disabled { color: #555; text-decoration: line-through; }
+        .plan-features li.disabled::before { content: "✕"; color: #444; }
 
         .btn-select {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 12px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.2s;
+            background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer;
+            text-align: center; text-decoration: none; transition: all 0.2s;
         }
-
-        .btn-select:hover {
-            background: white;
-            color: black;
-        }
-
-        .featured .btn-select {
-            background: var(--unefa-blue);
-            border-color: var(--unefa-blue);
-        }
-
-        .featured .btn-select:hover {
-            background: var(--unefa-bronze);
-            border-color: var(--unefa-bronze);
-            color: white;
-        }
+        .btn-select:hover { background: white; color: black; }
+        .featured .btn-select { background: var(--unefa-blue); border-color: var(--unefa-blue); }
+        .featured .btn-select:hover { background: var(--unefa-bronze); border-color: var(--unefa-bronze); color: white; }
     </style>
 </head>
 <body>
@@ -256,6 +171,5 @@
             </div>
         </div>
     </div>
-
 </body>
 </html>

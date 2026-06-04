@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finalizar Suscripción - Uneflix</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -37,17 +38,22 @@
             border: 1px solid rgba(255,255,255,0.05);
         }
 
+        /* LOGO CON "CAMBIAZO" A IMAGEN */
         .logo-center {
-            color: white;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 36px;
-            letter-spacing: 4px;
-            text-align: center;
-            margin-bottom: 24px;
             display: block;
+            margin: 0 auto 24px auto;
+            width: 220px;
+            height: 60px;
+            background-image: url("{% static 'images/logo.png' %}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            text-indent: -9999px;
+            overflow: hidden;
+            line-height: 0;
+            color: transparent !important;
         }
-
-        .logo-center span { color: var(--unefa-bronze); }
+        .logo-center span { display: none; }
 
         h2 { font-size: 18px; font-weight: 500; margin-bottom: 4px; color: #fff; }
 
@@ -171,7 +177,6 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        // Si no vienen parámetros, usa los valores por defecto del contexto de Django
         const plan = urlParams.get('plan') || '{{ plan }}';
         const precio = urlParams.get('precio') || '{{ precio }}';
 

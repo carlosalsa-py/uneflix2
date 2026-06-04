@@ -5,14 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uneflix - Iniciar Sesión</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* COLORES DEL ESCUDO UNEFA */
-            --bg-dark: #070b12;        /* Fondo oscuro azulado */
-            --unefa-blue: #004bca;     /* Azul Rey brillante */
-            --unefa-bronze: #d19a4e;   /* Ocre/Bronce del marco */
-            --unefa-yellow: #ffcc00;   /* Amarillo de la bandera */
+            --bg-dark: #070b12;
+            --unefa-blue: #004bca;
+            --unefa-bronze: #d19a4e;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,17 +48,22 @@
             border-left: 2px solid var(--unefa-bronze);
         }
 
+        /* LOGO CON "CAMBIAZO" A IMAGEN */
         .logo {
-            font-family: 'Bebas Neue', sans-serif;
-            color: white;
-            font-size: 48px;
-            letter-spacing: 4px;
+            display: inline-block;
+            width: 250px; 
+            height: 60px;
+            background-image: url("{% static 'images/logo.png' %}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            text-indent: -9999px;
+            overflow: hidden;
             margin-bottom: 40px;
+            color: transparent !important;
         }
 
-        .logo span {
-            color: var(--unefa-bronze);
-        }
+        .logo span { display: none; }
 
         h2 {
             font-size: 22px;
