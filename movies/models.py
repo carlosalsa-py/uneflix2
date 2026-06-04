@@ -30,7 +30,7 @@ class Movie(models.Model):
     rotten_tomatoes_url = models.URLField(blank=True, null=True)
     imdb_url = models.URLField(blank=True, null=True)
     duration = models.IntegerField(blank=True, null=True, help_text="Duración en minutos")
-    trailer_url = EmbedVideoField(blank=True, null=True, help_text="Pega cualquier enlace de Vimeo aquí")
+    trailer_url = models.URLField(blank=True, null=True, help_text="Pega cualquier enlace de YouTube aquí")
 
     def __str__(self):
         return self.title
@@ -45,3 +45,26 @@ class Watchlist(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.movie.title}"
+    
+class Season(models.Model):
+    series = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='seasons')
+    number = models.IntegerField()
+
+    class Meta:
+        ordering = ['number']
+
+    def __str__(self):
+        return f"{self.series.title} - Temporada {self.number}"
+
+class Episode(models.Model):
+    season = models.ForeignKey(Season, on_delete=models.CASCADE, related_name='episodes')
+    number = models.IntegerField()
+    title = models.CharField(max_length=200)
+    video_file = models.FileField(upload_to='episodes/', blank=True, null=True)
+    video_url = models.URLField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['number']
+
+    def __str__(self):
+        return f"T{self.season.number}E{self.number} - {self.title}"

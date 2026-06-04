@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Movie, Genre, Watchlist
+from .models import Movie, Genre, Watchlist, Season, Episode
 
 @login_required(login_url='/users/login/')
 def home(request):
-    movies = Movie.objects.all()
+    movies = Movie.objects.filter(type='movie')
+    series = Movie.objects.filter(type='series')
     genres = Genre.objects.all()
     featured_movies = Movie.objects.filter(featured=True)
     return render(request, 'movies/home.html', {
         'movies': movies,
+        'series': series,
         'genres': genres,
         'featured_movies': featured_movies,
     })
@@ -17,9 +19,11 @@ def home(request):
 def movie_detail(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
     in_watchlist = Watchlist.objects.filter(user=request.user, movie=movie).exists()
+    seasons = movie.seasons.prefetch_related('episodes').all() if movie.type == 'series' else None
     return render(request, 'movies/detail.html', {
         'movie': movie,
         'in_watchlist': in_watchlist,
+        'seasons': seasons,
     })
 
 @login_required(login_url='/users/login/')
@@ -49,11 +53,9 @@ def membresias(request):
 
 @login_required(login_url='/users/login/')
 def pago(request):
-    # Capturamos los parámetros que vienen del link en membresias.html
-    plan = request.GET.get('plan', 'Desconocido')
-    precio = request.GET.get('precio', '0.00')
-    
-    return render(request, 'movies/pago.html', {
-        'plan': plan,
-        'precio': precio
-    })
+    return render(request, 'movies/pago.html')
+
+@login_required(login_url='/users/login/')
+def episode_player(request, pk):
+    episode = get_object_or_404(Episode, pk=pk)
+    return render(request, 'movies/episode_player.html', {'episode': episode})
