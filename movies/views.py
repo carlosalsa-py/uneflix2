@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Movie, Genre, Watchlist, Season, Episode
+from .models import Movie, Genre, Watchlist, Season, Episode, Review
 from users.models import Membership
 
 @login_required(login_url='/users/login/')
@@ -41,6 +41,14 @@ def movie_detail(request, pk):
     movie_level = tier_required.get(movie.tier, 0)
 
     can_watch = user_level >= movie_level
+    can_review = plan in ('medium', 'premium', 'zerpanito')
+
+    reviews = movie.reviews.select_related('user').all()
+    user_review = reviews.filter(user=request.user).first()
+
+    avg_rating = None
+    if reviews.exists():
+        avg_rating = round(sum(r.rating for r in reviews) / reviews.count(), 1)
 
     return render(request, 'movies/detail.html', {
         'movie': movie,
@@ -48,6 +56,10 @@ def movie_detail(request, pk):
         'seasons': seasons,
         'can_watch': can_watch,
         'plan': plan,
+        'can_review': can_review,
+        'reviews': reviews,
+        'user_review': user_review,
+        'avg_rating': avg_rating,
     })
 
 @login_required(login_url='/users/login/')
@@ -120,3 +132,36 @@ def anuncio2(request):
 
 def anuncio3(request):
     return render(request, 'movies/anuncio3.html')
+
+@login_required(login_url='/users/login/')
+def review_submit(request, pk):
+    movie = get_object_or_404(Movie, pk=pk)
+
+    try:
+        membership = Membership.objects.get(user=request.user)
+        plan = membership.plan if membership.status == 'active' else 'free'
+    except Membership.DoesNotExist:
+        plan = 'free'
+
+    if plan not in ('medium', 'premium', 'zerpanito'):
+        return redirect('movie_detail', pk=pk)
+
+    if request.method == 'POST':
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment', '').strip()
+        if rating and comment:
+            Review.objects.update_or_create(
+                user=request.user,
+                movie=movie,
+                defaults={'rating': int(rating), 'comment': comment}
+            )
+
+    return redirect('movie_detail', pk=pk)
+
+
+@login_required(login_url='/users/login/')
+def review_delete(request, pk):
+    review = get_object_or_404(Review, pk=pk, user=request.user)
+    movie_pk = review.movie.pk
+    review.delete()
+    return redirect('movie_detail', pk=movie_pk)

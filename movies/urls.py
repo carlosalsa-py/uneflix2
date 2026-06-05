@@ -17,4 +17,6 @@ urlpatterns = [
     path('anuncio/1/', views.anuncio1, name='anuncio1'),
     path('anuncio/2/', views.anuncio2, name='anuncio2'),
     path('anuncio/3/', views.anuncio3, name='anuncio3'),
+    path('movie/<int:pk>/review/', views.review_submit, name='review_submit'),
+    path('review/<int:pk>/delete/', views.review_delete, name='review_delete'),
 ]

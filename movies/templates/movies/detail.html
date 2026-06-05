@@ -168,6 +168,31 @@
         .info-label { color: #66748f; font-size: 14px; min-width: 80px; font-weight: 500; }
         .info-value { color: #ddd; font-size: 14px; }
 
+        .description {
+            font-size: 15px;
+            color: #ccc;
+            font-weight: 300;
+            line-height: 1.8;
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+
+        .info-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            max-width: 700px;
+        }
+
+        .info-label {
+            color: #66748f;
+            font-size: 14px;
+            min-width: 80px;
+            font-weight: 500;
+        }
+
+        .info-value { color: #ddd; font-size: 14px; }
+
         .external-links {
             display: flex;
             gap: 12px;
@@ -206,6 +231,8 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.6);
             border: 1px solid rgba(255,255,255,0.05);
         }
+        .trailer-wrapper iframe { width: 100%; height: 100%; border: none; }
+
         .trailer-wrapper iframe { width: 100%; height: 100%; border: none; }
 
         .seasons-container { margin-top: 40px; max-width: 700px; }
@@ -274,6 +301,103 @@
         .episode-meta { font-size: 12px; color: #666; margin-top: 2px; }
         .episode-play { color: var(--unefa-blue); font-size: 14px; }
 
+
+        /* REVIEWS */
+        .reviews-container { margin-top: 48px; max-width: 700px; }
+
+        .avg-rating {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 28px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            padding: 16px 20px;
+        }
+        .avg-score { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--unefa-bronze); line-height: 1; }
+        .avg-stars { font-size: 20px; color: var(--unefa-bronze); letter-spacing: 2px; }
+        .avg-count { font-size: 13px; color: #555; margin-top: 2px; }
+
+        .review-form {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 28px;
+        }
+        .review-form h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #66748f; margin-bottom: 16px; }
+
+        .star-selector { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 6px; margin-bottom: 14px; }
+        .star-selector input[type="radio"] { display: none; }
+        .star-selector label { font-size: 26px; cursor: pointer; color: #333; transition: color 0.15s; }
+        .star-selector input[type="radio"]:checked ~ label { color: var(--unefa-bronze); }
+        .star-selector label:hover,
+        .star-selector label:hover ~ label { color: var(--unefa-bronze); }
+
+        .review-textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 12px 14px;
+            border-radius: 4px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 90px;
+            margin-bottom: 12px;
+            transition: border-color 0.2s;
+        }
+        .review-textarea:focus { outline: none; border-color: var(--unefa-blue); }
+
+        .btn-review {
+            background: var(--unefa-blue);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s;
+        }
+        .btn-review:hover { background: var(--unefa-bronze); color: black; }
+
+        .upgrade-notice {
+            background: rgba(209,154,78,0.08);
+            border: 1px solid rgba(209,154,78,0.3);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 28px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        .upgrade-notice a { color: var(--unefa-bronze); font-weight: 600; text-decoration: none; }
+
+        .review-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 18px 0; }
+        .review-item:last-child { border-bottom: none; }
+        .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .review-avatar {
+            width: 34px; height: 34px; border-radius: 50%; object-fit: cover;
+            background: var(--unefa-blue); display: flex; align-items: center;
+            justify-content: center; font-size: 13px; font-weight: 600;
+            flex-shrink: 0; overflow: hidden;
+        }
+        .review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .review-username { font-size: 14px; font-weight: 600; color: #ddd; }
+        .review-date { font-size: 12px; color: #444; margin-left: auto; }
+        .review-stars { font-size: 14px; color: var(--unefa-bronze); letter-spacing: 1px; }
+        .review-comment { font-size: 14px; color: #aaa; line-height: 1.7; margin-top: 6px; }
+        .btn-delete-review {
+            background: transparent; border: 1px solid rgba(255,74,74,0.3);
+            color: #ff4a4a; padding: 4px 12px; border-radius: 4px; font-size: 12px;
+            cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; margin-left: auto;
+        }
+        .btn-delete-review:hover { background: #ff4a4a; color: white; border-color: #ff4a4a; }
+        .no-reviews { color: #444; font-size: 14px; padding: 20px 0; }
+        
         @media (max-width: 768px) {
             .hero { height: 45vh; }
             .btn-watchlist { margin-left: 0; margin-top: 10px; }
@@ -287,16 +411,6 @@
             <img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" height="40" alt="Uneflix">
         </a>
         <a href="{% url 'home' %}" class="back-btn">← Volver</a>
-            <a href="{% url 'perfil' %}" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:#ccc;">
-                {% if request.user.avatar %}
-                    <img src="{{ request.user.avatar.url }}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid var(--unefa-bronze);">
-                {% else %}
-                    <div style="width:32px; height:32px; border-radius:50%; background:var(--unefa-blue); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; border:2px solid var(--unefa-bronze);">
-                        {{ request.user.display_name|default:request.user.username|first|upper }}
-                    </div>
-                {% endif %}
-                <span style="font-size:14px;">{{ request.user.display_name|default:request.user.username }}</span>
-            </a>
     </nav>
 
     <div class="hero">
@@ -319,7 +433,7 @@
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
                 {% if can_watch %}
-                    <a href="#" class="btn-play" onclick="abrirAnuncioYReproductor(event, '{% url 'player' movie.pk %}')">▶ Ver Ahora</a>
+                    <a href="{% url 'player' movie.pk %}" class="btn-play">▶ Ver Ahora</a>
                 {% else %}
                     <a href="{% url 'membresias' %}" class="btn-play" style="background:#d19a4e; color:black;">
                         🔒 Requiere Plan {% if movie.tier == 'premium' %}Ultra{% else %}Cinephile{% endif %}
@@ -397,7 +511,98 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+                <!-- REVIEWS -->
+                <div class="reviews-container">
+                    <h3 class="trailer-title">Reseñas</h3>
 
+                    {% if avg_rating %}
+                    <div class="avg-rating">
+                        <div class="avg-score">{{ avg_rating }}</div>
+                        <div>
+                            <div class="avg-stars">{% for i in "12345" %}{% if forloop.counter <= avg_rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+                            <div class="avg-count">{{ reviews|length }} reseña{{ reviews|length|pluralize:"s" }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if can_review %}
+                        {% if user_review %}
+                        <div class="review-form">
+                            <h4>Tu reseña</h4>
+                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                                <span style="font-size:18px; color:var(--unefa-bronze);">
+                                    {% for i in "12345" %}{% if forloop.counter <= user_review.rating %}★{% else %}☆{% endif %}{% endfor %}
+                                </span>
+                            </div>
+                            <p style="font-size:14px; color:#aaa; margin-bottom:14px;">{{ user_review.comment }}</p>
+                            <div style="display:flex; gap:10px;">
+                                <button onclick="document.getElementById('edit-form').style.display='block'; this.parentElement.style.display='none';" class="btn-review" style="background:rgba(255,255,255,0.08); color:#ccc;">Editar</button>
+                                <form method="post" action="{% url 'review_delete' user_review.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-delete-review" style="padding:8px 16px; font-size:13px;">Eliminar</button>
+                                </form>
+                            </div>
+                            <form id="edit-form" method="post" action="{% url 'review_submit' movie.pk %}" style="display:none; margin-top:16px;">
+                                {% csrf_token %}
+                                <div class="star-selector">
+                                    <input type="radio" id="estr5" name="rating" value="5"><label for="estr5">★</label>
+                                    <input type="radio" id="estr4" name="rating" value="4"><label for="estr4">★</label>
+                                    <input type="radio" id="estr3" name="rating" value="3"><label for="estr3">★</label>
+                                    <input type="radio" id="estr2" name="rating" value="2"><label for="estr2">★</label>
+                                    <input type="radio" id="estr1" name="rating" value="1"><label for="estr1">★</label>
+                                </div>
+                                <textarea name="comment" class="review-textarea" placeholder="Actualiza tu reseña...">{{ user_review.comment }}</textarea>
+                                <button type="submit" class="btn-review">Actualizar reseña</button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <div class="review-form">
+                            <h4>Escribe una reseña</h4>
+                            <form method="post" action="{% url 'review_submit' movie.pk %}">
+                                {% csrf_token %}
+                                <div class="star-selector">
+                                    <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                                    <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                                    <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                                    <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                                    <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                                </div>
+                                <textarea name="comment" class="review-textarea" placeholder="¿Qué te pareció?" required></textarea>
+                                <button type="submit" class="btn-review">Publicar reseña</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                    <div class="upgrade-notice">
+                        🔒 Solo usuarios con plan <strong>Cinéfilo</strong> o <strong>Zerpanito</strong> pueden escribir reseñas.
+                        <a href="{% url 'membresias' %}"> Mejorar plan →</a>
+                    </div>
+                    {% endif %}
+
+                    {% if reviews %}
+                        {% for review in reviews %}
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="review-avatar">
+                                    {% if review.user.avatar %}
+                                        <img src="{{ review.user.avatar.url }}" alt="">
+                                    {% else %}
+                                        {{ review.user.display_name|default:review.user.username|first|upper }}
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="review-username">{{ review.user.display_name|default:review.user.username }}</div>
+                                    <div class="review-stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+                                </div>
+                                <span class="review-date">{{ review.created_at|date:"d/m/Y" }}</span>
+                            </div>
+                            <p class="review-comment">{{ review.comment }}</p>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-reviews">Todavía no hay reseñas. ¡Sé el primero!</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -413,30 +618,6 @@
             episodes.style.display = 'none';
             arrow.classList.remove('open');
         }
-    }
-
-    // ¡NUEVA FUNCIÓN PARA LOS ANUNCIOS Y EL REPRODUCTOR!
-    function abrirAnuncioYReproductor(event, urlReproductor) {
-        event.preventDefault(); // Evita que la página salte hacia arriba
-
-        // Selecciona un número al azar entre 1 y 3
-        const numeroAleatorio = Math.floor(Math.random() * 3) + 1;
-        let urlAnuncio = "";
-
-        // Asigna la ruta de Django según el número
-        if (numeroAleatorio === 1) { 
-            urlAnuncio = "{% url 'anuncio1' %}"; 
-        } else if (numeroAleatorio === 2) { 
-            urlAnuncio = "{% url 'anuncio2' %}"; 
-        } else { 
-            urlAnuncio = "{% url 'anuncio3' %}"; 
-        }
-
-        // 1. Abre el anuncio en una pestaña nueva
-        window.open(urlAnuncio, '_blank');
-
-        // 2. Redirige la pestaña actual al reproductor de la película
-        window.location.href = urlReproductor;
     }
     </script>
 
