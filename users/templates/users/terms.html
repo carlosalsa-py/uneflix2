@@ -52,12 +52,11 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        /* LOGO ESTILO LOGIN */
         .logo {
             display: inline-block;
-            width: 200px; 
-            height: 50px;
-            background-image: url("{% static 'images/logo.png' %}");
+            width: 500px; 
+            height: 500px;
+            background-image: url("{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}");
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -69,24 +68,10 @@
 
         .logo span { display: none; }
 
-        .header-title {
-            text-align: center;
-            margin-bottom: 24px;
-        }
+        .header-title { text-align: center; margin-bottom: 24px; }
+        .header-title h1 { font-size: 24px; font-weight: 600; color: white; margin-bottom: 5px; }
+        .header-title p { font-size: 13px; color: var(--text-muted); }
 
-        .header-title h1 {
-            font-size: 24px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 5px;
-        }
-
-        .header-title p {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        /* CONTENEDOR DE TEXTO CON SCROLL */
         .terms-content {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -100,11 +85,8 @@
             color: #d1d5db;
         }
 
-        /* Estilos del Scrollbar */
         .terms-content::-webkit-scrollbar { width: 8px; }
-        .terms-content::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
         .terms-content::-webkit-scrollbar-thumb { background: var(--unefa-blue); border-radius: 4px; }
-        .terms-content::-webkit-scrollbar-thumb:hover { background: var(--unefa-bronze); }
 
         .terms-content h2 {
             font-size: 16px;
@@ -116,22 +98,11 @@
             padding-left: 10px;
         }
 
-        .terms-content h2:first-child {
-            margin-top: 0;
-        }
-
         .terms-content p { margin-bottom: 16px; }
         .terms-content ul { margin-left: 20px; margin-bottom: 16px; }
         .terms-content li { margin-bottom: 8px; }
-        .terms-content strong { color: white; }
 
-        /* BOTONES Y ENLACES */
-        .actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: center;
-        }
+        .actions { display: flex; flex-direction: column; gap: 12px; align-items: center; }
 
         .btn {
             width: 100%;
@@ -144,39 +115,12 @@
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            text-align: center;
-            text-decoration: none;
             transition: all 0.2s;
         }
+        .btn:hover { background: var(--unefa-bronze); color: black; }
 
-        .btn:hover { 
-            background: var(--unefa-bronze);
-            color: black;
-        }
-
-        .link-back {
-            font-size: 14px;
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .link-back:hover {
-            color: white;
-        }
-
-        @media (max-width: 600px) {
-            .terms-panel {
-                width: 100%;
-                height: 100vh;
-                max-height: 100vh;
-                border-radius: 0;
-                border-top: none;
-                border-top: 4px solid var(--unefa-bronze);
-                padding: 30px 20px;
-            }
-        }
+        .link-back { font-size: 14px; color: var(--text-muted); text-decoration: none; }
+        .link-back:hover { color: white; }
     </style>
 </head>
 <body>
@@ -194,7 +138,7 @@
             <p>Al acceder, registrarse o utilizar la plataforma <strong>UNEFLIX</strong> (en adelante, "el Servicio" o "la Plataforma"), usted (en adelante, "el Usuario") acepta estar legalmente vinculado por los siguientes Términos y Condiciones. Si no está de acuerdo con alguno de los puntos descritos a continuación, le solicitamos que no utilice nuestros servicios.</p>
 
             <h2>1. Descripción del Servicio</h2>
-            <p><strong>UNEFLIX</strong> es un servicio de suscripción de transmisión digital (streaming) que permite a los usuarios acceder a canales de televisión en vivo, películas, series y contenido audiovisual a través de dispositivos conectados a Internet. El contenido disponible puede variar según la región geográfica y las actualizaciones del catálogo.</p>
+            <p>UNEFLIX es un servicio de suscripción de transmisión digital (streaming) que permite a los usuarios acceder a canales de televisión en vivo, películas, series y contenido audiovisual a través de dispositivos conectados a Internet. El contenido disponible puede variar según la región geográfica y las actualizaciones del catálogo.</p>
 
             <h2>2. Acceso y Cuentas de Usuario</h2>
             <p>Para disfrutar de UNEFLIX, el Usuario debe crear una cuenta proporcionando información veraz y actualizada.</p>
@@ -235,8 +179,10 @@
         </div>
 
         <div class="actions">
-            <!-- Botón que podría actuar como un input en un formulario de registro, o simplemente devolver a la página anterior -->
-            <a href="{% url 'register' %}" class="btn">He leído y acepto los términos</a>
+            <form method="post" action="{% url 'accept_terms' %}" style="width: 100%; text-align: center;">
+                {% csrf_token %}
+                <button type="submit" class="btn">He leído y acepto los términos</button>
+            </form>
             <a href="{% url 'login' %}" class="link-back">Volver al inicio de sesión</a>
         </div>
     </div>
