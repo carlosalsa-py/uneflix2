@@ -5,15 +5,23 @@ from users.models import Membership
 
 @login_required(login_url='/users/login/')
 def home(request):
+    try:
+        membership = Membership.objects.get(user=request.user)
+        plan = membership.plan if membership.status == 'active' else 'free'
+    except Membership.DoesNotExist:
+        plan = 'free'
+
     movies = Movie.objects.filter(type='movie')
     series = Movie.objects.filter(type='series')
     genres = Genre.objects.all()
     featured_movies = Movie.objects.filter(featured=True)
+
     return render(request, 'movies/home.html', {
         'movies': movies,
         'series': series,
         'genres': genres,
         'featured_movies': featured_movies,
+        'plan': plan,
     })
 
 @login_required(login_url='/users/login/')
@@ -21,10 +29,25 @@ def movie_detail(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
     in_watchlist = Watchlist.objects.filter(user=request.user, movie=movie).exists()
     seasons = movie.seasons.prefetch_related('episodes').all() if movie.type == 'series' else None
+
+    try:
+        membership = Membership.objects.get(user=request.user)
+        plan = membership.plan if membership.status == 'active' else 'free'
+    except Membership.DoesNotExist:
+        plan = 'free'
+
+    tier_required = {'free': 0, 'medium': 1, 'premium': 2}
+    user_level = tier_required.get(plan, 0)
+    movie_level = tier_required.get(movie.tier, 0)
+
+    can_watch = user_level >= movie_level
+
     return render(request, 'movies/detail.html', {
         'movie': movie,
         'in_watchlist': in_watchlist,
         'seasons': seasons,
+        'can_watch': can_watch,
+        'plan': plan,
     })
 
 @login_required(login_url='/users/login/')
