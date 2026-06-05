@@ -335,7 +335,13 @@
                 {% endfor %}
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
-                <a href="{% url 'player' movie.pk %}" class="btn-play">▶ Ver Ahora</a>
+                {% if can_watch %}
+                    <a href="{% url 'player' movie.pk %}" class="btn-play">▶ Ver Ahora</a>
+                {% else %}
+                    <a href="{% url 'membresias' %}" class="btn-play" style="background:#d19a4e; color:black;">
+                        🔒 Requiere Plan {% if movie.tier == 'premium' %}Ultra{% else %}Cinephile{% endif %}
+                    </a>
+                {% endif %}
                 <form method="post" action="{% url 'watchlist_toggle' movie.pk %}" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn-watchlist">

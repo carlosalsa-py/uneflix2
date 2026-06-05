@@ -82,7 +82,7 @@ def pago(request):
 
     if request.method == 'POST':
         plan_nombre = request.POST.get('plan', 'Cinephile')
-        plan_map = {'Cinephile': 'medium', 'Ultra': 'premium'}
+        plan_map = {'Cinephile': 'medium', 'Ultra': 'premium', 'Zerpanito': 'zerpanito'}
         plan_code = plan_map.get(plan_nombre, 'medium')
 
         membership, created = Membership.objects.get_or_create(user=request.user)

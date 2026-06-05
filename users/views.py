@@ -69,3 +69,24 @@ def perfil_editar(request):
         return redirect('perfil')
 
     return render(request, 'users/perfil_editar.html')
+
+def pago(request):
+    plan = request.GET.get('plan', 'medium')
+    precio = request.GET.get('precio', '2.99')
+    
+    plan_map = {
+        'Cinephile': 'medium',
+        'Ultra': 'premium',
+    }
+    
+    if request.method == 'POST':
+        plan_code = plan_map.get(plan, 'medium')
+        membership, created = Membership.objects.get_or_create(user=request.user)
+        membership.plan = plan_code
+        membership.status = 'pending'
+        membership.save()
+    
+    return render(request, 'movies/pago.html', {
+        'plan': plan,
+        'precio': precio,
+    })
