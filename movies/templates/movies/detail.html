@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ movie.title }} - Uneflix</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -24,6 +25,24 @@
             color: white;
             min-height: 100vh;
         }
+
+        /* LOGO CON "CAMBIAZO" A IMAGEN */
+        .logo {
+            display: inline-block;
+            width: 200px;
+            height: 50px;
+            background-image: url("{% static 'images/logo.png' %}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            text-indent: -9999px;
+            overflow: hidden;
+            line-height: 0;
+            color: transparent !important;
+            text-decoration: none;
+        }
+
+        .logo span { display: none; }
 
         nav {
             background: rgba(7, 11, 18, 0.9);
@@ -97,14 +116,7 @@
             margin-bottom: 10px;
         }
 
-        .meta {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
+        .meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
         .meta span { font-size: 14px; color: #aaa; }
 
         .badge {
@@ -151,6 +163,10 @@
         .btn-watchlist:hover { background: rgba(209, 154, 78, 0.15); color: white; }
 
         .content { padding: 40px 4%; }
+        .description { font-size: 15px; color: #ccc; font-weight: 300; line-height: 1.8; max-width: 700px; margin-bottom: 30px; }
+        .info-row { display: flex; gap: 16px; margin-bottom: 12px; max-width: 700px; }
+        .info-label { color: #66748f; font-size: 14px; min-width: 80px; font-weight: 500; }
+        .info-value { color: #ddd; font-size: 14px; }
 
         .description {
             font-size: 15px;
@@ -208,7 +224,6 @@
             border-left: 3px solid var(--unefa-blue);
             padding-left: 10px;
         }
-
         .trailer-wrapper {
             aspect-ratio: 16/9;
             border-radius: 8px;
@@ -216,6 +231,7 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.6);
             border: 1px solid rgba(255,255,255,0.05);
         }
+        .trailer-wrapper iframe { width: 100%; height: 100%; border: none; }
 
         .trailer-wrapper iframe { width: 100%; height: 100%; border: none; }
 

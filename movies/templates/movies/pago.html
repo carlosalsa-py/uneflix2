@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finalizar Suscripción - Uneflix</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -39,16 +40,12 @@
             border: 1px solid rgba(255,255,255,0.05);
         }
 
+        /* LOGO CON "CAMBIAZO" A IMAGEN */
         .logo-center {
-            color: white;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 36px;
-            letter-spacing: 4px;
-            text-align: center;
-            margin-bottom: 24px;
             display: block;
             text-decoration: none;
         }
+        .logo-center span { display: none; }
 
         .logo-center span { color: var(--unefa-bronze); }
 
@@ -102,11 +99,7 @@
             border-color: var(--unefa-blue);
         }
 
-        .row-inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
+        .row-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
         .btn-pay {
             width: 100%;
@@ -235,23 +228,21 @@
             <input type="hidden" name="precio" value="{{ precio }}">
 
             <div class="form-group">
-                <label for="cardname">Nombre en la tarjeta</label>
-                <input type="text" id="cardname" placeholder="Juan Pérez" required>
+                <label>Nombre en la tarjeta</label>
+                <input type="text" placeholder="Israel Rodriguez" required>
             </div>
-
             <div class="form-group">
-                <label for="cardnumber">Número de tarjeta</label>
-                <input type="text" id="cardnumber" placeholder="4556 •••• •••• 4321" maxlength="19" required>
+                <label>Número de tarjeta</label>
+                <input type="text" id="cardnumber" placeholder="5416 •••• •••• 4321" maxlength="19" required>
             </div>
-
             <div class="row-inputs">
                 <div class="form-group">
-                    <label for="expdate">Vencimiento</label>
+                    <label>Vencimiento</label>
                     <input type="text" id="expdate" placeholder="MM/AA" maxlength="5" required>
                 </div>
                 <div class="form-group">
-                    <label for="cvv">Código CVV</label>
-                    <input type="password" id="cvv" placeholder="•••" maxlength="3" required>
+                    <label>CVV</label>
+                    <input type="password" placeholder="•••" maxlength="3" required>
                 </div>
             </div>
 

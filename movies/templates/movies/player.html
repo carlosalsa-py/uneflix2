@@ -6,14 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ movie.title }} - Reproduciendo</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* COLORES DEL ESCUDO UNEFA */
-            --bg-dark: #070b12;        /* Fondo oscuro azulado */
-            --unefa-blue: #004bca;     /* Azul Rey brillante */
-            --unefa-bronze: #d19a4e;   /* Ocre/Bronce del marco */
-            --unefa-yellow: #ffcc00;   /* Amarillo de la bandera */
+            --bg-dark: #070b12;        
+            --unefa-blue: #004bca;     
+            --unefa-bronze: #d19a4e;   
+            --unefa-yellow: #ffcc00;   
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -36,23 +36,24 @@
             border-bottom: 2px solid var(--unefa-bronze);
         }
 
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+        .nav-left { display: flex; align-items: center; gap: 20px; }
 
+        /* LOGO CON "CAMBIAZO" A IMAGEN */
         .logo {
-            font-family: 'Bebas Neue', sans-serif;
-            color: white;
-            font-size: 26px;
-            letter-spacing: 3px;
+            display: block;
+            width: 140px;
+            height: 35px;
+            background-image: url("{% static 'images/logo.png' %}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            text-indent: -9999px;
+            overflow: hidden;
+            line-height: 0;
+            color: transparent !important;
             text-decoration: none;
         }
-
-        .logo span {
-            color: var(--unefa-bronze);
-        }
+        .logo span { display: none; }
 
         .back-btn {
             background: rgba(255,255,255,0.05);
@@ -67,10 +68,7 @@
             transition: all 0.2s;
         }
 
-        .back-btn:hover { 
-            background: rgba(255,255,255,0.15); 
-            color: white;
-        }
+        .back-btn:hover { background: rgba(255,255,255,0.15); color: white; }
 
         .movie-title {
             font-size: 14px;
@@ -100,30 +98,13 @@
             border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .player-container video {
-            width: 100%;
-            height: 100%;
-            outline: none;
-        }
-
-        .player-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        .player-container video, .player-container iframe { width: 100%; height: 100%; outline: none; border: none; }
 
         .no-video {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #44516a;
-            gap: 12px;
+            width: 100%; height: 100%; display: flex;
+            flex-direction: column; align-items: center;
+            justify-content: center; color: #44516a; gap: 12px;
         }
-
-        .no-video p { font-size: 18px; }
 
         .movie-info-bar {
             width: 100%;
@@ -136,33 +117,10 @@
             gap: 12px;
         }
 
-        .movie-info-bar h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 28px;
-            letter-spacing: 2px;
-        }
-
-        .movie-meta {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-top: 4px;
-        }
-
-        .movie-meta span {
-            font-size: 13px;
-            color: #888;
-        }
-
-        .badge {
-            background: rgba(0, 75, 202, 0.2);
-            color: white;
-            border: 1px solid var(--unefa-blue);
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
+        .movie-info-bar h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; }
+        .movie-meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+        .movie-meta span { font-size: 13px; color: #888; }
+        .badge { background: rgba(0, 75, 202, 0.2); color: white; border: 1px solid var(--unefa-blue); font-size: 11px; padding: 2px 8px; border-radius: 4px; }
 
         @media (max-width: 768px) {
             .player-wrapper { padding: 10px 2%; }
@@ -187,7 +145,6 @@
             {% if movie.video_file %}
             <video controls autoplay>
                 <source src="{{ movie.video_file.url }}" type="video/mp4">
-                Tu navegador no soporta el reproductor.
             </video>
             {% elif movie.video_url %}
             <iframe src="{{ movie.video_url }}" allowfullscreen></iframe>
