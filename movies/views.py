@@ -1,16 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Movie, Genre, Watchlist, Season, Episode
+from .models import Movie, Genre, Watchlist, Season, Episode, Review
 from users.models import Membership
+
+# Función auxiliar para evitar repetición de código
+def get_user_plan(user):
+    try:
+        membership = Membership.objects.get(user=user)
+        return membership.plan if membership.status == 'active' else 'free'
+    except Membership.DoesNotExist:
+        return 'free'
 
 @login_required(login_url='/users/login/')
 def home(request):
-    try:
-        membership = Membership.objects.get(user=request.user)
-        plan = membership.plan if membership.status == 'active' else 'free'
-    except Membership.DoesNotExist:
-        plan = 'free'
-
+    plan = get_user_plan(request.user)
     movies = Movie.objects.filter(type='movie')
     series = Movie.objects.filter(type='series')
     genres = Genre.objects.all()
@@ -29,34 +32,40 @@ def movie_detail(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
     in_watchlist = Watchlist.objects.filter(user=request.user, movie=movie).exists()
     seasons = movie.seasons.prefetch_related('episodes').all() if movie.type == 'series' else None
-
-    try:
-        membership = Membership.objects.get(user=request.user)
-        plan = membership.plan if membership.status == 'active' else 'free'
-    except Membership.DoesNotExist:
-        plan = 'free'
-
-    tier_required = {'free': 0, 'medium': 1, 'premium': 2}
+    
+    plan = get_user_plan(request.user)
+    
+    # Definición de niveles jerárquicos
+    tier_required = {'free': 0, 'medium': 1, 'premium': 2, 'zerpanito': 3}
     user_level = tier_required.get(plan, 0)
     movie_level = tier_required.get(movie.tier, 0)
 
     can_watch = user_level >= movie_level
+    can_review = plan in ('medium', 'premium', 'zerpanito')
+
+    reviews = movie.reviews.select_related('user').all()
+    user_review = reviews.filter(user=request.user).first()
+
+    avg_rating = None
+    if reviews.exists():
+        avg_rating = round(sum(r.rating for r in reviews) / reviews.count(), 1)
 
     return render(request, 'movies/detail.html', {
         'movie': movie,
         'in_watchlist': in_watchlist,
         'seasons': seasons,
-        'can_watch': can_watch,
+        'can_watch': user_level >= movie_level,
         'plan': plan,
+        'can_review': can_review,
+        'reviews': reviews,
+        'user_review': user_review,
+        'avg_rating': avg_rating,
     })
 
 @login_required(login_url='/users/login/')
 def watchlist_toggle(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
-    watchlist_item, created = Watchlist.objects.get_or_create(
-        user=request.user,
-        movie=movie
-    )
+    watchlist_item, created = Watchlist.objects.get_or_create(user=request.user, movie=movie)
     if not created:
         watchlist_item.delete()
     return redirect(request.META.get('HTTP_REFERER', 'home'))
@@ -69,6 +78,7 @@ def watchlist_view(request):
 @login_required(login_url='/users/login/')
 def player_view(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
+    # Recomendación: Aquí podrías añadir una lógica para verificar si can_watch es True antes de renderizar
     return render(request, 'movies/player.html', {'movie': movie})
 
 @login_required(login_url='/users/login/')
@@ -96,17 +106,14 @@ def pago(request):
             'success': True,
         })
 
-    return render(request, 'movies/pago.html', {
-        'plan': plan,
-        'precio': precio,
-        'success': False,
-    })
+    return render(request, 'movies/pago.html', {'plan': plan, 'precio': precio, 'success': False})
 
 @login_required(login_url='/users/login/')
 def episode_player(request, pk):
     episode = get_object_or_404(Episode, pk=pk)
     return render(request, 'movies/episode_player.html', {'episode': episode})
 
+<<<<<<< HEAD
 
 # --------------------------------------------------------
 # VISTAS DE ANUNCIOS EMERGENTES
@@ -120,3 +127,42 @@ def anuncio2(request):
 
 def anuncio3(request):
     return render(request, 'movies/anuncio3.html')
+
+@login_required(login_url='/users/login/')
+def review_submit(request, pk):
+    movie = get_object_or_404(Movie, pk=pk)
+
+    try:
+        membership = Membership.objects.get(user=request.user)
+        plan = membership.plan if membership.status == 'active' else 'free'
+    except Membership.DoesNotExist:
+        plan = 'free'
+
+    if plan not in ('medium', 'premium', 'zerpanito'):
+        return redirect('movie_detail', pk=pk)
+
+    if request.method == 'POST':
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment', '').strip()
+        if rating and comment:
+            Review.objects.update_or_create(
+                user=request.user,
+                movie=movie,
+                defaults={'rating': int(rating), 'comment': comment}
+            )
+
+    return redirect('movie_detail', pk=pk)
+
+
+@login_required(login_url='/users/login/')
+def review_delete(request, pk):
+    review = get_object_or_404(Review, pk=pk, user=request.user)
+    movie_pk = review.movie.pk
+    review.delete()
+    return redirect('movie_detail', pk=movie_pk)
+=======
+# Vistas de anuncios
+def anuncio1(request): return render(request, 'movies/anuncio1.html')
+def anuncio2(request): return render(request, 'movies/anuncio2.html')
+def anuncio3(request): return render(request, 'movies/anuncio3.html')
+>>>>>>> origin/terminos

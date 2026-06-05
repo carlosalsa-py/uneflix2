@@ -74,3 +74,19 @@ class Episode(models.Model):
 
     def __str__(self):
         return f"T{self.season.number}E{self.number} - {self.title}"
+    
+class Review(models.Model):
+    RATING_CHOICES = [(i, i) for i in range(1, 6)]
+
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=RATING_CHOICES)
+    comment = models.TextField(max_length=1000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'movie')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username} — {self.movie.title} ({self.rating}★)"
