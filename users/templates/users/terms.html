@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uneflix - Términos y Condiciones</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070b12;
+            --unefa-blue: #004bca;
+            --unefa-bronze: #d19a4e;
+            --text-muted: #8898b5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url("{% static 'images/fondo_uneflix.jpg' %}") center/cover fixed no-repeat;
+            background-color: var(--bg-dark);
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(7, 11, 18, 0.8) 0%, rgba(0, 0, 0, 0.9) 100%);
+            z-index: 1;
+        }
+
+        .terms-panel {
+            position: relative;
+            z-index: 2;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            background: rgba(7, 11, 18, 0.85);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            border-top: 4px solid var(--unefa-bronze);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            display: inline-block;
+            width: 500px; 
+            height: 500px;
+            background-image: url("{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            text-indent: -9999px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            align-self: center;
+        }
+
+        .logo span { display: none; }
+
+        .header-title { text-align: center; margin-bottom: 24px; }
+        .header-title h1 { font-size: 24px; font-weight: 600; color: white; margin-bottom: 5px; }
+        .header-title p { font-size: 13px; color: var(--text-muted); }
+
+        .terms-content {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+            margin-bottom: 24px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
+
+        .terms-content::-webkit-scrollbar { width: 8px; }
+        .terms-content::-webkit-scrollbar-thumb { background: var(--unefa-blue); border-radius: 4px; }
+
+        .terms-content h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--unefa-blue);
+            padding-left: 10px;
+        }
+
+        .terms-content p { margin-bottom: 16px; }
+        .terms-content ul { margin-left: 20px; margin-bottom: 16px; }
+        .terms-content li { margin-bottom: 8px; }
+
+        .actions { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+
+        .btn {
+            width: 100%;
+            max-width: 300px;
+            background: var(--unefa-blue);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn:hover { background: var(--unefa-bronze); color: black; }
+
+        .link-back { font-size: 14px; color: var(--text-muted); text-decoration: none; }
+        .link-back:hover { color: white; }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    
+    <div class="terms-panel">
+        <a href="{% url 'login' %}" class="logo">UNE<span>FLIX</span></a>
+        
+        <div class="header-title">
+            <h1>Términos y Condiciones de Uso</h1>
+            <p>Última actualización: Junio 2026</p>
+        </div>
+
+        <div class="terms-content">
+            <p>Al acceder, registrarse o utilizar la plataforma <strong>UNEFLIX</strong> (en adelante, "el Servicio" o "la Plataforma"), usted (en adelante, "el Usuario") acepta estar legalmente vinculado por los siguientes Términos y Condiciones. Si no está de acuerdo con alguno de los puntos descritos a continuación, le solicitamos que no utilice nuestros servicios.</p>
+
+            <h2>1. Descripción del Servicio</h2>
+            <p>UNEFLIX es un servicio de suscripción de transmisión digital (streaming) que permite a los usuarios acceder a canales de televisión en vivo, películas, series y contenido audiovisual a través de dispositivos conectados a Internet. El contenido disponible puede variar según la región geográfica y las actualizaciones del catálogo.</p>
+
+            <h2>2. Acceso y Cuentas de Usuario</h2>
+            <p>Para disfrutar de UNEFLIX, el Usuario debe crear una cuenta proporcionando información veraz y actualizada.</p>
+            <ul>
+                <li><strong>Uso Personal:</strong> La cuenta es de uso estrictamente personal, individual y no transferible. Queda prohibida la reventa o distribución comercial del acceso a terceros.</li>
+                <li><strong>Seguridad:</strong> El Usuario es responsable de mantener la confidencialidad de sus credenciales (usuario y contraseña). UNEFLIX no se hace responsable por accesos no autorizados derivados de la negligencia del Usuario.</li>
+            </ul>
+
+            <h2>3. Pagos, Facturación y Manejo de Datos Financieros</h2>
+            <p>Para acceder al contenido premium de UNEFLIX, se requiere el pago de una suscripción. Al proporcionar un método de pago, usted acepta las siguientes condiciones sobre sus datos financieros:</p>
+            <ul>
+                <li><strong>Procesamiento de Pagos:</strong> <strong>UNEFLIX no almacena, procesa ni retiene directamente los datos de su tarjeta de crédito o débito.</strong> Todas las transacciones financieras son gestionadas y encriptadas por pasarelas de pago de terceros certificadas bajo estándares internacionales de seguridad (como PCI-DSS).</li>
+                <li><strong>Destino de los Datos:</strong> Al ingresar la información de su tarjeta, estos datos viajan de forma segura a través de nuestro proveedor de pagos externo. UNEFLIX únicamente recibe un "token" de confirmación que nos indica si el pago fue exitoso o rechazado, junto con los últimos cuatro dígitos de la tarjeta para fines de identificación y facturación.</li>
+                <li><strong>Consentimiento de Cobro Automático:</strong> Al suscribirse, el Usuario otorga su consentimiento expreso para que el proveedor de pagos externo realice los cargos recurrentes correspondientes al plan seleccionado, hasta que el Usuario decida cancelar la suscripción.</li>
+            </ul>
+
+            <h2>4. Privacidad y Consentimiento de Datos</h2>
+            <p>Al utilizar UNEFLIX, usted acepta nuestra Política de Privacidad. Recopilamos datos básicos (como correo electrónico, historial de visualización y dirección IP) con el único fin de mejorar la experiencia del usuario, recomendar contenido y garantizar la seguridad de la cuenta. Estos datos no son vendidos a terceros bajo ninguna circunstancia.</p>
+
+            <h2>5. Propiedad Intelectual y Derechos de Autor</h2>
+            <p>A diferencia de plataformas de alojamiento abierto, el entorno de UNEFLIX opera bajo licencias de transmisión.</p>
+            <ul>
+                <li>Todo el contenido visual, interfaces, logotipos y software pertenecen a UNEFLIX o a sus respectivos licenciantes.</li>
+                <li>Se otorga al Usuario una licencia limitada, revocable y no exclusiva para acceder al contenido únicamente para visualización personal. Queda estrictamente prohibida la grabación, descarga, copia, reproducción o retransmisión masiva de cualquier material disponible en la plataforma.</li>
+            </ul>
+
+            <h2>6. Limitación y Exención de Responsabilidad</h2>
+            <ul>
+                <li><strong>Disponibilidad del Servicio:</strong> UNEFLIX se esfuerza por mantener la plataforma operativa 24/7. Sin embargo, no garantizamos que el servicio sea ininterrumpido o libre de errores, ya que factores externos (como la velocidad de Internet del Usuario o fallas en servidores en la nube) pueden afectar la transmisión.</li>
+                <li><strong>Contenido de Terceros:</strong> Algunos enlaces o publicidades dentro de la plataforma pueden dirigir a sitios web de terceros. UNEFLIX no asume responsabilidad por el contenido, políticas de privacidad o prácticas de dichas páginas externas.</li>
+            </ul>
+
+            <h2>7. Suspensión y Cancelación</h2>
+            <p>UNEFLIX se reserva el derecho de cancelar, suspender o restringir de manera inmediata y sin previo aviso la cuenta de cualquier Usuario que viole estos Términos y Condiciones, comparta su cuenta de forma masiva o intente vulnerar la seguridad del sistema.</p>
+
+            <h2>8. Aceptación Total del Acuerdo</h2>
+            <p>Este documento constituye el acuerdo completo entre el Usuario y UNEFLIX. Al hacer clic en "He leído y acepto los Términos y Condiciones" durante el proceso de registro, usted confirma su comprensión y conformidad absoluta con todo lo expuesto en este contrato.</p>
+        </div>
+
+        <div class="actions">
+            <form method="post" action="{% url 'accept_terms' %}" style="width: 100%; text-align: center;">
+                {% csrf_token %}
+                <button type="submit" class="btn">He leído y acepto los términos</button>
+            </form>
+            <a href="{% url 'login' %}" class="link-back">Volver al inicio de sesión</a>
+        </div>
+    </div>
+</body>
+</html>

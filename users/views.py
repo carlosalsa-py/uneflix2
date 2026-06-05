@@ -1,17 +1,38 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
-from .models import Membership
 from django.contrib.auth.decorators import login_required
+from .models import Membership
 
 User = get_user_model()
 
-class CustomUserCreationForm(UserCreationForm):
-    class Meta:
-        model = User
-        fields = ('username', 'password1', 'password2')
+# --- VISTAS DE TÉRMINOS Y REGISTRO ---
+
+def terms_view(request):
+    return render(request, 'users/terms.html')
+
+def accept_terms(request):
+    request.session['accepted_terms'] = True
+    return redirect('register')
+
+def register_view(request):
+    # Seguridad: Si no aceptó términos, redirigir a términos
+    if not request.session.get('accepted_terms'):
+        return redirect('terms')
+        
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST) # O tu CustomUserCreationForm
+        if form.is_valid():
+            form.save()
+            # Limpiamos la sesión tras el registro exitoso
+            del request.session['accepted_terms']
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'users/register.html', {'form': form})
+
+# --- VISTAS DE AUTENTICACIÓN ---
 
 def login_view(request):
     if request.method == 'POST':
@@ -24,19 +45,11 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'users/login.html', {'form': form})
 
-def register_view(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = UserCreationForm()
-    return render(request, 'users/register.html', {'form': form})
-
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+# --- VISTAS DE PERFIL ---
 
 @login_required(login_url='/users/login/')
 def perfil_view(request):
