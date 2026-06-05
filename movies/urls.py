@@ -9,7 +9,12 @@ urlpatterns = [
     path('movie/<int:pk>/play/', views.player_view, name='player'),
     path('episode/<int:pk>/play/', views.episode_player, name='episode_player'),
     
-    # Nuevas rutas para las membresías y la página de pago
+    # Rutas para las membresías y la página de pago
     path('membresias/', views.membresias, name='membresias'),
     path('pago/', views.pago, name='pago'),
+    
+    # rutas para los anuncios emergentes
+    path('anuncio/1/', views.anuncio1, name='anuncio1'),
+    path('anuncio/2/', views.anuncio2, name='anuncio2'),
+    path('anuncio/3/', views.anuncio3, name='anuncio3'),
 ]

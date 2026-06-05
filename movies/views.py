@@ -106,3 +106,17 @@ def pago(request):
 def episode_player(request, pk):
     episode = get_object_or_404(Episode, pk=pk)
     return render(request, 'movies/episode_player.html', {'episode': episode})
+
+
+# --------------------------------------------------------
+# VISTAS DE ANUNCIOS EMERGENTES
+# --------------------------------------------------------
+
+def anuncio1(request):
+    return render(request, 'movies/anuncio1.html')
+
+def anuncio2(request):
+    return render(request, 'movies/anuncio2.html')
+
+def anuncio3(request):
+    return render(request, 'movies/anuncio3.html')
