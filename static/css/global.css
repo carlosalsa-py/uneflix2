@@ -1,0 +1,18 @@
+/* Reemplazo global del logo de texto por la imagen estática */
+.logo {
+    display: inline-block;
+    width: 200px; /* Ajusta según el tamaño real de tu logo.png */
+    height: 60px; /* Ajusta según el tamaño real de tu logo.png */
+    background-image: url("/static/images/logo.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    
+    /* Ocultar el texto UNEFLIX original */
+    text-indent: -9999px;
+    overflow: hidden;
+    line-height: 0;
+    font-size: 0;
+    color: transparent !important;
+    letter-spacing: 0 !important;
+}
