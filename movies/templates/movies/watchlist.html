@@ -116,7 +116,17 @@
         </a>
         <div class="nav-links">
             <a href="{% url 'home' %}">Inicio</a>
-            <a href="{% url 'logout' %}">{{ request.user.username }} · Salir</a>
+                        <!-- PERFIL -->
+            <a href="{% url 'perfil' %}" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:#ccc;">
+                {% if request.user.avatar %}
+                    <img src="{{ request.user.avatar.url }}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid var(--unefa-bronze);">
+                {% else %}
+                    <div style="width:32px; height:32px; border-radius:50%; background:var(--unefa-blue); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; border:2px solid var(--unefa-bronze);">
+                        {{ request.user.display_name|default:request.user.username|first|upper }}
+                    </div>
+                {% endif %}
+                <span style="font-size:14px;">{{ request.user.display_name|default:request.user.username }}</span>
+            </a>
         </div>
     </nav>
 

@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil — Uneflix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070b12;
+            --card-bg: #101726;
+            --unefa-blue: #004bca;
+            --unefa-bronze: #d19a4e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .logo {
+            display: inline-block;
+            width: 180px;
+            height: 44px;
+            background-image: url("{% static 'images/logo.png' %}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            text-indent: -9999px;
+            overflow: hidden;
+            line-height: 0;
+            color: transparent !important;
+            text-decoration: none;
+            margin: 0 auto 28px;
+            display: block;
+        }
+        .logo span { display: none; }
+
+        .box {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 440px;
+            border-radius: 8px;
+            padding: 40px 32px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+        }
+
+        h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 26px;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding-bottom: 20px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        label {
+            display: block;
+            font-size: 11px;
+            color: #66748f;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 12px 14px;
+            border-radius: 4px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--unefa-blue);
+            background: rgba(0,0,0,0.5);
+        }
+
+        input[type="file"] {
+            padding: 10px 14px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #444;
+            margin-top: 5px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            background: var(--unefa-blue);
+            color: white;
+            border: none;
+            padding: 13px;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background: var(--unefa-bronze); color: black; }
+
+        .btn-cancel {
+            background: rgba(255,255,255,0.04);
+            color: #666;
+            text-decoration: none;
+            padding: 13px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .btn-cancel:hover { color: white; border-color: rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <a href="{% url 'home' %}" class="logo"><span>UNEFLIX</span></a>
+
+        <h2>Editar Perfil</h2>
+        <p class="subtitle">Actualiza tu nombre y foto de perfil</p>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="display_name">Nombre de visualización</label>
+                <input type="text" id="display_name" name="display_name"
+                       value="{{ request.user.display_name|default:'' }}"
+                       placeholder="Tu nombre público" maxlength="100">
+                <p class="hint">Este es el nombre que verán otros usuarios.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="avatar">Foto de perfil</label>
+                <input type="file" id="avatar" name="avatar" accept="image/*">
+                <p class="hint">JPG, PNG o GIF. Se mostrará como círculo.</p>
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" class="btn-primary">Guardar cambios</button>
+                <a href="{% url 'perfil' %}" class="btn-cancel">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

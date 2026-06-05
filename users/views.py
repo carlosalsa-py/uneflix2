@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
@@ -45,7 +45,24 @@ def perfil_view(request):
     except Membership.DoesNotExist:
         membership = None
     return render(request, 'users/perfil.html', {
+        'perfil_user': request.user,
         'membership': membership,
+        'es_dueno': True,
+    })
+
+def perfil_publico(request, username):
+    perfil_user = get_object_or_404(User, username=username)
+    es_dueno = request.user.is_authenticated and request.user.username == username
+    membership = None
+    if es_dueno:
+        try:
+            membership = Membership.objects.get(user=perfil_user)
+        except Membership.DoesNotExist:
+            pass
+    return render(request, 'users/perfil.html', {
+        'perfil_user': perfil_user,
+        'membership': membership,
+        'es_dueno': es_dueno,
     })
 
 @login_required(login_url='/users/login/')
@@ -69,24 +86,3 @@ def perfil_editar(request):
         return redirect('perfil')
 
     return render(request, 'users/perfil_editar.html')
-
-def pago(request):
-    plan = request.GET.get('plan', 'medium')
-    precio = request.GET.get('precio', '2.99')
-    
-    plan_map = {
-        'Cinephile': 'medium',
-        'Ultra': 'premium',
-    }
-    
-    if request.method == 'POST':
-        plan_code = plan_map.get(plan, 'medium')
-        membership, created = Membership.objects.get_or_create(user=request.user)
-        membership.plan = plan_code
-        membership.status = 'pending'
-        membership.save()
-    
-    return render(request, 'movies/pago.html', {
-        'plan': plan,
-        'precio': precio,
-    })
