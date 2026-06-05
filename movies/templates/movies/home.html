@@ -197,7 +197,13 @@
                     {% endfor %}
                 </div>
                 <p>{{ movie.description }}</p>
-                <a href="{% url 'movie_detail' movie.pk %}" class="btn-play">▶ Ver Ahora</a>
+                {% if movie.tier == 'free' or plan == 'premium' or movie.tier == 'medium' and plan != 'free' %}
+                    <a href="{% url 'movie_detail' movie.pk %}" class="btn-play">▶ Ver Ahora</a>
+                {% else %}
+                    <a href="{% url 'membresias' %}" class="btn-play" style="background:#d19a4e; color:black;">
+                        🔒 Requiere Plan {% if movie.tier == 'premium' %}Ultra{% else %}Cinephile{% endif %}
+                    </a>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -221,20 +227,26 @@
     <div class="movies-grid" id="moviesGrid">
         {% for movie in movies %}
         <a href="{% url 'movie_detail' movie.pk %}" style="text-decoration:none; color:inherit;">
-        <div class="movie-card" data-genres="{% for g in movie.genres.all %}{{ g.name }},{% endfor %}">
-            {% if movie.poster %}
-            <img src="{{ movie.poster.url }}" alt="{{ movie.title }}">
-            {% else %}
-            <img src="https://via.placeholder.com/160x240/1a1a1a/555?text={{ movie.title }}" alt="{{ movie.title }}">
-            {% endif %}
-            <div class="movie-info">
-                <h4>{{ movie.title }}</h4>
-                <p class="year">{{ movie.year }}</p>
-                {% for genre in movie.genres.all %}
-                <span class="badge-genre">{{ genre.name }}</span>
-                {% endfor %}
+            <div class="movie-card" data-genres="{% for g in movie.genres.all %}{{ g.name }},{% endfor %}">
+                <div style="position:relative;">
+                    {% if movie.poster %}
+                    <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" {% if movie.tier == 'premium' and plan != 'premium' or movie.tier == 'medium' and plan == 'free' %}style="filter:brightness(0.4);"{% endif %}>
+                    {% else %}
+                    <img src="https://via.placeholder.com/160x240/1a1a1a/555?text={{ movie.title }}" alt="{{ movie.title }}">
+                    {% endif %}
+                    {% if movie.tier == 'premium' and plan != 'premium' %}
+                    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+                        <span style="font-size:24px;">🔒</span>
+                        <span style="font-size:10px;background:#d19a4e;color:black;padding:2px 8px;border-radius:10px;font-weight:700;">ULTRA</span>
+                    </div>
+                    {% elif movie.tier == 'medium' and plan == 'free' %}
+                    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+                        <span style="font-size:24px;">🔒</span>
+                        <span style="font-size:10px;background:#004bca;color:white;padding:2px 8px;border-radius:10px;font-weight:700;">CINEPHILE</span>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-        </div>
         </a>
         {% empty %}
         <p style="color:#555; grid-column:1/-1; text-align:center; padding:40px 0;">No hay películas disponibles</p>

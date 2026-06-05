@@ -17,6 +17,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             background-color: var(--bg-dark);
             font-family: 'Inter', sans-serif;
@@ -42,21 +43,18 @@
         /* LOGO CON "CAMBIAZO" A IMAGEN */
         .logo-center {
             display: block;
-            margin: 0 auto 24px auto;
-            width: 220px;
-            height: 60px;
-            background-image: url("{% static 'images/logo.png' %}");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            text-indent: -9999px;
-            overflow: hidden;
-            line-height: 0;
-            color: transparent !important;
+            text-decoration: none;
         }
         .logo-center span { display: none; }
 
-        h2 { font-size: 18px; font-weight: 500; margin-bottom: 4px; color: #fff; }
+        .logo-center span { color: var(--unefa-bronze); }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: #fff;
+        }
 
         .plan-summary {
             background: rgba(255,255,255,0.03);
@@ -73,7 +71,15 @@
         .plan-summary p { font-size: 13px; color: #aaa; }
 
         .form-group { margin-bottom: 18px; }
-        label { display: block; font-size: 12px; color: #aaa; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
         input {
             width: 100%;
@@ -87,7 +93,11 @@
             transition: all 0.2s;
         }
 
-        input:focus { outline: none; background: rgba(0,0,0,0.5); border-color: var(--unefa-blue); }
+        input:focus {
+            outline: none;
+            background: rgba(0,0,0,0.5);
+            border-color: var(--unefa-blue);
+        }
 
         .row-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
@@ -103,57 +113,120 @@
             cursor: pointer;
             margin-top: 10px;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
 
         .btn-pay:hover { background: var(--unefa-bronze); color: #000; }
 
-        .loading-overlay, .success-overlay {
-            position: absolute; inset: 0; background: var(--card-bg); border-radius: 8px;
-            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--card-bg);
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
         }
 
         .spinner {
-            width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1);
-            border-top-color: var(--unefa-blue); border-radius: 50%;
-            animation: spin 1s linear infinite; margin-bottom: 16px;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: var(--unefa-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        .success-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--card-bg);
+            border-radius: 8px;
+            display: {% if success %}flex{% else %}none{% endif %};
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px;
+            z-index: 20;
+        }
+
         .success-icon {
-            width: 60px; height: 60px; background: rgba(46, 204, 113, 0.15); color: #2ecc71;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 32px; margin-bottom: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 75, 202, 0.15);
+            color: var(--unefa-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .success-overlay h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .success-overlay p {
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .pending-badge {
+            background: rgba(209, 154, 78, 0.15);
+            border: 1px solid var(--unefa-bronze);
+            color: var(--unefa-bronze);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
     <div class="payment-box">
-        <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+
+        <div class="loading-overlay" id="loadingOverlay">
             <div class="spinner"></div>
-            <p style="font-size: 14px; color: #ccc;">Procesando pago seguro...</p>
+            <p style="font-size: 14px; color: #ccc;">Procesando solicitud...</p>
         </div>
 
-        <div class="success-overlay" id="successOverlay" style="display:none;">
-            <div class="success-icon">✓</div>
-            <h3>¡Pago Procesado!</h3>
-            <p>Tu membresía ha sido activada con éxito.</p>
-            <button class="btn-pay" onclick="window.location.href='{% url 'home' %}'">Empezar a ver</button>
+        <div class="success-overlay" id="successOverlay">
+            <div class="success-icon">⏳</div>
+            <h3>¡Solicitud Enviada!</h3>
+            <div class="pending-badge">Pendiente de verificación</div>
+            <p>Tu solicitud de membresía <strong>Plan {{ plan }}</strong> está siendo revisada. Un administrador activará tu plan en breve.</p>
+            <a href="{% url 'home' %}" class="btn-pay">Volver al inicio</a>
         </div>
 
-        <span class="logo-center">UNE<span>FLIX</span></span>
-        
+        <a href="{% url 'home' %}" class="logo-center">UNE<span>FLIX</span></a>
+
         <h2>Detalles de la Suscripción</h2>
         <div class="plan-summary">
             <div>
                 <p>Plan seleccionado</p>
-                <span id="planName">Cargando...</span>
+                <span>Plan {{ plan }}</span>
             </div>
-            <span id="planPrice" style="font-size: 18px;">$0.00/mes</span>
+            <span style="font-size: 18px;">${{ precio }}/mes</span>
         </div>
 
-        <form id="paymentForm" onsubmit="procesarPagoFicticio(event)">
+        <form id="paymentForm" method="post" action="{% url 'pago' %}">
+            {% csrf_token %}
+            <input type="hidden" name="plan" value="{{ plan }}">
+            <input type="hidden" name="precio" value="{{ precio }}">
+
             <div class="form-group">
                 <label>Nombre en la tarjeta</label>
                 <input type="text" placeholder="Israel Rodriguez" required>
@@ -172,34 +245,24 @@
                     <input type="password" placeholder="•••" maxlength="3" required>
                 </div>
             </div>
-            <button type="submit" class="btn-pay">Activar Membresía</button>
+
+            <button type="submit" class="btn-pay" onclick="mostrarLoading()">Activar Membresía</button>
         </form>
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const plan = urlParams.get('plan') || '{{ plan }}';
-        const precio = urlParams.get('precio') || '{{ precio }}';
-
-        document.getElementById('planName').textContent = 'Plan ' + plan;
-        document.getElementById('planPrice').textContent = '$' + precio + '/mes';
-
-        document.getElementById('cardnumber').addEventListener('input', (e) => {
+        document.getElementById('cardnumber').addEventListener('input', function(e) {
             e.target.value = e.target.value.replace(/[^\d]/g, '').replace(/(.{4})/g, '$1 ').trim();
         });
 
-        document.getElementById('expdate').addEventListener('input', (e) => {
+        document.getElementById('expdate').addEventListener('input', function(e) {
             e.target.value = e.target.value.replace(/[^\d]/g, '').replace(/(.{2})/, '$1/').trim();
         });
 
-        function procesarPagoFicticio(event) {
-            event.preventDefault();
+        function mostrarLoading() {
             document.getElementById('loadingOverlay').style.display = 'flex';
-            setTimeout(() => {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                document.getElementById('successOverlay').style.display = 'flex';
-            }, 2500);
         }
     </script>
+
 </body>
 </html>
