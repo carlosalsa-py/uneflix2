@@ -9,15 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* COLORES DEL ESCUDO UNEFA */
-            --bg-dark: #070b12;        /* Fondo oscuro azulado */
-            --card-bg: #101726;        /* Azul oscuro institucional para la caja */
-            --unefa-blue: #004bca;     /* Azul Rey brillante */
-            --unefa-bronze: #d19a4e;   /* Ocre/Bronce del marco */
-            --unefa-yellow: #ffcc00;   /* Amarillo de la bandera */
+            --bg-dark: #070b12;
+            --card-bg: #101726;
+            --unefa-blue: #004bca;
+            --unefa-bronze: #d19a4e;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             background-color: var(--bg-dark);
             font-family: 'Inter', sans-serif;
@@ -48,16 +47,15 @@
             text-align: center;
             margin-bottom: 24px;
             display: block;
+            text-decoration: none;
         }
 
-        .logo-center span {
-            color: var(--unefa-bronze);
-        }
+        .logo-center span { color: var(--unefa-bronze); }
 
         h2 {
             font-size: 18px;
             font-weight: 500;
-            margin-bottom: 4px;
+            margin-bottom: 16px;
             color: #fff;
         }
 
@@ -69,16 +67,13 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
-            border-left: 3px solid var(--unefa-blue); /* Acento en Azul Rey */
+            border-left: 3px solid var(--unefa-blue);
         }
 
         .plan-summary span { font-weight: 600; color: #fff; }
         .plan-summary p { font-size: 13px; color: #aaa; }
 
-        /* FORMULARIOS */
-        .form-group {
-            margin-bottom: 18px;
-        }
+        .form-group { margin-bottom: 18px; }
 
         label {
             display: block;
@@ -104,7 +99,7 @@
         input:focus {
             outline: none;
             background: rgba(0,0,0,0.5);
-            border-color: var(--unefa-blue); /* Borde azul unefista al escribir */
+            border-color: var(--unefa-blue);
         }
 
         .row-inputs {
@@ -125,14 +120,11 @@
             cursor: pointer;
             margin-top: 10px;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
 
-        .btn-pay:hover { 
-            background: var(--unefa-bronze); /* Cambia al ocre del escudo */
-            color: #000;
-        }
+        .btn-pay:hover { background: var(--unefa-bronze); color: #000; }
 
-        /* PANTALLA DE CARGA PROCESANDO */
         .loading-overlay {
             position: absolute;
             inset: 0;
@@ -149,7 +141,7 @@
             width: 40px;
             height: 40px;
             border: 4px solid rgba(255,255,255,0.1);
-            border-top-color: var(--unefa-blue); /* Gira en azul rey */
+            border-top-color: var(--unefa-blue);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 16px;
@@ -157,13 +149,12 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* VENTANA MODAL DE ÉXITO */
         .success-overlay {
             position: absolute;
             inset: 0;
             background: var(--card-bg);
             border-radius: 8px;
-            display: none;
+            display: {% if success %}flex{% else %}none{% endif %};
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -175,8 +166,8 @@
         .success-icon {
             width: 60px;
             height: 60px;
-            background: rgba(46, 204, 113, 0.15); /* Verde estándar para éxito */
-            color: #2ecc71;
+            background: rgba(0, 75, 202, 0.15);
+            color: var(--unefa-blue);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -198,45 +189,51 @@
             line-height: 1.6;
             margin-bottom: 24px;
         }
-        
-        .success-overlay .btn-pay {
-            background: var(--unefa-blue);
-            color: white;
-        }
-        
-        .success-overlay .btn-pay:hover {
-            background: var(--unefa-bronze);
-            color: black;
+
+        .pending-badge {
+            background: rgba(209, 154, 78, 0.15);
+            border: 1px solid var(--unefa-bronze);
+            color: var(--unefa-bronze);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
     <div class="payment-box">
+
         <div class="loading-overlay" id="loadingOverlay">
             <div class="spinner"></div>
-            <p style="font-size: 14px; color: #ccc;">Procesando pago seguro...</p>
+            <p style="font-size: 14px; color: #ccc;">Procesando solicitud...</p>
         </div>
 
         <div class="success-overlay" id="successOverlay">
-            <div class="success-icon">✓</div>
-            <h3>¡Pago Procesado con éxito!</h3>
-            <p>Tu membresía ya se encuentra activa. Hemos enviado la factura digital y los detalles de confirmación a tu correo electrónico de registro.</p>
-            <button class="btn-pay" onclick="window.location.href='/'">Empezar a ver</button>
+            <div class="success-icon">⏳</div>
+            <h3>¡Solicitud Enviada!</h3>
+            <div class="pending-badge">Pendiente de verificación</div>
+            <p>Tu solicitud de membresía <strong>Plan {{ plan }}</strong> está siendo revisada. Un administrador activará tu plan en breve.</p>
+            <a href="{% url 'home' %}" class="btn-pay">Volver al inicio</a>
         </div>
 
-        <span class="logo-center">UNE<span>FLIX</span></span>
-        
+        <a href="{% url 'home' %}" class="logo-center">UNE<span>FLIX</span></a>
+
         <h2>Detalles de la Suscripción</h2>
         <div class="plan-summary">
             <div>
                 <p>Plan seleccionado</p>
-                <span id="planName">Cinephile Plan</span>
+                <span>Plan {{ plan }}</span>
             </div>
-            <span id="planPrice" style="font-size: 18px;">$3.99/mes</span>
+            <span style="font-size: 18px;">${{ precio }}/mes</span>
         </div>
 
-        <form id="paymentForm" onsubmit="procesarPagoFicticio(event)">
+        <form id="paymentForm" method="post" action="{% url 'pago' %}">
+            {% csrf_token %}
+            <input type="hidden" name="plan" value="{{ plan }}">
+            <input type="hidden" name="precio" value="{{ precio }}">
+
             <div class="form-group">
                 <label for="cardname">Nombre en la tarjeta</label>
                 <input type="text" id="cardname" placeholder="Juan Pérez" required>
@@ -258,45 +255,23 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-pay">Activar Membresía</button>
+            <button type="submit" class="btn-pay" onclick="mostrarLoading()">Activar Membresía</button>
         </form>
     </div>
 
     <script>
-        // Capturar los parámetros de la URL enviados desde la vista anterior
-        const urlParams = new URLSearchParams(window.location.search);
-        const plan = urlParams.get('plan') || 'Cinephile';
-        const precio = urlParams.get('precio') || '3.99';
-
-        // Inyectar dinámicamente los datos en el resumen de compra
-        document.getElementById('planName').textContent = 'Plan ' + plan;
-        document.getElementById('planPrice').textContent = '$' + precio + '/mes';
-
-        // Formateador dinámico para simular una tarjeta real (espacios automáticos)
-        document.getElementById('cardnumber').addEventListener('input', function (e) {
+        document.getElementById('cardnumber').addEventListener('input', function(e) {
             e.target.value = e.target.value.replace(/[^\d]/g, '').replace(/(.{4})/g, '$1 ').trim();
         });
 
-        document.getElementById('expdate').addEventListener('input', function (e) {
+        document.getElementById('expdate').addEventListener('input', function(e) {
             e.target.value = e.target.value.replace(/[^\d]/g, '').replace(/(.{2})/, '$1/').trim();
         });
 
-        // Simulación del Backend
-        function procesarPagoFicticio(event) {
-            event.preventDefault(); // Evita la recarga nativa
-            
-            // Mostrar pantalla de carga
+        function mostrarLoading() {
             document.getElementById('loadingOverlay').style.display = 'flex';
-
-            // Simular un retraso de red de 2.5 segundos antes de dar el "Ok"
-            setTimeout(() => {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                document.getElementById('successOverlay').style.display = 'flex';
-                
-                // Aquí es donde en consola podemos ver que se simuló la notificación por correo
-                console.log("Simulación API: Correo de facturación enviado correctamente a la dirección del usuario autenticado.");
-            }, 2500);
         }
     </script>
+
 </body>
 </html>

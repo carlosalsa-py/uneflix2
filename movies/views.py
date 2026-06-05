@@ -75,25 +75,31 @@ def player_view(request, pk):
 def membresias(request):
     return render(request, 'movies/membresias.html')
 
+@login_required(login_url='/users/login/')
 def pago(request):
-    plan = request.GET.get('plan', 'medium')
+    plan = request.GET.get('plan', 'Cinephile')
     precio = request.GET.get('precio', '2.99')
-    
-    plan_map = {
-        'Cinephile': 'medium',
-        'Ultra': 'premium',
-    }
-    
+
     if request.method == 'POST':
-        plan_code = plan_map.get(plan, 'medium')
+        plan_nombre = request.POST.get('plan', 'Cinephile')
+        plan_map = {'Cinephile': 'medium', 'Ultra': 'premium'}
+        plan_code = plan_map.get(plan_nombre, 'medium')
+
         membership, created = Membership.objects.get_or_create(user=request.user)
         membership.plan = plan_code
         membership.status = 'pending'
         membership.save()
-    
+
+        return render(request, 'movies/pago.html', {
+            'plan': plan_nombre,
+            'precio': precio,
+            'success': True,
+        })
+
     return render(request, 'movies/pago.html', {
         'plan': plan,
         'precio': precio,
+        'success': False,
     })
 
 @login_required(login_url='/users/login/')

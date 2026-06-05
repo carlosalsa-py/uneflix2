@@ -3,7 +3,8 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
 class Usuario(AbstractUser):
-    pass
+    display_name = models.CharField(max_length=100, blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
 class Membership(models.Model):
     PLAN_CHOICES = [
