@@ -8,9 +8,9 @@ class Usuario(AbstractUser):
 
 class Membership(models.Model):
     PLAN_CHOICES = [
-        ('free', 'Gratuito'),
-        ('medium', 'Cinephile'),
-        ('premium', 'Ultra'),
+        ('free', 'Unefista'),
+        ('medium', 'Cinéfilo'),
+        ('premium', 'Zerpanito'),
     ]
     STATUS_CHOICES = [
         ('pending', 'Pendiente'),
