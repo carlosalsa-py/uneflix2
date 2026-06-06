@@ -332,5 +332,347 @@
             });
         }
     </script>
+    <div id="miku-btn" onclick="toggleChat()" title="¡Habla con Miku!">
+    <img src="{% static 'images/miku.png' %}" alt="Miku Unefista" id="miku-img">
+    <div id="miku-bubble">¡Hola! ¿Te ayudo? 👋</div>
+    </div>
+
+    <!-- VENTANA DEL CHAT -->
+    <div id="miku-chat">
+        <div id="chat-header">
+            <img src="{% static 'images/miku.png' %}" alt="Miku">
+            <div>
+                <div id="chat-name">Miku Unefista</div>
+                <div id="chat-status">● En línea</div>
+            </div>
+            <button id="chat-close" onclick="toggleChat()">✕</button>
+        </div>
+
+        <div id="chat-messages">
+            <div class="msg bot">
+                <div class="bubble">¡Hola! Soy <strong>Miku Unefista</strong> 🎬 ¿En qué puedo ayudarte hoy?</div>
+            </div>
+        </div>
+
+        <div id="chat-suggestions">
+            <button class="suggestion" onclick="sendSuggestion(this)">💳 Planes y precios</button>
+            <button class="suggestion" onclick="sendSuggestion(this)">💰 Métodos de pago</button>
+            <button class="suggestion" onclick="sendSuggestion(this)">👥 ¿Quiénes somos?</button>
+            <button class="suggestion" onclick="sendSuggestion(this)">❓ ¿Cómo funciona?</button>
+            <button class="suggestion" onclick="sendSuggestion(this)">🔒 ¿Cómo cancelo?</button>
+            <button class="suggestion" onclick="sendSuggestion(this)">📺 ¿Qué contenido hay?</button>
+        </div>
+
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Escribe tu pregunta..." onkeydown="if(event.key==='Enter') sendMessage()">
+            <button id="chat-send" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+    <style>
+    /* ── BOTÓN FLOTANTE ── */
+    #miku-btn {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 9999;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #miku-img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 16px rgba(0,200,200,0.4));
+        transition: transform 0.3s ease;
+        animation: miku-float 3s ease-in-out infinite;
+    }
+
+    #miku-btn:hover #miku-img { transform: scale(1.1); }
+
+    @keyframes miku-float {
+        0%, 100% { transform: translateY(0); }
+        50%       { transform: translateY(-8px); }
+    }
+
+    #miku-bubble {
+        background: #101726;
+        border: 1px solid #d19a4e;
+        color: white;
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        padding: 6px 12px;
+        border-radius: 12px 12px 0 12px;
+        margin-bottom: 6px;
+        order: -1;
+        white-space: nowrap;
+        animation: bubble-pop 0.4s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    @keyframes bubble-pop {
+        from { transform: scale(0.8); opacity: 0; }
+        to   { transform: scale(1);   opacity: 1; }
+    }
+
+    /* ── VENTANA CHAT ── */
+    #miku-chat {
+        position: fixed;
+        bottom: 120px;
+        right: 24px;
+        width: 340px;
+        max-height: 520px;
+        background: #070b12;
+        border: 1px solid rgba(209,154,78,0.4);
+        border-radius: 12px;
+        display: none;
+        flex-direction: column;
+        z-index: 9998;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        overflow: hidden;
+        animation: chat-slide 0.3s ease;
+    }
+
+    #miku-chat.open { display: flex; }
+
+    @keyframes chat-slide {
+        from { transform: translateY(20px); opacity: 0; }
+        to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    /* Header */
+    #chat-header {
+        background: #101726;
+        border-bottom: 1px solid rgba(209,154,78,0.3);
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    #chat-header img {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        border-radius: 50%;
+        background: #0a1628;
+    }
+
+    #chat-name { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px; }
+    #chat-status { font-size: 11px; color: #39d353; }
+
+    #chat-close {
+        margin-left: auto;
+        background: transparent;
+        border: none;
+        color: #555;
+        font-size: 16px;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    #chat-close:hover { color: white; }
+
+    /* Mensajes */
+    #chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        scrollbar-width: thin;
+        scrollbar-color: #1a2540 transparent;
+    }
+
+    .msg { display: flex; }
+    .msg.bot  { justify-content: flex-start; }
+    .msg.user { justify-content: flex-end; }
+
+    .bubble {
+        max-width: 80%;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        line-height: 1.5;
+        animation: bubble-pop 0.2s ease;
+    }
+
+    .msg.bot  .bubble { background: #101726; border: 1px solid rgba(255,255,255,0.06); color: #ddd; border-radius: 4px 12px 12px 12px; }
+    .msg.user .bubble { background: #004bca; color: white; border-radius: 12px 4px 12px 12px; }
+
+    /* Sugerencias */
+    #chat-suggestions {
+        padding: 8px 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .suggestion {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #ccc;
+        font-family: 'Inter', sans-serif;
+        font-size: 11px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .suggestion:hover { background: rgba(0,75,202,0.3); border-color: #004bca; color: white; }
+
+    /* Input */
+    #chat-input-area {
+        display: flex;
+        gap: 8px;
+        padding: 12px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        background: #070b12;
+    }
+
+    #chat-input {
+        flex: 1;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 8px 12px;
+        border-radius: 20px;
+        color: white;
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    #chat-input:focus { border-color: #004bca; }
+
+    #chat-send {
+        background: #004bca;
+        border: none;
+        color: white;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s;
+        flex-shrink: 0;
+    }
+    #chat-send:hover { background: #d19a4e; color: black; }
+
+    /* Typing indicator */
+    .typing .bubble {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        padding: 12px 16px;
+    }
+    .dot {
+        width: 7px; height: 7px;
+        background: #555;
+        border-radius: 50%;
+        animation: typing-dot 1.2s infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing-dot {
+        0%, 60%, 100% { transform: translateY(0); background: #555; }
+        30%            { transform: translateY(-6px); background: #d19a4e; }
+    }
+    </style>
+
+    <script>
+    // ── RESPUESTAS PREDETERMINADAS ──────────────────────────────────
+    const respuestas = {
+        "planes": `¡Tenemos 3 planes! 🎬\n\n<b>🆓 Unefista (Gratis)</b>\nAcceso al catálogo básico con anuncios.\n\n<b>🎞️ Cinéfilo — $2.99/mes</b>\nCatálogo completo, sin anuncios, descarga de películas.\n\n<b>⭐ Zerpanito — $4.99/mes</b>\nTodo lo anterior + hasta 3 pantallas simultáneas.\n\n¿Quieres <a href="/membresias/" style="color:#d19a4e">ver los planes</a>?`,
+
+        "pago": `Aceptamos los siguientes métodos 💳\n\n<b>✅ Tarjeta internacional</b> — Disponible ahora\n<b>🕐 Pago móvil</b> — Próximamente\n<b>🕐 Transferencia bancaria</b> — Próximamente\n\nTodos los pagos son seguros y procesados manualmente por nuestro equipo.`,
+
+        "quienes": `Somos <b>Uneflix</b> 🎬, una plataforma de streaming venezolana creada por estudiantes de la <b>UNEFA</b>.\n\nNuestro objetivo es ofrecer contenido de calidad adaptado a cualquier conexión, con precios accesibles para todos los unefistas. 💙`,
+
+        "como": `¡Es muy fácil! 😊\n\n1️⃣ <b>Regístrate</b> gratis\n2️⃣ <b>Explora</b> el catálogo\n3️⃣ <b>Elige un plan</b> si quieres más contenido\n4️⃣ <b>Disfruta</b> tus películas y series\n\nCon el plan gratuito ya tienes acceso a una buena parte del catálogo.`,
+
+        "cancelar": `Cancelar tu plan es sencillo 🔓\n\nPor ahora puedes contactarnos directamente y procesamos la cancelación en menos de 24 horas.\n\nNo hay penalidades ni cargos ocultos. Tu plan sigue activo hasta la fecha de vencimiento.`,
+
+        "contenido": `Tenemos películas y series de distintos géneros 🍿\n\nAcción, Drama, Comedia, Terror, Animación y más.\n\nEl contenido varía según tu plan:\n• <b>Gratis</b> — Catálogo básico\n• <b>Cinéfilo</b> — Catálogo completo\n• <b>Zerpanito</b> — Todo + estrenos`,
+
+        "default": `Mmm, no estoy segura de eso 🤔\n\nPuedes preguntarme sobre:\n• Planes y precios\n• Métodos de pago\n• Cómo funciona Uneflix\n• Quiénes somos\n\n¡O usa los botones de arriba! 😊`
+    };
+
+    function getResponse(text) {
+        const t = text.toLowerCase();
+        if (t.match(/plan|precio|suscri|membresía|cinef|zerpan|unefist/)) return respuestas.planes;
+        if (t.match(/pago|tarjeta|transfer|móvil|movil|cobr|pagar/))      return respuestas.pago;
+        if (t.match(/quién|quien|somos|empresa|unefa|equipo|sobre/))       return respuestas.quienes;
+        if (t.match(/cómo|como|funciona|registr|usar|empez/))             return respuestas.como;
+        if (t.match(/cancel|baja|dar de baja|suspender/))                 return respuestas.cancelar;
+        if (t.match(/contenido|película|serie|catálogo|catalogo|hay|ver/)) return respuestas.contenido;
+        return respuestas.default;
+    }
+
+    function toggleChat() {
+        const chat = document.getElementById('miku-chat');
+        const bubble = document.getElementById('miku-bubble');
+        chat.classList.toggle('open');
+        bubble.style.display = chat.classList.contains('open') ? 'none' : 'block';
+    }
+
+    function addMessage(text, type) {
+        const msgs = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = `msg ${type}`;
+        div.innerHTML = `<div class="bubble">${text.replace(/\n/g, '<br>')}</div>`;
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function showTyping() {
+        const msgs = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = 'msg bot typing';
+        div.id = 'typing-indicator';
+        div.innerHTML = `<div class="bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function removeTyping() {
+        const t = document.getElementById('typing-indicator');
+        if (t) t.remove();
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const text = input.value.trim();
+        if (!text) return;
+        addMessage(text, 'user');
+        input.value = '';
+        showTyping();
+        setTimeout(() => {
+            removeTyping();
+            addMessage(getResponse(text), 'bot');
+        }, 800 + Math.random() * 400);
+    }
+
+    function sendSuggestion(btn) {
+        const text = btn.textContent.replace(/^[^\w]+/, '').trim();
+        addMessage(btn.textContent, 'user');
+        showTyping();
+        setTimeout(() => {
+            removeTyping();
+            addMessage(getResponse(text), 'bot');
+        }, 800 + Math.random() * 400);
+    }
+
+    // Ocultar burbuja después de 4 segundos
+    setTimeout(() => {
+        const b = document.getElementById('miku-bubble');
+        if (b) b.style.opacity = '0';
+        setTimeout(() => { if (b) b.style.display = 'none'; }, 500);
+    }, 4000);
+    </script>
 </body>
 </html>
