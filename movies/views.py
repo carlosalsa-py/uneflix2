@@ -113,7 +113,6 @@ def episode_player(request, pk):
     episode = get_object_or_404(Episode, pk=pk)
     return render(request, 'movies/episode_player.html', {'episode': episode})
 
-<<<<<<< HEAD
 
 # --------------------------------------------------------
 # VISTAS DE ANUNCIOS EMERGENTES
@@ -160,9 +159,7 @@ def review_delete(request, pk):
     movie_pk = review.movie.pk
     review.delete()
     return redirect('movie_detail', pk=movie_pk)
-=======
 # Vistas de anuncios
 def anuncio1(request): return render(request, 'movies/anuncio1.html')
 def anuncio2(request): return render(request, 'movies/anuncio2.html')
 def anuncio3(request): return render(request, 'movies/anuncio3.html')
->>>>>>> origin/terminos
