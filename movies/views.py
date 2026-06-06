@@ -78,12 +78,22 @@ def watchlist_view(request):
 @login_required(login_url='/users/login/')
 def player_view(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
-    # Recomendación: Aquí podrías añadir una lógica para verificar si can_watch es True antes de renderizar
+    plan = get_user_plan(request.user)
+    tier_required = {'free': 0, 'medium': 1, 'premium': 2}
+    user_level = tier_required.get(plan, 0)
+    movie_level = tier_required.get(movie.tier, 0)
+    if user_level < movie_level:
+        return redirect('membresias')
     return render(request, 'movies/player.html', {'movie': movie})
 
 @login_required(login_url='/users/login/')
 def membresias(request):
-    return render(request, 'movies/membresias.html')
+    try:
+        membership = Membership.objects.get(user=request.user)
+        plan = membership.plan if membership.status == 'active' else 'free'
+    except Membership.DoesNotExist:
+        plan = 'free'
+    return render(request, 'movies/membresias.html', {'plan': plan})
 
 @login_required(login_url='/users/login/')
 def pago(request):
@@ -92,7 +102,7 @@ def pago(request):
 
     if request.method == 'POST':
         plan_nombre = request.POST.get('plan', 'Cinephile')
-        plan_map = {'Cinephile': 'medium', 'Ultra': 'premium', 'Zerpanito': 'zerpanito'}
+        plan_map = {'Cinefilo': 'medium', 'Zerpanito': 'premium'}
         plan_code = plan_map.get(plan_nombre, 'medium')
 
         membership, created = Membership.objects.get_or_create(user=request.user)
@@ -160,6 +170,3 @@ def review_delete(request, pk):
     review.delete()
     return redirect('movie_detail', pk=movie_pk)
 # Vistas de anuncios
-def anuncio1(request): return render(request, 'movies/anuncio1.html')
-def anuncio2(request): return render(request, 'movies/anuncio2.html')
-def anuncio3(request): return render(request, 'movies/anuncio3.html')

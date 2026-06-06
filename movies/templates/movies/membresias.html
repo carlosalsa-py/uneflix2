@@ -156,7 +156,7 @@
                     <li class="disabled">Descarga directa de archivos</li>
                     <li class="disabled">Reproducción simultánea</li>
                 </ul>
-                <a href="{% url 'home' %}" class="btn-select">Plan Actual</a>
+                <a href="{% url 'home' %}" class="btn-select">{% if plan == 'free' %}✓ Plan Actual{% else %}Cambiar a Gratis{% endif %}</a>
             </div>
 
             <div class="plan-card featured">
@@ -170,7 +170,7 @@
                     <li>Descargar películas a tu PC</li>
                     <li class="disabled">Ver en 3 pantallas al mismo tiempo</li>
                 </ul>
-                <a href="{% url 'pago' %}?plan=Cinefilo&precio=2.99" class="btn-select">Cambiar Plan</a>
+                <a href="{% url 'pago' %}?plan=Cinefilo&precio=2.99" class="btn-select">{% if plan == 'medium' %}✓ Plan Actual{% else %}Cambiar Plan{% endif %}</a>
             </div>
 
             <div class="plan-card">
@@ -183,7 +183,7 @@
                     <li>Descargar películas a tu PC</li>
                     <li>Ver hasta en 3 pantallas a la vez</li>
                 </ul>
-                <a href="{% url 'pago' %}?plan=Zerpanito&precio=4.99" class="btn-select">Cambiar Plan</a>
+                <a href="{% url 'pago' %}?plan=Zerpanito&precio=4.99" class="btn-select">{% if plan == 'zerpanito' %}✓ Plan Actual{% else %}Cambiar Plan{% endif %}</a>
             </div>
         </div>
     </div>

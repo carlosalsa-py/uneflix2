@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from .models import Membership
+from movies.models import Review
 
 User = get_user_model()
 class CustomUserCreationForm(UserCreationForm):
@@ -58,10 +59,12 @@ def perfil_view(request):
         membership = Membership.objects.get(user=request.user)
     except Membership.DoesNotExist:
         membership = None
+    reviews = Review.objects.filter(user=request.user).select_related('movie')
     return render(request, 'users/perfil.html', {
         'perfil_user': request.user,
         'membership': membership,
         'es_dueno': True,
+        'reviews': reviews,
     })
 
 def perfil_publico(request, username):
@@ -73,10 +76,12 @@ def perfil_publico(request, username):
             membership = Membership.objects.get(user=perfil_user)
         except Membership.DoesNotExist:
             pass
+    reviews = Review.objects.filter(user=perfil_user).select_related('movie')
     return render(request, 'users/perfil.html', {
         'perfil_user': perfil_user,
         'membership': membership,
         'es_dueno': es_dueno,
+        'reviews': reviews,
     })
 
 @login_required(login_url='/users/login/')
