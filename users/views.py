@@ -6,7 +6,10 @@ from django.contrib.auth.decorators import login_required
 from .models import Membership
 
 User = get_user_model()
-
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2')
 # --- VISTAS DE TÉRMINOS Y REGISTRO ---
 
 def terms_view(request):
@@ -17,19 +20,17 @@ def accept_terms(request):
     return redirect('register')
 
 def register_view(request):
-    # Seguridad: Si no aceptó términos, redirigir a términos
     if not request.session.get('accepted_terms'):
         return redirect('terms')
         
     if request.method == 'POST':
-        form = UserCreationForm(request.POST) # O tu CustomUserCreationForm
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            # Limpiamos la sesión tras el registro exitoso
             del request.session['accepted_terms']
             return redirect('login')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
 
 # --- VISTAS DE AUTENTICACIÓN ---
