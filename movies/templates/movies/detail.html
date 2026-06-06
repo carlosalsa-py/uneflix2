@@ -26,7 +26,6 @@
             min-height: 100vh;
         }
 
-        /* LOGO CON "CAMBIAZO" A IMAGEN */
         .logo {
             display: inline-block;
             width: 200px;
@@ -41,7 +40,6 @@
             color: transparent !important;
             text-decoration: none;
         }
-
         .logo span { display: none; }
 
         nav {
@@ -58,16 +56,6 @@
             z-index: 1000;
         }
 
-        .logo {
-            font-family: 'Bebas Neue', sans-serif;
-            color: white;
-            font-size: 28px;
-            letter-spacing: 3px;
-            text-decoration: none;
-        }
-
-        .logo span { color: var(--unefa-bronze); }
-
         .back-btn {
             background: rgba(255,255,255,0.05);
             color: #ccc;
@@ -80,7 +68,6 @@
             text-decoration: none;
             transition: all 0.2s;
         }
-
         .back-btn:hover { background: rgba(255,255,255,0.15); color: white; }
 
         .hero {
@@ -143,7 +130,6 @@
             text-decoration: none;
             display: inline-block;
         }
-
         .btn-play:hover { background: var(--unefa-bronze); color: black; }
 
         .btn-watchlist {
@@ -159,7 +145,6 @@
             margin-left: 12px;
             transition: all 0.2s;
         }
-
         .btn-watchlist:hover { background: rgba(209, 154, 78, 0.15); color: white; }
 
         .content { padding: 40px 4%; }
@@ -168,53 +153,13 @@
         .info-label { color: #66748f; font-size: 14px; min-width: 80px; font-weight: 500; }
         .info-value { color: #ddd; font-size: 14px; }
 
-        .description {
-            font-size: 15px;
-            color: #ccc;
-            font-weight: 300;
-            line-height: 1.8;
-            max-width: 700px;
-            margin-bottom: 30px;
-        }
-
-        .info-row {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 12px;
-            max-width: 700px;
-        }
-
-        .info-label {
-            color: #66748f;
-            font-size: 14px;
-            min-width: 80px;
-            font-weight: 500;
-        }
-
-        .info-value { color: #ddd; font-size: 14px; }
-
-        .external-links {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-            flex-wrap: wrap;
-        }
-
-        .ext-btn {
-            padding: 8px 20px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: opacity 0.2s;
-        }
-
+        .external-links { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+        .ext-btn { padding: 8px 20px; border-radius: 4px; font-size: 13px; font-weight: 600; text-decoration: none; transition: opacity 0.2s; }
         .ext-btn:hover { opacity: 0.8; }
         .imdb { background: #f5c518; color: black; }
         .rt { background: #fa320a; color: white; }
 
         .trailer-container { margin-top: 40px; max-width: 700px; }
-
         .trailer-title {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 22px;
@@ -233,171 +178,54 @@
         }
         .trailer-wrapper iframe { width: 100%; height: 100%; border: none; }
 
-        .trailer-wrapper iframe { width: 100%; height: 100%; border: none; }
-
         .seasons-container { margin-top: 40px; max-width: 700px; }
-
-        .season-item {
-            border: 1px solid #1a2540;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            overflow: hidden;
-        }
-
-        .season-header {
-            background: #0d1526;
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 15px;
-            transition: background 0.2s;
-        }
-
+        .season-item { border: 1px solid #1a2540; border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+        .season-header { background: #0d1526; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 15px; transition: background 0.2s; }
         .season-header:hover { background: #111e35; }
-
-        .season-arrow {
-            transition: transform 0.3s;
-            font-size: 12px;
-            color: var(--unefa-bronze);
-        }
-
+        .season-arrow { transition: transform 0.3s; font-size: 12px; color: var(--unefa-bronze); }
         .season-arrow.open { transform: rotate(180deg); }
-
         .season-episodes { background: #090e1a; }
-
-        .episode-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 14px 20px;
-            border-bottom: 1px solid #111e35;
-            text-decoration: none;
-            color: white;
-            transition: background 0.2s;
-        }
-
+        .episode-item { display: flex; align-items: center; gap: 16px; padding: 14px 20px; border-bottom: 1px solid #111e35; text-decoration: none; color: white; transition: background 0.2s; }
         .episode-item:hover { background: #0d1526; }
         .episode-item:last-child { border-bottom: none; }
-
-        .episode-number {
-            background: #1a2540;
-            color: #aaa;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
+        .episode-number { background: #1a2540; color: #aaa; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
         .episode-info { flex: 1; }
         .episode-title { font-size: 14px; font-weight: 500; color: #ddd; }
         .episode-meta { font-size: 12px; color: #666; margin-top: 2px; }
         .episode-play { color: var(--unefa-blue); font-size: 14px; }
 
-
         /* REVIEWS */
         .reviews-container { margin-top: 48px; max-width: 700px; }
-
-        .avg-rating {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 28px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 8px;
-            padding: 16px 20px;
-        }
+        .avg-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 16px 20px; }
         .avg-score { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--unefa-bronze); line-height: 1; }
         .avg-stars { font-size: 20px; color: var(--unefa-bronze); letter-spacing: 2px; }
         .avg-count { font-size: 13px; color: #555; margin-top: 2px; }
-
-        .review-form {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 28px;
-        }
+        .review-form { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 20px; margin-bottom: 28px; }
         .review-form h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #66748f; margin-bottom: 16px; }
-
         .star-selector { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 6px; margin-bottom: 14px; }
         .star-selector input[type="radio"] { display: none; }
         .star-selector label { font-size: 26px; cursor: pointer; color: #333; transition: color 0.15s; }
         .star-selector input[type="radio"]:checked ~ label { color: var(--unefa-bronze); }
-        .star-selector label:hover,
-        .star-selector label:hover ~ label { color: var(--unefa-bronze); }
-
-        .review-textarea {
-            width: 100%;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 12px 14px;
-            border-radius: 4px;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            resize: vertical;
-            min-height: 90px;
-            margin-bottom: 12px;
-            transition: border-color 0.2s;
-        }
+        .star-selector label:hover, .star-selector label:hover ~ label { color: var(--unefa-bronze); }
+        .review-textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); padding: 12px 14px; border-radius: 4px; color: white; font-family: 'Inter', sans-serif; font-size: 14px; resize: vertical; min-height: 90px; margin-bottom: 12px; transition: border-color 0.2s; }
         .review-textarea:focus { outline: none; border-color: var(--unefa-blue); }
-
-        .btn-review {
-            background: var(--unefa-blue);
-            color: white;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: background 0.2s;
-        }
+        .btn-review { background: var(--unefa-blue); color: white; border: none; padding: 10px 22px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
         .btn-review:hover { background: var(--unefa-bronze); color: black; }
-
-        .upgrade-notice {
-            background: rgba(209,154,78,0.08);
-            border: 1px solid rgba(209,154,78,0.3);
-            border-radius: 8px;
-            padding: 16px 20px;
-            margin-bottom: 28px;
-            font-size: 14px;
-            color: #aaa;
-        }
+        .upgrade-notice { background: rgba(209,154,78,0.08); border: 1px solid rgba(209,154,78,0.3); border-radius: 8px; padding: 16px 20px; margin-bottom: 28px; font-size: 14px; color: #aaa; }
         .upgrade-notice a { color: var(--unefa-bronze); font-weight: 600; text-decoration: none; }
-
         .review-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 18px 0; }
         .review-item:last-child { border-bottom: none; }
         .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .review-avatar {
-            width: 34px; height: 34px; border-radius: 50%; object-fit: cover;
-            background: var(--unefa-blue); display: flex; align-items: center;
-            justify-content: center; font-size: 13px; font-weight: 600;
-            flex-shrink: 0; overflow: hidden;
-        }
+        .review-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--unefa-blue); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; overflow: hidden; }
         .review-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .review-username { font-size: 14px; font-weight: 600; color: #ddd; }
         .review-date { font-size: 12px; color: #444; margin-left: auto; }
         .review-stars { font-size: 14px; color: var(--unefa-bronze); letter-spacing: 1px; }
         .review-comment { font-size: 14px; color: #aaa; line-height: 1.7; margin-top: 6px; }
-        .btn-delete-review {
-            background: transparent; border: 1px solid rgba(255,74,74,0.3);
-            color: #ff4a4a; padding: 4px 12px; border-radius: 4px; font-size: 12px;
-            cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; margin-left: auto;
-        }
+        .btn-delete-review { background: transparent; border: 1px solid rgba(255,74,74,0.3); color: #ff4a4a; padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; margin-left: auto; }
         .btn-delete-review:hover { background: #ff4a4a; color: white; border-color: #ff4a4a; }
         .no-reviews { color: #444; font-size: 14px; padding: 20px 0; }
-        
+
         @media (max-width: 768px) {
             .hero { height: 45vh; }
             .btn-watchlist { margin-left: 0; margin-top: 10px; }
@@ -410,7 +238,19 @@
         <a href="{% url 'home' %}">
             <img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" height="40" alt="Uneflix">
         </a>
-        <a href="{% url 'home' %}" class="back-btn">← Volver</a>
+        <div style="display:flex; align-items:center; gap:16px;">
+            <a href="{% url 'home' %}" class="back-btn">← Volver</a>
+            <a href="{% url 'perfil' %}" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:#ccc;">
+                {% if request.user.avatar %}
+                    <img src="{{ request.user.avatar.url }}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid var(--unefa-bronze);">
+                {% else %}
+                    <div style="width:32px; height:32px; border-radius:50%; background:var(--unefa-blue); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; border:2px solid var(--unefa-bronze);">
+                        {{ request.user.display_name|default:request.user.username|first|upper }}
+                    </div>
+                {% endif %}
+                <span style="font-size:14px;">{{ request.user.display_name|default:request.user.username }}</span>
+            </a>
+        </div>
     </nav>
 
     <div class="hero">
@@ -433,7 +273,7 @@
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
                 {% if can_watch %}
-                    <a href="{% url 'player' movie.pk %}" class="btn-play">▶ Ver Ahora</a>
+                    <a href="#" class="btn-play" onclick="abrirAnuncioYReproductor(event, '{% url 'player' movie.pk %}')">▶ Ver Ahora</a>
                 {% else %}
                     <a href="{% url 'membresias' %}" class="btn-play" style="background:#d19a4e; color:black;">
                         🔒 Requiere Plan {% if movie.tier == 'premium' %}Ultra{% else %}Cinephile{% endif %}
@@ -511,6 +351,7 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+
                 <!-- REVIEWS -->
                 <div class="reviews-container">
                     <h3 class="trailer-title">Reseñas</h3>
@@ -603,6 +444,7 @@
                         <p class="no-reviews">Todavía no hay reseñas. ¡Sé el primero!</p>
                     {% endif %}
                 </div>
+
             </div>
         </div>
     </div>
@@ -618,6 +460,21 @@
             episodes.style.display = 'none';
             arrow.classList.remove('open');
         }
+    }
+
+    function abrirAnuncioYReproductor(event, urlReproductor) {
+        event.preventDefault();
+        const numeroAleatorio = Math.floor(Math.random() * 3) + 1;
+        let urlAnuncio = "";
+        if (numeroAleatorio === 1) { 
+            urlAnuncio = "{% url 'anuncio1' %}"; 
+        } else if (numeroAleatorio === 2) { 
+            urlAnuncio = "{% url 'anuncio2' %}"; 
+        } else { 
+            urlAnuncio = "{% url 'anuncio3' %}"; 
+        }
+        window.open(urlAnuncio, '_blank');
+        window.location.href = urlReproductor;
     }
     </script>
 
