@@ -121,6 +121,21 @@ def pago(request):
 @login_required(login_url='/users/login/')
 def episode_player(request, pk):
     episode = get_object_or_404(Episode, pk=pk)
+    
+    # Verificar plan del usuario vs tier de la serie
+    try:
+        membership = Membership.objects.get(user=request.user)
+        plan = membership.plan if membership.status == 'active' else 'free'
+    except Membership.DoesNotExist:
+        plan = 'free'
+
+    tier_required = {'free': 0, 'medium': 1, 'premium': 2, 'zerpanito': 2}
+    user_level = tier_required.get(plan, 0)
+    movie_level = tier_required.get(episode.season.series.tier, 0)
+
+    if user_level < movie_level:
+        return redirect('membresias')
+
     return render(request, 'movies/episode_player.html', {'episode': episode})
 
 
