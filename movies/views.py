@@ -83,7 +83,12 @@ def player_view(request, pk):
 
 @login_required(login_url='/users/login/')
 def membresias(request):
-    return render(request, 'movies/membresias.html')
+    try:
+        membership = Membership.objects.get(user=request.user)
+        plan = membership.plan if membership.status == 'active' else 'free'
+    except Membership.DoesNotExist:
+        plan = 'free'
+    return render(request, 'movies/membresias.html', {'plan': plan})
 
 @login_required(login_url='/users/login/')
 def pago(request):
