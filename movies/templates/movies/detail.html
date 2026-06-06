@@ -315,6 +315,17 @@
                 </div>
                 {% endif %}
 
+                {% if movie.imdb_url or movie.rotten_tomatoes_url %}
+                    <div class="external-links">
+                        {% if movie.imdb_url %}
+                        <a href="{{ movie.imdb_url }}" target="_blank" class="ext-btn imdb">IMDb</a>
+                        {% endif %}
+                        {% if movie.rotten_tomatoes_url %}
+                        <a href="{{ movie.rotten_tomatoes_url }}" target="_blank" class="ext-btn rt">Rotten Tomatoes</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
                 {% if movie.trailer_url %}
                 <div class="trailer-container">
                     <h3 class="trailer-title">Tráiler Oficial</h3>
@@ -478,5 +489,9 @@
     }
     </script>
 
+
+<footer style="text-align:center; padding:24px; font-family:'Inter',sans-serif; font-size:12px; color:#333; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px;">
+    © 2026 — Desarrollado por <span style="color:#d19a4e; font-weight:600;">Uneflix Team</span> · Todos los derechos reservados
+</footer>
 </body>
 </html>
