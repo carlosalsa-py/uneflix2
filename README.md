@@ -1,8 +1,10 @@
-# 🎬 Uneflix
+# Uneflix
 
-Plataforma de streaming de películas y series desarrollada con Django. Proyecto académico — UNEFA 2026.
+Plataforma de streaming de películas y series desarrollada con Django.
 
 **Equipo:** Fabiola Andrade · Carlos Belmonte · Oliver Garcia · Carlos Salcedo
+
+# GABRIEL VE A EL CHABOT DE LA MIKU ESTÁ EN LA PAGINA DE INICIO 
 
 ---
 
