@@ -43,27 +43,64 @@ source venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+### 4. Configurar variables de entorno
 
-### 4. Aplicar migraciones
+Este proyecto utiliza variables de entorno para los datos sensibles
+(SECRET_KEY) y la configuración que cambia entre desarrollo y producción
+(DEBUG, ALLOWED_HOSTS).
+
+**a)** Copia el archivo de ejemplo a tu propio `.env`:
+
+```bash
+# Mac/Linux
+cp .env.example .env
+
+# Windows (CMD)
+copy .env.example .env
+
+# Windows (PowerShell)
+Copy-Item .env.example .env
+```
+
+**b)** Genera una `SECRET_KEY` única para tu entorno:
+
+```bash
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
+Copia el valor que imprime y pégalo en tu `.env`, en la línea `SECRET_KEY=`.
+
+**c)** Abre tu `.env` y verifica que las otras variables estén configuradas
+para desarrollo:
+
+```
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
+```
+
+> ⚠️ **Importante:** el archivo `.env` contiene secretos y nunca debe
+> subirse al repositorio. Ya está incluido en `.gitignore`.
+
+### 5. Aplicar migraciones
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-### 5. Cargar datos iniciales
+### 6. Cargar datos iniciales
 
 ```bash
 python manage.py loaddata movies/fixtures/datos.json --exclude=movies.watchlist
 ```
 
-### 6. Crear superusuario
+### 7. Crear superusuario
 
 ```bash
 python manage.py createsuperuser
 ```
 
-### 7. Correr el servidor
+### 8. Correr el servidor
 
 ```bash
 python manage.py runserver
