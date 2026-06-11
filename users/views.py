@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from .models import Membership
 from movies.models import Review
+from movies.views import get_user_plan
 
 User = get_user_model()
 class CustomUserCreationForm(UserCreationForm):
@@ -86,11 +87,7 @@ def perfil_publico(request, username):
 
 @login_required(login_url='/users/login/')
 def perfil_editar(request):
-    try:
-        membership = Membership.objects.get(user=request.user)
-        plan = membership.plan if membership.status == 'active' else 'free'
-    except Membership.DoesNotExist:
-        plan = 'free'
+    plan = get_user_plan(request.user)
 
     if plan == 'free':
         return redirect('membresias')
