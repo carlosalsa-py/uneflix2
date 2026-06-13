@@ -4,7 +4,7 @@ from django.db.models import Avg
 from .models import Movie, Genre, Watchlist, Episode, Review
 from users.models import Membership
 
-TIER_LEVEL = {'free': 0, 'medium': 1, 'premium': 2, 'zerpanito': 2}
+TIER_LEVEL = {'free': 0, 'medium': 1, 'premium': 2}
 
 def get_user_plan(user):
     try:
@@ -116,13 +116,8 @@ def episode_player(request, pk):
     return render(request, 'movies/episode_player.html', {'episode': episode})
 
 
-# --------------------------------------------------------
-# VISTAS DE ANUNCIOS EMERGENTES
-# --------------------------------------------------------
-
 def anuncio(request, num):
     return render(request, f'movies/anuncio{num}.html')
-
 
 @login_required(login_url='/users/login/')
 def review_submit(request, pk):
@@ -143,7 +138,6 @@ def review_submit(request, pk):
             )
 
     return redirect('movie_detail', pk=pk)
-
 
 @login_required(login_url='/users/login/')
 def review_delete(request, pk):

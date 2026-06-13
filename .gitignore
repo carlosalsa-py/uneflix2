@@ -15,3 +15,4 @@ media/videos/
 *.mp4
 *.avi
 *.mov
+.claude/

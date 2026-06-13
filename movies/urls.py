@@ -8,8 +8,7 @@ urlpatterns = [
     path('watchlist/', views.watchlist_view, name='watchlist'),
     path('movie/<int:pk>/play/', views.player_view, name='player'),
     path('episode/<int:pk>/play/', views.episode_player, name='episode_player'),
-    
-    # Rutas para las membresías y la página de pago
+
     path('membresias/', views.membresias, name='membresias'),
     path('pago/', views.pago, name='pago'),
     
