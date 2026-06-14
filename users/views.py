@@ -12,8 +12,7 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'password1', 'password2')
-# --- VISTAS DE TÉRMINOS Y REGISTRO ---
-
+        
 def terms_view(request):
     return render(request, 'users/terms.html')
 
@@ -35,8 +34,6 @@ def register_view(request):
         form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
 
-# --- VISTAS DE AUTENTICACIÓN ---
-
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -51,8 +48,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-
-# --- VISTAS DE PERFIL ---
 
 @login_required(login_url='/users/login/')
 def perfil_view(request):

@@ -33,8 +33,8 @@ class Movie(models.Model):
     trailer_url = models.URLField(blank=True, null=True, help_text="Pega cualquier enlace de YouTube aquí")
     TIER_CHOICES = [
         ('free', 'Gratuito'),
-        ('medium', 'Cinephile'),
-        ('premium', 'Ultra - Estreno'),
+        ('medium', 'Cinéfilo'),
+        ('premium', 'Zerpanito'),
     ]
     tier = models.CharField(max_length=10, choices=TIER_CHOICES, default='free')
 

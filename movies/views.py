@@ -37,7 +37,7 @@ def movie_detail(request, pk):
 
     plan = get_user_plan(request.user)
     can_watch = TIER_LEVEL.get(plan, 0) >= TIER_LEVEL.get(movie.tier, 0)
-    can_review = plan in ('medium', 'premium', 'zerpanito')
+    can_review = TIER_LEVEL.get(plan, 0) >= TIER_LEVEL['medium']
 
     reviews = movie.reviews.select_related('user').all()
     user_review = reviews.filter(user=request.user).first()
@@ -86,12 +86,12 @@ def membresias(request):
 
 @login_required(login_url='/users/login/')
 def pago(request):
-    plan = request.GET.get('plan', 'Cinephile')
+    plan = request.GET.get('plan', 'Cinéfilo')
     precio = request.GET.get('precio', '2.99')
 
     if request.method == 'POST':
-        plan_nombre = request.POST.get('plan', 'Cinephile')
-        plan_map = {'Cinefilo': 'medium', 'Zerpanito': 'premium'}
+        plan_nombre = request.POST.get('plan', 'Cinéfilo')
+        plan_map = {'Cinéfilo': 'medium', 'Zerpanito': 'premium'}
         plan_code = plan_map.get(plan_nombre, 'medium')
 
         membership, _ = Membership.objects.get_or_create(user=request.user)
