@@ -273,7 +273,7 @@
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
                 {% if can_watch %}
-                    <a href="#" class="btn-play" onclick="abrirAnuncioYReproductor(event, '{% url 'player' movie.pk %}')">▶ Ver Ahora</a>
+                    <a href="{% url 'player' movie.pk %}" class="btn-play">▶ Ver Ahora</a>
                 {% else %}
                     <a href="{% url 'membresias' %}" class="btn-play" style="background:#d19a4e; color:black;">
                         🔒 Requiere Plan {% if movie.tier == 'premium' %}Ultra{% else %}Cinephile{% endif %}
@@ -473,20 +473,6 @@
         }
     }
 
-    function abrirAnuncioYReproductor(event, urlReproductor) {
-        event.preventDefault();
-        const numeroAleatorio = Math.floor(Math.random() * 3) + 1;
-        let urlAnuncio = "";
-        if (numeroAleatorio === 1) {
-            urlAnuncio = "{% url 'anuncio' 1 %}";
-        } else if (numeroAleatorio === 2) {
-            urlAnuncio = "{% url 'anuncio' 2 %}";
-        } else {
-            urlAnuncio = "{% url 'anuncio' 3 %}";
-        }
-        window.open(urlAnuncio, '_blank');
-        window.location.href = urlReproductor;
-    }
     </script>
 
 

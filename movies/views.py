@@ -116,9 +116,6 @@ def episode_player(request, pk):
     return render(request, 'movies/episode_player.html', {'episode': episode})
 
 
-def anuncio(request, num):
-    return render(request, f'movies/anuncio{num}.html')
-
 @login_required(login_url='/users/login/')
 def review_submit(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
