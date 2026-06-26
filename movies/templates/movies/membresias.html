@@ -145,6 +145,16 @@
             <p>Disfruta de todo nuestro catálogo en calidad DVD Rip adaptada para cualquier conexión.</p>
         </div>
 
+        {% if messages %}
+        <div style="width:100%; max-width:1000px; margin-bottom:24px;">
+            {% for message in messages %}
+            <div style="background:rgba(209,154,78,0.12); border:1px solid var(--unefa-bronze); color:#f0d9b5; padding:12px 16px; border-radius:4px; font-size:14px; text-align:center;">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         <div class="planes-grid">
             <div class="plan-card">
                 <div class="plan-title">Plan Unefista</div>
@@ -170,7 +180,7 @@
                     <li>Descargar películas a tu PC</li>
                     <li class="disabled">Ver en 3 pantallas al mismo tiempo</li>
                 </ul>
-                <a href="{% url 'pago' %}?plan=Cinefilo&precio=2.99" class="btn-select">{% if plan == 'medium' %}✓ Plan Actual{% else %}Cambiar Plan{% endif %}</a>
+                <a href="{% url 'pago' %}?plan=medium" class="btn-select">{% if plan == 'medium' %}✓ Plan Actual{% else %}Cambiar Plan{% endif %}</a>
             </div>
 
             <div class="plan-card">
@@ -183,7 +193,7 @@
                     <li>Descargar películas a tu PC</li>
                     <li>Ver hasta en 3 pantallas a la vez</li>
                 </ul>
-                <a href="{% url 'pago' %}?plan=Zerpanito&precio=4.99" class="btn-select">{% if plan == 'zerpanito' %}✓ Plan Actual{% else %}Cambiar Plan{% endif %}</a>
+                <a href="{% url 'pago' %}?plan=premium" class="btn-select">{% if plan == 'premium' %}✓ Plan Actual{% else %}Cambiar Plan{% endif %}</a>
             </div>
         </div>
     </div>

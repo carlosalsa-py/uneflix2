@@ -1,10 +1,26 @@
+import logging
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db.models import Avg
 from .models import Movie, Genre, Watchlist, Episode, Review
 from users.models import Membership
 
+logger = logging.getLogger(__name__)
+
 TIER_LEVEL = {'free': 0, 'medium': 1, 'premium': 2}
+
+# Fuente única de verdad de los planes pagos: el nombre visible y el precio se
+# derivan SIEMPRE del código de plan en el backend, nunca de lo que mande el
+# cliente. La clave es el código real del modelo Membership.
+PLANES = {
+    'medium': {'nombre': 'Cinéfilo', 'precio': '2.99'},
+    'premium': {'nombre': 'Zerpanito', 'precio': '4.99'},
+}
+
+# Tiers que pueden dejar reseñas (Cinéfilo y Zerpanito). Los Unefista (free) no.
+TIERS_CON_REVIEWS = ('medium', 'premium')
 
 def get_user_plan(user):
     try:
@@ -86,26 +102,42 @@ def membresias(request):
 
 @login_required(login_url='/users/login/')
 def pago(request):
-    plan = request.GET.get('plan', 'Cinéfilo')
-    precio = request.GET.get('precio', '2.99')
-
     if request.method == 'POST':
-        plan_nombre = request.POST.get('plan', 'Cinéfilo')
-        plan_map = {'Cinéfilo': 'medium', 'Zerpanito': 'premium'}
-        plan_code = plan_map.get(plan_nombre, 'medium')
+        codigo = request.POST.get('plan')
 
-        membership, _ = Membership.objects.get_or_create(user=request.user)
-        membership.plan = plan_code
-        membership.status = 'pending'
-        membership.save()
+        # Validación server-side: solo se aceptan planes de la lista blanca.
+        # Cualquier 'precio' que venga del cliente se ignora por completo.
+        if codigo not in PLANES:
+            messages.error(request, 'Plan inválido.')
+            return redirect('membresias')
+
+        try:
+            membership, _ = Membership.objects.get_or_create(user=request.user)
+            membership.plan = codigo
+            membership.status = 'pending'
+            membership.save()
+        except Exception as e:
+            logger.error(f'Error al registrar membresía para {request.user}: {e}')
+            messages.error(request, 'Hubo un problema al procesar el pago. Intentá de nuevo.')
+            return redirect('membresias')
 
         return render(request, 'movies/pago.html', {
-            'plan': plan_nombre,
-            'precio': precio,
+            'nombre': PLANES[codigo]['nombre'],
+            'precio': PLANES[codigo]['precio'],
+            'codigo': codigo,
             'success': True,
         })
 
-    return render(request, 'movies/pago.html', {'plan': plan, 'precio': precio, 'success': False})
+    codigo = request.GET.get('plan', 'medium')
+    if codigo not in PLANES:
+        codigo = 'medium'
+
+    return render(request, 'movies/pago.html', {
+        'nombre': PLANES[codigo]['nombre'],
+        'precio': PLANES[codigo]['precio'],
+        'codigo': codigo,
+        'success': False,
+    })
 
 @login_required(login_url='/users/login/')
 def episode_player(request, pk):
@@ -121,7 +153,7 @@ def review_submit(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
     plan = get_user_plan(request.user)
 
-    if plan not in ('medium', 'premium', 'zerpanito'):
+    if plan not in TIERS_CON_REVIEWS:
         return redirect('movie_detail', pk=pk)
 
     if request.method == 'POST':

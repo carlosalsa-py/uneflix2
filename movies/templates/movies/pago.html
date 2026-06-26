@@ -214,7 +214,7 @@
             <div class="success-icon">⏳</div>
             <h3>¡Solicitud Enviada!</h3>
             <div class="pending-badge">Pendiente de verificación</div>
-            <p>Tu solicitud de membresía <strong>Plan {{ plan }}</strong> está siendo revisada. Un administrador activará tu plan en breve.</p>
+            <p>Tu solicitud de membresía <strong>Plan {{ nombre }}</strong> está siendo revisada. Un administrador activará tu plan en breve.</p>
             <a href="{% url 'home' %}" class="btn-pay">Volver al inicio</a>
         </div>
 
@@ -224,15 +224,14 @@
         <div class="plan-summary">
             <div>
                 <p>Plan seleccionado</p>
-                <span>Plan {{ plan }}</span>
+                <span>Plan {{ nombre }}</span>
             </div>
             <span style="font-size: 18px;">${{ precio }}/mes</span>
         </div>
 
         <form id="paymentForm" method="post" action="{% url 'pago' %}">
             {% csrf_token %}
-            <input type="hidden" name="plan" value="{{ plan }}">
-            <input type="hidden" name="precio" value="{{ precio }}">
+            <input type="hidden" name="plan" value="{{ codigo }}">
 
             <div class="form-group">
                 <label for="cardname">Nombre en la tarjeta</label>

@@ -71,3 +71,35 @@ class ReviewTest(TestCase):
         self.client.login(username='testuser', password='pass1234')
         self.client.post(f'/movie/{self.movie.pk}/review/', {'rating': 4, 'comment': 'Good movie'})
         self.assertTrue(Review.objects.filter(user=self.user, movie=self.movie).exists())
+
+    def test_premium_user_can_submit_review(self):
+        Membership.objects.create(user=self.user, plan='premium', status='active')
+        self.client.login(username='testuser', password='pass1234')
+        self.client.post(f'/movie/{self.movie.pk}/review/', {'rating': 5, 'comment': 'Excellent'})
+        self.assertTrue(Review.objects.filter(user=self.user, movie=self.movie).exists())
+
+
+class PagoTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='pass1234')
+        self.client.login(username='testuser', password='pass1234')
+
+    def test_valid_plan_creates_pending_membership(self):
+        response = self.client.post('/pago/', {'plan': 'medium'})
+        self.assertEqual(response.status_code, 200)
+        membership = Membership.objects.get(user=self.user)
+        self.assertEqual(membership.plan, 'medium')
+        self.assertEqual(membership.status, 'pending')
+
+    def test_invalid_plan_is_rejected(self):
+        response = self.client.post('/pago/', {'plan': 'hack'})
+        self.assertRedirects(response, '/membresias/')
+        self.assertFalse(Membership.objects.filter(user=self.user).exists())
+
+    def test_client_price_is_ignored(self):
+        # Aunque el cliente mande un precio adulterado, el backend usa el suyo
+        # y nunca persiste el precio del POST.
+        self.client.post('/pago/', {'plan': 'premium', 'precio': '0.01'})
+        membership = Membership.objects.get(user=self.user)
+        self.assertEqual(membership.plan, 'premium')
