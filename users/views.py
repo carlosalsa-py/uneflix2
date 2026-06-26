@@ -3,6 +3,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from .models import Membership
 from movies.models import Review
 from movies.views import get_user_plan
@@ -16,7 +17,11 @@ class CustomUserCreationForm(UserCreationForm):
 def terms_view(request):
     return render(request, 'users/terms.html')
 
+@require_POST
 def accept_terms(request):
+    # Aceptar términos modifica estado (flag de sesión previo al registro), por
+    # lo que debe ser POST exclusivamente. Un GET responde 405 automáticamente.
+    # No lleva @login_required: se usa antes de que exista el usuario.
     request.session['accepted_terms'] = True
     return redirect('register')
 
