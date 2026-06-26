@@ -116,6 +116,35 @@ Luego accede desde el celular con `http://<IP-de-tu-PC>:8000`
 
 ---
 
+## Configuración de Producción
+
+> ⚠️ **`DEBUG=False` es OBLIGATORIO en producción.**
+
+El proyecto lee `DEBUG`, `SECRET_KEY` y `ALLOWED_HOSTS` desde variables de
+entorno. Para un deploy, configurá:
+
+```
+DEBUG=False
+SECRET_KEY=<generar una nueva, única y secreta>
+ALLOWED_HOSTS=tu-dominio.com
+```
+
+Correr con `DEBUG=True` en producción expone stack traces, settings y
+posibles credenciales (incluida la `SECRET_KEY`) a cualquier visitante que
+provoque un error. Es una vulnerabilidad crítica de seguridad.
+
+Notas:
+
+- `SECRET_KEY` nunca se hardcodea ni se commitea. Si la del repo estuvo
+  expuesta alguna vez, **rotala** generando una nueva con
+  `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`
+  y configurándola en el entorno del hosting.
+- En el hosting (Railway/Render/Fly.io, etc.) las variables se configuran
+  desde el panel del servicio, no en un archivo `.env`.
+- `settings.py` usa default seguro: si `DEBUG` no está definida, vale `False`.
+
+---
+
 ## Guardar cambios en la base de datos
 
 ```bash
@@ -205,7 +234,7 @@ uneflix2/
 |---|---|---|---|
 | Unefista | `free` | Gratis | Contenido básico + anuncios |
 | Cinéfilo | `medium` | $2.99/mes | Catálogo completo sin anuncios |
-| Zerpanito | `zerpanito` | $4.99/mes | Todo + 3 pantallas simultáneas |
+| Zerpanito | `premium` | $4.99/mes | Todo + 3 pantallas simultáneas |
 
 - Control de acceso por tier: cada contenido tiene un nivel requerido (`free`, `medium`, `premium`)
 - El contenido bloqueado muestra un candado con el plan requerido
