@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Perfil — Uneflix</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <style>
         :root {
             --bg-dark: #070b12;
@@ -23,8 +24,8 @@
             color: white;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
             padding: 20px;
         }
 
@@ -50,6 +51,7 @@
             background: var(--card-bg);
             width: 100%;
             max-width: 440px;
+            margin: auto;
             border-radius: 8px;
             padding: 40px 32px;
             border: 1px solid rgba(255,255,255,0.05);
@@ -146,6 +148,63 @@
             align-items: center;
         }
         .btn-cancel:hover { color: white; border-color: rgba(255,255,255,0.2); }
+
+        /* --- Modal del cropper --- */
+        .cropper-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .cropper-overlay.open { display: flex; }
+
+        .cropper-modal {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 440px;
+            border-radius: 8px;
+            padding: 28px 24px;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+        }
+
+        .cropper-modal h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .cropper-stage {
+            width: 100%;
+            max-height: 360px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        /* La imagen la maneja Cropper.js; limitamos la altura del contenedor. */
+        .cropper-stage img { display: block; max-width: 100%; }
+
+        .cropper-modal .btn-row { margin-top: 20px; }
+
+        .btn-cancel-modal {
+            flex: 1;
+            background: rgba(255,255,255,0.04);
+            color: #aaa;
+            padding: 13px;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.2s;
+        }
+        .btn-cancel-modal:hover { color: white; border-color: rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
@@ -179,8 +238,109 @@
         </form>
     </div>
 
-<footer style="text-align:center; padding:24px; font-family:'Inter',sans-serif; font-size:12px; color:#333; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px;">
+<footer style="width:100%; text-align:center; padding:24px; font-family:'Inter',sans-serif; font-size:12px; color:#333; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px;">
     © 2026 — Desarrollado por <span style="color:#d19a4e; font-weight:600;">Uneflix Team</span> · Todos los derechos reservados
 </footer>
+
+    <!-- Modal de recorte de avatar -->
+    <div class="cropper-overlay" id="cropperOverlay">
+        <div class="cropper-modal">
+            <h3>Recortar foto de perfil</h3>
+            <div class="cropper-stage">
+                <img id="cropperImage" alt="">
+            </div>
+            <div class="btn-row">
+                <button type="button" class="btn-primary" id="cropConfirm">Confirmar</button>
+                <button type="button" class="btn-cancel-modal" id="cropCancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script>
+    (function () {
+        const EXPORT_SIZE = 128; // resolución final del avatar (128x128)
+
+        const input = document.getElementById('avatar');
+        const overlay = document.getElementById('cropperOverlay');
+        const image = document.getElementById('cropperImage');
+        const confirmBtn = document.getElementById('cropConfirm');
+        const cancelBtn = document.getElementById('cropCancel');
+
+        let cropper = null;
+        let objectUrl = null;
+
+        // Evita re-disparar el cambio cuando inyectamos el archivo recortado
+        // de vuelta en el input.
+        let injecting = false;
+
+        function cleanup() {
+            if (cropper) { cropper.destroy(); cropper = null; }
+            if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = null; }
+            image.src = '';
+        }
+
+        function closeModal() {
+            overlay.classList.remove('open');
+            cleanup();
+        }
+
+        input.addEventListener('change', function () {
+            if (injecting) { injecting = false; return; }
+
+            const file = input.files && input.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                input.value = '';
+                return;
+            }
+
+            cleanup();
+            objectUrl = URL.createObjectURL(file);
+            image.src = objectUrl;
+            overlay.classList.add('open');
+
+            cropper = new Cropper(image, {
+                aspectRatio: 1,          // recorte cuadrado 1:1
+                viewMode: 1,
+                autoCropArea: 1,
+                background: false,
+                responsive: true,
+            });
+        });
+
+        cancelBtn.addEventListener('click', function () {
+            // No se sube nada: limpiamos el input.
+            input.value = '';
+            closeModal();
+        });
+
+        confirmBtn.addEventListener('click', function () {
+            if (!cropper) return;
+
+            const canvas = cropper.getCroppedCanvas({
+                width: EXPORT_SIZE,
+                height: EXPORT_SIZE,
+                imageSmoothingQuality: 'high',
+            });
+
+            canvas.toBlob(function (blob) {
+                if (!blob) { closeModal(); return; }
+
+                const cropped = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
+
+                // Reinyectamos el archivo recortado en el <input> original
+                // vía DataTransfer, sin tocar la estructura del <form>.
+                const dt = new DataTransfer();
+                dt.items.add(cropped);
+                injecting = true;
+                input.files = dt.files;
+
+                closeModal();
+            }, 'image/jpeg', 0.9);
+        });
+    })();
+    </script>
 </body>
 </html>
