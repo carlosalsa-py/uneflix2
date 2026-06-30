@@ -3,12 +3,22 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.views.decorators.http import require_POST
+from PIL import Image, UnidentifiedImageError
 from .models import Membership
 from movies.models import Review
 from movies.views import get_user_plan
 
 User = get_user_model()
+
+# Contrato del avatar: el cropper del frontend siempre exporta un JPEG de
+# exactamente 128x128px. Estas constantes son el respaldo server-side por si
+# alguien saltea el JS (request directo, DevTools). Las dimensiones se exigen
+# exactas, no "hasta": cualquier tamaño distinto significa que el archivo no
+# pasó por nuestro pipeline, así que se rechaza.
+AVATAR_MAX_BYTES = 128 * 1024  # 128KB
+AVATAR_SIZE = (128, 128)
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
@@ -95,9 +105,32 @@ def perfil_editar(request):
     if request.method == 'POST':
         display_name = request.POST.get('display_name', '')
         avatar = request.FILES.get('avatar')
-        request.user.display_name = display_name
+
         if avatar:
+            # Validación de respaldo: el JS puede saltearse, así que nunca
+            # confiamos en que el archivo ya venga recortado. Si algo no
+            # cuadra, no guardamos nada y avisamos (patrón de pago()).
+            if avatar.size > AVATAR_MAX_BYTES:
+                messages.error(request, 'La foto de perfil supera los 128KB permitidos.')
+                return redirect('perfil_editar')
+
+            try:
+                image = Image.open(avatar)
+                image.verify()
+            except (UnidentifiedImageError, OSError):
+                messages.error(request, 'El archivo no es una imagen válida.')
+                return redirect('perfil_editar')
+
+            if image.size != AVATAR_SIZE:
+                messages.error(request, 'La foto de perfil debe ser de exactamente 128x128 píxeles.')
+                return redirect('perfil_editar')
+
+            # verify() consume el archivo; lo rebobinamos para que Django
+            # guarde el contenido completo y no un stream vacío.
+            avatar.seek(0)
             request.user.avatar = avatar
+
+        request.user.display_name = display_name
         request.user.save()
         return redirect('perfil')
 
