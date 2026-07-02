@@ -120,16 +120,41 @@
 
         .dot.active { background: var(--unefa-bronze); width: 24px; border-radius: 4px; }
 
-        /* FILTROS Y GRID */
-        .genres-filter { display: flex; gap: 8px; flex-wrap: wrap; padding: 24px var(--gutter) 20px; }
-
-        .genre-btn {
-            background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.15);
-            padding: 6px 18px; border-radius: 20px; cursor: pointer; font-size: 13px;
-            font-family: 'Inter', sans-serif; font-weight: 500; transition: all 0.2s;
+        /* FLECHAS DEL BANNER — franja lateral, sin borde circular */
+        .banner-arrow {
+            position: absolute; top: 0; bottom: 0; z-index: 5;
+            width: 72px; border: none; background: transparent;
+            color: white; font-size: 48px; line-height: 1; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0.55; transition: opacity 0.2s, background 0.2s;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.7);
         }
+        .banner:hover .banner-arrow { opacity: 0.85; }
+        .banner-arrow:hover { opacity: 1; }
+        .banner-arrow.prev { left: 0; }
+        .banner-arrow.next { right: 0; }
+        .banner-arrow.prev:hover { background: linear-gradient(to right, rgba(0,0,0,0.45), transparent); }
+        .banner-arrow.next:hover { background: linear-gradient(to left, rgba(0,0,0,0.45), transparent); }
+        @media (max-width: 480px) { .banner-arrow { width: 48px; font-size: 38px; } }
 
-        .genre-btn:hover, .genre-btn.active { background: var(--unefa-blue); border-color: var(--unefa-blue); }
+        /* FILTROS Y GRID */
+        .genres-filter { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; padding: 24px var(--gutter) 20px; }
+
+        .genre-label { font-size: 11px; color: #66748f; text-transform: uppercase; letter-spacing: 0.8px; }
+
+        .genre-select {
+            background: rgba(0,0,0,0.35); color: white;
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 9px 38px 9px 14px; border-radius: 8px;
+            font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+            cursor: pointer; outline: none; transition: border-color 0.2s;
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239aa7bd' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 14px center;
+        }
+        .genre-select:focus { border-color: var(--unefa-blue); }
+        .genre-select:hover { border-color: rgba(255,255,255,0.25); }
+        .genre-select option { background: #101726; color: white; }
 
         .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; padding: 0 var(--gutter) 16px; color: #e5e5e5; }
 
@@ -225,6 +250,10 @@
             </div>
         </div>
         {% endfor %}
+        {% if featured_movies|length > 1 %}
+        <button class="banner-arrow prev" onclick="prevSlide()" aria-label="Anterior">‹</button>
+        <button class="banner-arrow next" onclick="nextSlide()" aria-label="Siguiente">›</button>
+        {% endif %}
         <div class="banner-dots">
             {% for movie in featured_movies %}
             <span class="dot" data-index="{{ forloop.counter0 }}"></span>
@@ -234,10 +263,13 @@
     {% endif %}
 
     <div class="genres-filter">
-        <button class="genre-btn active" onclick="filterGenre('all', this)">Todos</button>
-        {% for genre in genres %}
-        <button class="genre-btn" onclick="filterGenre('{{ genre.name }}', this)">{{ genre.name }}</button>
-        {% endfor %}
+        <label for="genreSelect" class="genre-label">Género</label>
+        <select id="genreSelect" class="genre-select" onchange="filterGenre(this.value)">
+            <option value="all">Todos</option>
+            {% for genre in genres %}
+            <option value="{{ genre.name }}">{{ genre.name }}</option>
+            {% endfor %}
+        </select>
     </div>
 
     <!-- PELÍCULAS -->
@@ -316,22 +348,27 @@
             current = index;
         }
 
+        let autoTimer;
+        function resetAuto() {
+            clearInterval(autoTimer);
+            autoTimer = setInterval(() => showSlide((current + 1) % slides.length), 6000);
+        }
+
+        function nextSlide() { showSlide((current + 1) % slides.length); resetAuto(); }
+        function prevSlide() { showSlide((current - 1 + slides.length) % slides.length); resetAuto(); }
+
         dots.forEach(dot => {
-            dot.addEventListener('click', () => showSlide(parseInt(dot.dataset.index)));
+            dot.addEventListener('click', () => { showSlide(parseInt(dot.dataset.index)); resetAuto(); });
         });
 
         if (slides.length > 0) {
             showSlide(0);
-            setInterval(() => {
-                showSlide((current + 1) % slides.length);
-            }, 6000);
+            resetAuto();
         }
 
-        function filterGenre(genre, btn) {
-            document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        function filterGenre(genre) {
             const titulo = document.getElementById('section-title');
-            titulo.textContent = genre === 'all' ? 'Todas las Películas' : 'Películas de ' + btn.textContent;
+            titulo.textContent = genre === 'all' ? 'Todas las Películas' : 'Películas de ' + genre;
             document.querySelectorAll('.movie-card').forEach(card => {
                 const link = card.closest('a');
                 if (genre === 'all' || card.dataset.genres.includes(genre)) {

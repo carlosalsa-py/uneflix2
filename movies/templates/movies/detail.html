@@ -217,9 +217,11 @@
         .review-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 18px 0; }
         .review-item:last-child { border-bottom: none; }
         .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .review-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--unefa-blue); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; overflow: hidden; }
+        .review-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--unefa-blue); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; overflow: hidden; color: white; text-decoration: none; cursor: pointer; transition: box-shadow 0.2s; }
+        .review-avatar:hover { box-shadow: 0 0 0 2px var(--unefa-bronze); }
         .review-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .review-username { font-size: 14px; font-weight: 600; color: #ddd; }
+        .review-username { font-size: 14px; font-weight: 600; color: #ddd; text-decoration: none; transition: color 0.2s; }
+        .review-username:hover { color: var(--unefa-bronze); }
         .review-date { font-size: 12px; color: #444; margin-left: auto; }
         .review-stars { font-size: 14px; color: var(--unefa-bronze); letter-spacing: 1px; }
         .review-comment { font-size: 14px; color: #aaa; line-height: 1.7; margin-top: 6px; }
@@ -436,15 +438,15 @@
                         {% for review in reviews %}
                         <div class="review-item">
                             <div class="review-header">
-                                <div class="review-avatar">
+                                <a href="{% url 'perfil_publico' review.user.username %}" class="review-avatar">
                                     {% if review.user.avatar %}
                                         <img src="{{ review.user.avatar.url }}" alt="">
                                     {% else %}
                                         {{ review.user.display_name|default:review.user.username|first|upper }}
                                     {% endif %}
-                                </div>
+                                </a>
                                 <div>
-                                    <div class="review-username">{{ review.user.display_name|default:review.user.username }}</div>
+                                    <a href="{% url 'perfil_publico' review.user.username %}" class="review-username">{{ review.user.display_name|default:review.user.username }}</a>
                                     <div class="review-stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
                                 </div>
                                 <span class="review-date">{{ review.created_at|date:"d/m/Y" }}</span>
