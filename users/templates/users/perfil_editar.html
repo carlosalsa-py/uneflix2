@@ -162,17 +162,19 @@
         }
         .cropper-overlay.open { display: flex; }
 
-        .cropper-modal {
+        /* Nombre propio (crop-dialog) para no chocar con .cropper-modal, que
+           es la clase interna que Cropper.js usa para su overlay. */
+        .crop-dialog {
             background: var(--card-bg);
             width: 100%;
-            max-width: 440px;
+            max-width: 380px;
             border-radius: 8px;
             padding: 28px 24px;
             border: 1px solid rgba(255,255,255,0.08);
             box-shadow: 0 15px 35px rgba(0,0,0,0.8);
         }
 
-        .cropper-modal h3 {
+        .crop-dialog h3 {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 22px;
             letter-spacing: 1px;
@@ -181,15 +183,15 @@
 
         .cropper-stage {
             width: 100%;
-            max-height: 360px;
+            aspect-ratio: 1 / 1;   /* área de recorte cuadrada */
             background: rgba(0,0,0,0.4);
             border-radius: 4px;
             overflow: hidden;
         }
-        /* La imagen la maneja Cropper.js; limitamos la altura del contenedor. */
+        /* La imagen la maneja Cropper.js dentro del cuadro. */
         .cropper-stage img { display: block; max-width: 100%; }
 
-        .cropper-modal .btn-row { margin-top: 20px; }
+        .crop-dialog .btn-row { margin-top: 20px; }
 
         .btn-cancel-modal {
             flex: 1;
@@ -244,7 +246,7 @@
 
     <!-- Modal de recorte de avatar -->
     <div class="cropper-overlay" id="cropperOverlay">
-        <div class="cropper-modal">
+        <div class="crop-dialog">
             <h3>Recortar foto de perfil</h3>
             <div class="cropper-stage">
                 <img id="cropperImage" alt="">
@@ -306,6 +308,7 @@
                 viewMode: 1,
                 autoCropArea: 1,
                 background: false,
+                modal: false,            // sin fade sobre la imagen; solo oscurece el fondo de la página
                 responsive: true,
             });
         });
