@@ -1,264 +1,137 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finalizar Suscripción - Uneflix</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #070b12;
-            --card-bg: #101726;
-            --unefa-blue: #004bca;
-            --unefa-bronze: #d19a4e;
-        }
+{% extends 'base.html' %}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+{% block title %}Finalizar Suscripción — Uneflix{% endblock %}
 
-        body {
-            background-color: var(--bg-dark);
-            font-family: 'Inter', sans-serif;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
+{% block extra_css %}
+<style>
+    .pay-wrap { display: flex; justify-content: center; padding: 48px var(--gutter); }
+    .payment-box {
+        background: var(--card-bg); width: 100%; max-width: 450px; border-radius: 8px;
+        padding: 40px 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.8); position: relative;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
 
-        .payment-box {
-            background: var(--card-bg);
-            width: 100%;
-            max-width: 450px;
-            margin: auto;
-            border-radius: 8px;
-            padding: 40px 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            position: relative;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
+    .logo-center {
+        color: white; font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 4px;
+        text-align: center; margin-bottom: 24px; display: block; text-decoration: none;
+    }
+    .logo-center span { color: var(--unefa-bronze); }
 
-        .logo-center {
-            color: white;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 36px;
-            letter-spacing: 4px;
-            text-align: center;
-            margin-bottom: 24px;
-            display: block;
-            text-decoration: none;
-        }
+    .payment-box h2 { font-size: 18px; font-weight: 500; margin-bottom: 16px; color: #fff; }
 
-        .logo-center span { color: var(--unefa-bronze); }
+    .plan-summary {
+        background: rgba(255,255,255,0.03); padding: 12px 16px; border-radius: 4px;
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
+        border-left: 3px solid var(--unefa-blue);
+    }
+    .plan-summary span { font-weight: 600; color: #fff; }
+    .plan-summary p { font-size: 13px; color: #aaa; }
 
-        h2 {
-            font-size: 18px;
-            font-weight: 500;
-            margin-bottom: 16px;
-            color: #fff;
-        }
+    .form-group { margin-bottom: 18px; }
+    .payment-box label { display: block; font-size: 12px; color: #aaa; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .payment-box input {
+        width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+        padding: 12px 16px; border-radius: 4px; color: white; font-family: 'Inter', sans-serif;
+        font-size: 14px; transition: all 0.2s;
+    }
+    .payment-box input:focus { outline: none; background: rgba(0,0,0,0.5); border-color: var(--unefa-blue); }
+    .row-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-        .plan-summary {
-            background: rgba(255,255,255,0.03);
-            padding: 12px 16px;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            border-left: 3px solid var(--unefa-blue);
-        }
+    .btn-pay {
+        width: 100%; background: var(--unefa-blue); color: white; border: none; padding: 14px;
+        border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px;
+        transition: all 0.2s; font-family: 'Inter', sans-serif;
+    }
+    .btn-pay:hover { background: var(--unefa-bronze); color: #000; }
 
-        .plan-summary span { font-weight: 600; color: #fff; }
-        .plan-summary p { font-size: 13px; color: #aaa; }
+    .loading-overlay {
+        position: absolute; inset: 0; background: var(--card-bg); border-radius: 8px;
+        display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10;
+    }
+    .spinner {
+        width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--unefa-blue);
+        border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-        .form-group { margin-bottom: 18px; }
+    .success-overlay {
+        position: absolute; inset: 0; background: var(--card-bg); border-radius: 8px;
+        display: {% if success %}flex{% else %}none{% endif %}; flex-direction: column;
+        align-items: center; justify-content: center; text-align: center; padding: 30px; z-index: 20;
+    }
+    .success-icon {
+        width: 60px; height: 60px; background: rgba(0, 75, 202, 0.15); color: var(--unefa-blue);
+        border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 20px;
+    }
+    .success-overlay h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 8px; }
+    .success-overlay p { font-size: 13px; color: #aaa; line-height: 1.6; margin-bottom: 24px; }
+    .pending-badge {
+        background: rgba(209, 154, 78, 0.15); border: 1px solid var(--unefa-bronze); color: var(--unefa-bronze);
+        padding: 8px 16px; border-radius: 4px; font-size: 13px; margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
 
-        label {
-            display: block;
-            font-size: 12px;
-            color: #aaa;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+{% block content %}
+    <div class="pay-wrap">
+        <div class="payment-box">
 
-        input {
-            width: 100%;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px 16px;
-            border-radius: 4px;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            background: rgba(0,0,0,0.5);
-            border-color: var(--unefa-blue);
-        }
-
-        .row-inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .btn-pay {
-            width: 100%;
-            background: var(--unefa-blue);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .btn-pay:hover { background: var(--unefa-bronze); color: #000; }
-
-        .loading-overlay {
-            position: absolute;
-            inset: 0;
-            background: var(--card-bg);
-            border-radius: 8px;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top-color: var(--unefa-blue);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 16px;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .success-overlay {
-            position: absolute;
-            inset: 0;
-            background: var(--card-bg);
-            border-radius: 8px;
-            display: {% if success %}flex{% else %}none{% endif %};
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 30px;
-            z-index: 20;
-        }
-
-        .success-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(0, 75, 202, 0.15);
-            color: var(--unefa-blue);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-
-        .success-overlay h3 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 28px;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .success-overlay p {
-            font-size: 13px;
-            color: #aaa;
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
-
-        .pending-badge {
-            background: rgba(209, 154, 78, 0.15);
-            border: 1px solid var(--unefa-bronze);
-            color: var(--unefa-bronze);
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="payment-box">
-
-        <div class="loading-overlay" id="loadingOverlay">
-            <div class="spinner"></div>
-            <p style="font-size: 14px; color: #ccc;">Procesando solicitud...</p>
-        </div>
-
-        <div class="success-overlay" id="successOverlay">
-            <div class="success-icon">⏳</div>
-            <h3>¡Solicitud Enviada!</h3>
-            <div class="pending-badge">Pendiente de verificación</div>
-            <p>Tu solicitud de membresía <strong>Plan {{ nombre }}</strong> está siendo revisada. Un administrador activará tu plan en breve.</p>
-            <a href="{% url 'home' %}" class="btn-pay">Volver al inicio</a>
-        </div>
-
-        <a href="{% url 'home' %}" class="logo-center">UNE<span>FLIX</span></a>
-
-        <h2>Detalles de la Suscripción</h2>
-        <div class="plan-summary">
-            <div>
-                <p>Plan seleccionado</p>
-                <span>Plan {{ nombre }}</span>
-            </div>
-            <span style="font-size: 18px;">${{ precio }}/mes</span>
-        </div>
-
-        <form id="paymentForm" method="post" action="{% url 'pago' %}">
-            {% csrf_token %}
-            <input type="hidden" name="plan" value="{{ codigo }}">
-
-            <div class="form-group">
-                <label for="cardname">Nombre en la tarjeta</label>
-                <input type="text" id="cardname" placeholder="Oscar Zerpa" required>
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+                <p style="font-size: 14px; color: #ccc;">Procesando solicitud...</p>
             </div>
 
-            <div class="form-group">
-                <label for="cardnumber">Número de tarjeta</label>
-                <input type="text" id="cardnumber" placeholder="4556 •••• •••• 4321" maxlength="19" required>
+            <div class="success-overlay" id="successOverlay">
+                <div class="success-icon">⏳</div>
+                <h3>¡Solicitud Enviada!</h3>
+                <div class="pending-badge">Pendiente de verificación</div>
+                <p>Tu solicitud de membresía <strong>Plan {{ nombre }}</strong> está siendo revisada. Un administrador activará tu plan en breve.</p>
+                <a href="{% url 'home' %}" class="btn-pay">Volver al inicio</a>
             </div>
 
-            <div class="row-inputs">
-                <div class="form-group">
-                    <label for="expdate">Vencimiento</label>
-                    <input type="text" id="expdate" placeholder="MM/AA" maxlength="5" required>
+            <a href="{% url 'home' %}" class="logo-center">UNE<span>FLIX</span></a>
+
+            <h2>Detalles de la Suscripción</h2>
+            <div class="plan-summary">
+                <div>
+                    <p>Plan seleccionado</p>
+                    <span>Plan {{ nombre }}</span>
                 </div>
-                <div class="form-group">
-                    <label for="cvv">Código CVV</label>
-                    <input type="password" id="cvv" placeholder="•••" maxlength="3" required>
-                </div>
+                <span style="font-size: 18px;">${{ precio }}/mes</span>
             </div>
 
-            <button type="submit" class="btn-pay" onclick="mostrarLoading()">Activar Membresía</button>
-        </form>
+            <form id="paymentForm" method="post" action="{% url 'pago' %}">
+                {% csrf_token %}
+                <input type="hidden" name="plan" value="{{ codigo }}">
+
+                <div class="form-group">
+                    <label for="cardname">Nombre en la tarjeta</label>
+                    <input type="text" id="cardname" placeholder="Oscar Zerpa" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cardnumber">Número de tarjeta</label>
+                    <input type="text" id="cardnumber" placeholder="4556 •••• •••• 4321" maxlength="19" required>
+                </div>
+
+                <div class="row-inputs">
+                    <div class="form-group">
+                        <label for="expdate">Vencimiento</label>
+                        <input type="text" id="expdate" placeholder="MM/AA" maxlength="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">Código CVV</label>
+                        <input type="password" id="cvv" placeholder="•••" maxlength="3" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-pay" onclick="mostrarLoading()">Activar Membresía</button>
+            </form>
+        </div>
     </div>
+{% endblock %}
 
+{% block extra_js %}
     <script>
         document.getElementById('cardnumber').addEventListener('input', function(e) {
             e.target.value = e.target.value.replace(/[^\d]/g, '').replace(/(.{4})/g, '$1 ').trim();
@@ -272,10 +145,4 @@
             document.getElementById('loadingOverlay').style.display = 'flex';
         }
     </script>
-
-
-<footer style="width:100%; text-align:center; padding:24px; font-family:'Inter',sans-serif; font-size:12px; color:#333; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px;">
-    © 2026 — Desarrollado por <span style="color:#d19a4e; font-weight:600;">Uneflix Team</span> · Todos los derechos reservados
-</footer>
-</body>
-</html>
+{% endblock %}

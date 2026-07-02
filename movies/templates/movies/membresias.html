@@ -1,145 +1,57 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Membresías - Uneflix</title>
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --gutter: max(24px, calc((100% - 1280px - 4cm) / 2));
-            --bg-dark: #070b12;        
-            --unefa-blue: #004bca;     
-            --unefa-bronze: #d19a4e;   
-            --unefa-yellow: #ffcc00;   
-        }
+{% extends 'base.html' %}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            background-color: var(--bg-dark);
-            font-family: 'Inter', sans-serif;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+{% block title %}Membresías — Uneflix{% endblock %}
 
-        /* LOGO CON "CAMBIAZO" A IMAGEN */
-        .logo {
-            display: inline-block;
-            width: 200px;
-            height: 50px;
-            background-image: url("{% static 'images/logo.png' %}");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            text-indent: -9999px;
-            overflow: hidden;
-            line-height: 0;
-            color: transparent !important;
-            text-decoration: none;
-        }
+{% block extra_css %}
+<style>
+    .main-container { display: flex; flex-direction: column; align-items: center; padding: 48px var(--gutter); }
 
-        .logo span { display: none; }
+    .header-section { text-align: center; margin-bottom: 40px; }
+    .header-section h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(32px, 5vw, 54px); letter-spacing: 2px; margin-bottom: 10px; }
+    .header-section p { color: #aaa; font-size: clamp(14px, 1.5vw, 18px); font-weight: 300; }
 
-        nav {
-            background: var(--bg-dark);
-            padding: 16px var(--gutter);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            border-bottom: 2px solid var(--unefa-bronze);
-        }
+    .planes-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px; max-width: 1000px; width: 100%;
+    }
 
-        .main-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px var(--gutter);
-        }
+    .plan-card {
+        background: rgba(255, 255, 255, 0.03); border-radius: 8px; padding: 32px 24px;
+        display: flex; flex-direction: column; border: 2px solid transparent;
+        transition: transform 0.3s, box-shadow 0.3s; position: relative;
+    }
+    .plan-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .plan-card.featured { border-color: var(--unefa-bronze); background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%); }
 
-        .header-section { text-align: center; margin-bottom: 40px; }
-        .header-section h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(32px, 5vw, 54px); letter-spacing: 2px; margin-bottom: 10px; }
-        .header-section p { color: #aaa; font-size: clamp(14px, 1.5vw, 18px); font-weight: 300; }
+    .badge {
+        position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+        background: var(--unefa-bronze); color: black; font-size: 11px;
+        font-weight: 700; padding: 4px 12px; border-radius: 20px;
+        text-transform: uppercase; letter-spacing: 1px;
+    }
 
-        .planes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            max-width: 1000px;
-            width: 100%;
-        }
+    .plan-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 8px; }
+    .plan-price { font-size: 36px; font-weight: 600; margin-bottom: 24px; color: #fff; }
+    .plan-price span { font-size: 14px; color: #888; font-weight: 300; }
 
-        .plan-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            padding: 32px 24px;
-            display: flex;
-            flex-direction: column;
-            border: 2px solid transparent;
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-        }
+    .plan-features { list-style: none; margin-bottom: 32px; flex: 1; }
+    .plan-features li { font-size: 14px; color: #ccc; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .plan-features li::before { content: "✓"; color: var(--unefa-blue); font-weight: bold; }
+    .plan-features li.disabled { color: #555; text-decoration: line-through; }
+    .plan-features li.disabled::before { content: "✕"; color: #444; }
 
-        .plan-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .plan-card.featured { border-color: var(--unefa-bronze); background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%); }
+    .btn-select {
+        background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);
+        padding: 12px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer;
+        text-align: center; text-decoration: none; transition: all 0.2s;
+    }
+    .btn-select:hover { background: white; color: black; }
+    .featured .btn-select { background: var(--unefa-blue); border-color: var(--unefa-blue); }
+    .featured .btn-select:hover { background: var(--unefa-bronze); border-color: var(--unefa-bronze); color: white; }
+</style>
+{% endblock %}
 
-        .badge {
-            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-            background: var(--unefa-bronze); color: black; font-size: 11px;
-            font-weight: 700; padding: 4px 12px; border-radius: 20px;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-
-        .plan-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 8px; }
-        .plan-price { font-size: 36px; font-weight: 600; margin-bottom: 24px; color: #fff; }
-        .plan-price span { font-size: 14px; color: #888; font-weight: 300; }
-
-        .plan-features { list-style: none; margin-bottom: 32px; flex: 1; }
-        .plan-features li { font-size: 14px; color: #ccc; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
-        .plan-features li::before { content: "✓"; color: var(--unefa-blue); font-weight: bold; }
-        .plan-features li.disabled { color: #555; text-decoration: line-through; }
-        .plan-features li.disabled::before { content: "✕"; color: #444; }
-
-        .btn-select {
-            background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);
-            padding: 12px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer;
-            text-align: center; text-decoration: none; transition: all 0.2s;
-        }
-        .btn-select:hover { background: white; color: black; }
-        .featured .btn-select { background: var(--unefa-blue); border-color: var(--unefa-blue); }
-        .featured .btn-select:hover { background: var(--unefa-bronze); border-color: var(--unefa-bronze); color: white; }
-    </style>
-</head>
-<body>
-
-    <nav>
-        <a href="{% url 'home' %}">
-            <img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" height="40" alt="Uneflix">
-        </a>
-        <div style="display:flex; align-items:center; gap:16px;">
-            <a href="{% url 'home' %}" style="color:#ccc; text-decoration:none; font-size:14px;">Volver al Inicio</a>
-            <!-- PERFIL -->
-            <a href="{% url 'perfil' %}" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:#ccc;">
-                {% if request.user.avatar %}
-                    <img src="{{ request.user.avatar.url }}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid var(--unefa-bronze);">
-                {% else %}
-                    <div style="width:32px; height:32px; border-radius:50%; background:var(--unefa-blue); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; border:2px solid var(--unefa-bronze);">
-                        {{ request.user.display_name|default:request.user.username|first|upper }}
-                    </div>
-                {% endif %}
-                <span style="font-size:14px;">{{ request.user.display_name|default:request.user.username }}</span>
-            </a>
-        </div>
-    </nav>
-
+{% block content %}
     <div class="main-container">
         <div class="header-section">
             <h1>Elige cómo quieres ver Uneflix</h1>
@@ -198,9 +110,4 @@
             </div>
         </div>
     </div>
-
-<footer style="text-align:center; padding:24px; font-family:'Inter',sans-serif; font-size:12px; color:#333; border-top:1px solid rgba(255,255,255,0.05); margin-top:auto; width:100%;">
-    © 2026 — Desarrollado por <span style="color:#d19a4e; font-weight:600;">Uneflix Team</span> · Todos los derechos reservados
-</footer>
-</body>
-</html>
+{% endblock %}

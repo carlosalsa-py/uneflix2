@@ -1,248 +1,63 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ perfil_user.display_name|default:perfil_user.username }} — Uneflix</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --gutter: max(24px, calc((100% - 1280px - 4cm) / 2));
-            --bg-dark: #070b12;
-            --unefa-blue: #004bca;
-            --unefa-bronze: #d19a4e;
-            --unefa-yellow: #ffcc00;
-        }
+{% extends 'base.html' %}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+{% block title %}{{ perfil_user.display_name|default:perfil_user.username }} — Uneflix{% endblock %}
 
-        body {
-            background-color: var(--bg-dark);
-            font-family: 'Inter', sans-serif;
-            color: white;
-            min-height: 100vh;
-        }
+{% block extra_css %}
+<style>
+    .page-wrapper { max-width: var(--content-narrow); margin: 0 auto; padding: 48px var(--gutter) 80px; }
 
-        /* LOGO IMAGEN */
-        .logo {
-            display: inline-block;
-            width: 200px;
-            height: 50px;
-            background-image: url("{% static 'images/logo.png' %}");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            text-indent: -9999px;
-            overflow: hidden;
-            line-height: 0;
-            color: transparent !important;
-            text-decoration: none;
-        }
-        .logo span { display: none; }
+    .profile-card { background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); }
+    .profile-banner { height: 110px; background: linear-gradient(135deg, #0a1628 0%, var(--unefa-blue) 60%, var(--unefa-bronze) 100%); position: relative; }
+    .profile-body { padding: 0 32px 36px; }
 
-        nav {
-            background: var(--bg-dark);
-            border-bottom: 2px solid var(--unefa-bronze);
-            padding: 16px var(--gutter);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
+    .avatar-wrap { margin-top: -48px; margin-bottom: 14px; position: relative; z-index: 1; }
+    .avatar-img, .avatar-placeholder {
+        width: 96px; height: 96px; border-radius: 50%;
+        border: 4px solid var(--bg-dark); object-fit: cover; display: block;
+    }
+    .avatar-placeholder {
+        background: var(--unefa-blue); display: flex; align-items: center; justify-content: center;
+        font-family: 'Bebas Neue', sans-serif; font-size: 38px; letter-spacing: 2px; color: white;
+    }
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+    .display-name { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 2px; }
+    .username-tag { font-size: 13px; color: #555; margin-bottom: 24px; }
 
-        .nav-right a {
-            color: #ccc;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.2s;
-        }
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 0 0 24px; }
+    .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #444; margin-bottom: 14px; }
 
-        .nav-right a:hover { color: var(--unefa-bronze); }
+    .info-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .info-row:last-of-type { border-bottom: none; }
+    .info-label { font-size: 13px; color: #66748f; }
+    .info-value { font-size: 14px; font-weight: 500; color: #ddd; }
 
-        /* CONTENIDO */
-        .page-wrapper {
-            max-width: 760px;
-            margin: 0 auto;
-            padding: 48px 20px 80px;
-        }
+    .badge { padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
+    .badge-free   { background: rgba(255,255,255,0.06); color: #888; border: 1px solid rgba(255,255,255,0.1); }
+    .badge-medium { background: rgba(0,75,202,0.2); color: #6fa3ff; border: 1px solid var(--unefa-blue); }
+    .badge-premium{ background: rgba(209,154,78,0.15); color: var(--unefa-bronze); border: 1px solid var(--unefa-bronze); }
+    .badge-pending{ background: rgba(255,180,0,0.1); color: #ffb400; border: 1px solid #ffb400; }
 
-        /* CARD */
-        .profile-card {
-            background: rgba(255,255,255,0.03);
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
-        }
+    .btn-row { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .btn-primary {
+        background: var(--unefa-blue); color: white; text-decoration: none; padding: 10px 24px;
+        border-radius: 4px; font-size: 14px; font-weight: 600; transition: background 0.2s;
+        border: none; cursor: pointer; font-family: 'Inter', sans-serif;
+    }
+    .btn-primary:hover { background: var(--unefa-bronze); color: black; }
+    .btn-secondary {
+        background: rgba(255,255,255,0.05); color: #888; text-decoration: none; padding: 10px 24px;
+        border-radius: 4px; font-size: 14px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s;
+    }
+    .btn-secondary:hover { color: white; border-color: rgba(255,255,255,0.3); }
+    .btn-upgrade {
+        background: rgba(209,154,78,0.1); color: var(--unefa-bronze); text-decoration: none; padding: 10px 24px;
+        border-radius: 4px; font-size: 14px; font-weight: 600; border: 1px solid var(--unefa-bronze); transition: all 0.2s;
+    }
+    .btn-upgrade:hover { background: var(--unefa-bronze); color: black; }
+</style>
+{% endblock %}
 
-        /* Banner */
-        .profile-banner {
-            height: 110px;
-            background: linear-gradient(135deg, #0a1628 0%, var(--unefa-blue) 60%, var(--unefa-bronze) 100%);
-            position: relative;
-        }
-
-        /* Body */
-        .profile-body {
-            padding: 0 32px 36px;
-        }
-
-        /* Avatar */
-        .avatar-wrap {
-            margin-top: -48px;
-            margin-bottom: 14px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .avatar-img, .avatar-placeholder {
-            width: 96px;
-            height: 96px;
-            border-radius: 50%;
-            border: 4px solid var(--bg-dark);
-            object-fit: cover;
-            display: block;
-        }
-
-        .avatar-placeholder {
-            background: var(--unefa-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 38px;
-            letter-spacing: 2px;
-            color: white;
-        }
-
-        .display-name {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 28px;
-            letter-spacing: 1px;
-            margin-bottom: 2px;
-        }
-
-        .username-tag {
-            font-size: 13px;
-            color: #555;
-            margin-bottom: 24px;
-        }
-
-        /* Separador */
-        hr {
-            border: none;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            margin: 0 0 24px;
-        }
-
-        .section-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #444;
-            margin-bottom: 14px;
-        }
-
-        /* Filas de info */
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-        }
-        .info-row:last-of-type { border-bottom: none; }
-
-        .info-label {
-            font-size: 13px;
-            color: #66748f;
-        }
-
-        .info-value {
-            font-size: 14px;
-            font-weight: 500;
-            color: #ddd;
-        }
-
-        /* Badges de plan */
-        .badge {
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        .badge-free   { background: rgba(255,255,255,0.06); color: #888; border: 1px solid rgba(255,255,255,0.1); }
-        .badge-medium { background: rgba(0,75,202,0.2); color: #6fa3ff; border: 1px solid var(--unefa-blue); }
-        .badge-premium{ background: rgba(209,154,78,0.15); color: var(--unefa-bronze); border: 1px solid var(--unefa-bronze); }
-        .badge-pending{ background: rgba(255,180,0,0.1); color: #ffb400; border: 1px solid #ffb400; }
-
-        /* Botones */
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 28px;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary {
-            background: var(--unefa-blue);
-            color: white;
-            text-decoration: none;
-            padding: 10px 24px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background 0.2s;
-            border: none;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-        }
-        .btn-primary:hover { background: var(--unefa-bronze); color: black; }
-
-        .btn-secondary {
-            background: rgba(255,255,255,0.05);
-            color: #888;
-            text-decoration: none;
-            padding: 10px 24px;
-            border-radius: 4px;
-            font-size: 14px;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.2s;
-        }
-        .btn-secondary:hover { color: white; border-color: rgba(255,255,255,0.3); }
-
-        .btn-upgrade {
-            background: rgba(209,154,78,0.1);
-            color: var(--unefa-bronze);
-            text-decoration: none;
-            padding: 10px 24px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 600;
-            border: 1px solid var(--unefa-bronze);
-            transition: all 0.2s;
-        }
-        .btn-upgrade:hover { background: var(--unefa-bronze); color: black; }
-    </style>
-</head>
-<body>
-
-    <nav>
-        <a href="{% url 'home' %}" class="logo"><span>UNEFLIX</span></a>
-        <div class="nav-right">
-            <a href="{% url 'home' %}">Inicio</a>
-            <a href="{% url 'watchlist' %}">♥ Mi Lista</a>
-            <a href="{% url 'membresias' %}" style="color:var(--unefa-yellow); font-weight:600;">Planes</a>
-        </div>
-    </nav>
-
+{% block content %}
     <div class="page-wrapper">
         <div class="profile-card">
 
@@ -340,6 +155,4 @@
             </div>
         </div>
     </div>
-
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Uneflix{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gutter: max(24px, calc((100% - 1280px - 4cm) / 2));
+            --content-narrow: 760px;   /* columnas de lectura (texto, formularios) */
+            --bg-dark: #070b12;
+            --card-bg: #101726;
+            --unefa-blue: #004bca;
+            --unefa-bronze: #d19a4e;
+            --unefa-yellow: #ffcc00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .site-main { flex: 1 0 auto; }
+
+        /* ===== NAVBAR (consistente en todas las páginas) ===== */
+        .site-nav {
+            position: sticky; top: 0; z-index: 1000;
+            background: var(--bg-dark);
+            border-bottom: 2px solid var(--unefa-bronze);
+            padding: 14px var(--gutter);
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px 20px; flex-wrap: wrap;
+        }
+        .nav-group { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+        .nav-sep { color: rgba(255,255,255,0.2); font-size: 22px; font-weight: 300; line-height: 1; }
+        .site-nav a { color: #ccc; text-decoration: none; font-size: 14px; transition: color 0.2s; }
+        .site-nav a:hover { color: white; }
+        .nav-logo img { height: 40px; display: block; }
+        .nav-plans { color: var(--unefa-yellow) !important; font-weight: 600; }
+        .nav-account { display: flex; align-items: center; gap: 8px; }
+        .nav-account .avatar-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid var(--unefa-bronze); }
+        .nav-account .avatar-fallback {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--unefa-blue);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 600; border: 2px solid var(--unefa-bronze);
+        }
+
+        /* ===== FOOTER (consistente) ===== */
+        .site-footer {
+            width: 100%; text-align: center; padding: 24px;
+            font-size: 12px; color: #333;
+            border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px;
+        }
+        .site-footer span { color: var(--unefa-bronze); font-weight: 600; }
+
+        /* ===== CARDS / GRID (compartido: home, catálogo, watchlist) ===== */
+        .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; padding: 0 var(--gutter) 16px; color: #e5e5e5; }
+        .movies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; padding: 0 var(--gutter) 60px; }
+        .movie-card { cursor: pointer; transition: transform 0.3s; position: relative; }
+        .movie-card:hover { transform: scale(1.06); z-index: 10; }
+        .movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.6); display: block; }
+        .movie-info { padding: 8px 2px; }
+        .movie-info h4 { font-size: 13px; font-weight: 500; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .movie-info .year { font-size: 12px; color: #666; margin-top: 2px; }
+        .badge-genre { display: inline-block; background: rgba(0, 75, 202, 0.7); color: white; font-size: 10px; padding: 2px 7px; border-radius: 10px; margin-top: 4px; font-weight: 500; }
+
+        @media (max-width: 768px) { .movies-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; } }
+        @media (max-width: 480px) { .movies-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; } }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    {% block nav %}
+    <nav class="site-nav">
+        <div class="nav-group">
+            <a href="{% url 'home' %}" class="nav-logo"><img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" alt="Uneflix"></a>
+            <span class="nav-sep">|</span>
+            <a href="{% url 'catalogo' 'movie' %}">Películas</a>
+            <a href="{% url 'catalogo' 'series' %}">Series</a>
+            <a href="{% url 'watchlist' %}">Mi Lista</a>
+        </div>
+        <div class="nav-group">
+            <a href="{% url 'membresias' %}" class="nav-plans">Planes</a>
+            <a href="{% url 'perfil' %}" class="nav-account">
+                {% if request.user.avatar %}
+                    <img src="{{ request.user.avatar.url }}" class="avatar-img" alt="">
+                {% else %}
+                    <span class="avatar-fallback">{{ request.user.display_name|default:request.user.username|first|upper }}</span>
+                {% endif %}
+                <span>{{ request.user.display_name|default:request.user.username }}</span>
+            </a>
+        </div>
+    </nav>
+    {% endblock %}
+
+    <main class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block footer %}
+    <footer class="site-footer">
+        © 2026 — Desarrollado por <span>Uneflix Team</span> · Todos los derechos reservados
+    </footer>
+    {% endblock %}
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
