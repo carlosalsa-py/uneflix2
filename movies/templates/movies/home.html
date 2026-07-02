@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
+            --gutter: max(24px, calc((100% - 1280px - 4cm) / 2));
             --bg-dark: #070b12;
             --unefa-blue: #004bca;
             --unefa-bronze: #d19a4e;
@@ -44,7 +45,7 @@
         /* NAV */
         nav {
             background: linear-gradient(to bottom, rgba(7,11,18,0.95), transparent);
-            padding: 16px 4%;
+            padding: 16px var(--gutter);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -65,7 +66,7 @@
 
         .banner-slide {
             position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease;
-            display: flex; align-items: flex-end; padding: 0 4% 80px;
+            display: flex; align-items: flex-end; padding: 0 var(--gutter) 80px;
         }
 
         .banner-slide.active { display: flex !important; opacity: 1; }
@@ -120,7 +121,7 @@
         .dot.active { background: var(--unefa-bronze); width: 24px; border-radius: 4px; }
 
         /* FILTROS Y GRID */
-        .genres-filter { display: flex; gap: 8px; flex-wrap: wrap; padding: 24px 4% 20px; }
+        .genres-filter { display: flex; gap: 8px; flex-wrap: wrap; padding: 24px var(--gutter) 20px; }
 
         .genre-btn {
             background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.15);
@@ -130,9 +131,9 @@
 
         .genre-btn:hover, .genre-btn.active { background: var(--unefa-blue); border-color: var(--unefa-blue); }
 
-        .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; padding: 0 4% 16px; color: #e5e5e5; }
+        .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; padding: 0 var(--gutter) 16px; color: #e5e5e5; }
 
-        .movies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; padding: 0 4% 60px; }
+        .movies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; padding: 0 var(--gutter) 60px; }
 
         .movie-card { cursor: pointer; transition: transform 0.3s; position: relative; }
 

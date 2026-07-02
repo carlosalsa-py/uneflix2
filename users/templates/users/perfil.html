@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
+            --gutter: max(24px, calc((100% - 1280px - 4cm) / 2));
             --bg-dark: #070b12;
             --unefa-blue: #004bca;
             --unefa-bronze: #d19a4e;
@@ -44,7 +45,7 @@
         nav {
             background: var(--bg-dark);
             border-bottom: 2px solid var(--unefa-bronze);
-            padding: 16px 4%;
+            padding: 16px var(--gutter);
             display: flex;
             justify-content: space-between;
             align-items: center;
