@@ -1,5 +1,4 @@
 {% load static %}
-{% load embed_video_tags %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -329,11 +328,14 @@
                     </div>
                 {% endif %}
 
-                {% if movie.trailer_url %}
+                {% if trailer_youtube_id %}
                 <div class="trailer-container">
                     <h3 class="trailer-title">Tráiler Oficial</h3>
                     <div class="trailer-wrapper">
-                        {% video movie.trailer_url '100% x 100%' %}
+                        <iframe src="https://www.youtube.com/embed/{{ trailer_youtube_id }}"
+                                loading="lazy" allowfullscreen
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                     </div>
                 </div>
                 {% endif %}
