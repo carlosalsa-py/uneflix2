@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if tipo == 'movie' %}Catálogo de Películas{% else %}Catálogo de Series{% endif %} — Uneflix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070b12;
+            --card-bg: #101726;
+            --unefa-blue: #004bca;
+            --unefa-bronze: #d19a4e;
+            --unefa-yellow: #ffcc00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { background-color: var(--bg-dark); font-family: 'Inter', sans-serif; color: white; }
+
+        /* NAV (mismo patrón que home) */
+        nav {
+            background: var(--bg-dark);
+            border-bottom: 2px solid var(--unefa-bronze);
+            padding: 16px 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a.brand { display: flex; align-items: center; }
+
+        .nav-links { display: flex; align-items: center; gap: 16px; }
+        .nav-links a { color: #ccc; text-decoration: none; font-size: 14px; }
+        .nav-links a.active { color: var(--unefa-yellow); font-weight: 600; }
+
+        /* HEADER DEL CATÁLOGO */
+        .catalog-header { padding: 28px 4% 8px; }
+        .catalog-header h1 {
+            font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 2px;
+        }
+        .catalog-tabs { display: flex; gap: 10px; padding: 12px 4% 0; }
+        .catalog-tabs a {
+            text-decoration: none; font-size: 13px; font-weight: 500; color: #ccc;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            padding: 6px 18px; border-radius: 20px; transition: all 0.2s;
+        }
+        .catalog-tabs a.active, .catalog-tabs a:hover {
+            background: var(--unefa-blue); border-color: var(--unefa-blue); color: white;
+        }
+
+        /* FORM DE FILTROS */
+        .filters {
+            display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+            padding: 20px 4%; margin-top: 8px;
+        }
+        .filters .field { display: flex; flex-direction: column; gap: 5px; }
+        .filters label {
+            font-size: 10px; color: #66748f; text-transform: uppercase; letter-spacing: 0.8px;
+        }
+        .filters input, .filters select {
+            background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.1);
+            padding: 9px 12px; border-radius: 4px; color: white;
+            font-family: 'Inter', sans-serif; font-size: 13px; outline: none; min-width: 150px;
+        }
+        .filters input:focus, .filters select:focus { border-color: var(--unefa-blue); }
+        .filters select option { background: var(--card-bg); }
+        .filters .btn-apply {
+            background: var(--unefa-blue); color: white; border: none;
+            padding: 10px 22px; border-radius: 4px; font-size: 14px; font-weight: 600;
+            cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s;
+        }
+        .filters .btn-apply:hover { background: var(--unefa-bronze); color: black; }
+
+        /* GRID DE CARDS (mismas clases que home) */
+        .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; padding: 0 4% 16px; color: #e5e5e5; }
+        .movies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; padding: 0 4% 60px; }
+        .movie-card { cursor: pointer; transition: transform 0.3s; position: relative; }
+        .movie-card:hover { transform: scale(1.06); z-index: 10; }
+        .movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.6); display: block; }
+        .movie-info { padding: 8px 2px; }
+        .movie-info h4 { font-size: 13px; font-weight: 500; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .movie-info .year { font-size: 12px; color: #666; margin-top: 2px; }
+        .badge-genre {
+            display: inline-block; background: rgba(0, 75, 202, 0.7); color: white;
+            font-size: 10px; padding: 2px 7px; border-radius: 10px; margin-top: 4px; font-weight: 500;
+        }
+        .no-results { color: #555; grid-column: 1/-1; text-align: center; padding: 60px 0; font-size: 15px; }
+
+        @media (max-width: 768px) { .movies-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; } }
+        @media (max-width: 480px) { .movies-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; } .filters input, .filters select { min-width: 120px; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="{% url 'home' %}" class="brand">
+            <img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" height="40" alt="Uneflix">
+        </a>
+        <div class="nav-links">
+            <a href="{% url 'membresias' %}" class="active">Planes</a>
+            <a href="{% url 'watchlist' %}">♥ Mi Lista</a>
+            <a href="{% url 'perfil' %}" style="display:flex; align-items:center; gap:8px;">
+                {% if request.user.avatar %}
+                    <img src="{{ request.user.avatar.url }}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid var(--unefa-bronze);">
+                {% else %}
+                    <div style="width:32px; height:32px; border-radius:50%; background:var(--unefa-blue); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; border:2px solid var(--unefa-bronze);">
+                        {{ request.user.display_name|default:request.user.username|first|upper }}
+                    </div>
+                {% endif %}
+                <span>{{ request.user.display_name|default:request.user.username }}</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="catalog-header">
+        <h1>{% if tipo == 'movie' %}Catálogo de Películas{% else %}Catálogo de Series{% endif %}</h1>
+    </div>
+
+    <div class="catalog-tabs">
+        <a href="{% url 'catalogo' 'movie' %}" class="{% if tipo == 'movie' %}active{% endif %}">Películas</a>
+        <a href="{% url 'catalogo' 'series' %}" class="{% if tipo == 'series' %}active{% endif %}">Series</a>
+    </div>
+
+    <form method="get" class="filters">
+        <div class="field">
+            <label for="q">Buscar</label>
+            <input type="text" id="q" name="q" value="{{ request.GET.q }}" placeholder="Título...">
+        </div>
+
+        <div class="field">
+            <label for="genero">Género</label>
+            <select id="genero" name="genero">
+                <option value="">Todos</option>
+                {% for g in genres %}
+                <option value="{{ g.name }}" {% if request.GET.genero == g.name %}selected{% endif %}>{{ g.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="anio">Año</label>
+            <input type="number" id="anio" name="anio" value="{{ request.GET.anio }}" placeholder="Ej: 2020">
+        </div>
+
+        <div class="field">
+            <label for="tier">Plan</label>
+            <select id="tier" name="tier">
+                <option value="">Todos</option>
+                <option value="free" {% if request.GET.tier == 'free' %}selected{% endif %}>Gratuito</option>
+                <option value="medium" {% if request.GET.tier == 'medium' %}selected{% endif %}>Cinéfilo</option>
+                <option value="premium" {% if request.GET.tier == 'premium' %}selected{% endif %}>Zerpanito</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="orden">Ordenar por</label>
+            <select id="orden" name="orden">
+                <option value="">Más recientes</option>
+                <option value="titulo_asc" {% if request.GET.orden == 'titulo_asc' %}selected{% endif %}>Título (A–Z)</option>
+                <option value="titulo_desc" {% if request.GET.orden == 'titulo_desc' %}selected{% endif %}>Título (Z–A)</option>
+                <option value="anio_nuevo" {% if request.GET.orden == 'anio_nuevo' %}selected{% endif %}>Año (más nuevo)</option>
+                <option value="anio_viejo" {% if request.GET.orden == 'anio_viejo' %}selected{% endif %}>Año (más viejo)</option>
+                <option value="rating" {% if request.GET.orden == 'rating' %}selected{% endif %}>Mejor valorados</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-apply">Aplicar</button>
+    </form>
+
+    <div class="movies-grid">
+        {% for movie in resultados %}
+        <a href="{% url 'movie_detail' movie.pk %}" style="text-decoration:none; color:inherit;">
+            <div class="movie-card">
+                <div style="position:relative;">
+                    {% if movie.poster %}
+                    <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" {% if movie.tier == 'premium' and plan != 'premium' or movie.tier == 'medium' and plan == 'free' %}style="filter:brightness(0.4);"{% endif %}>
+                    {% else %}
+                    <img src="https://via.placeholder.com/160x240/1a1a1a/555?text={{ movie.title }}" alt="{{ movie.title }}">
+                    {% endif %}
+                    {% if movie.tier == 'premium' and plan != 'premium' %}
+                    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+                        <span style="font-size:24px;">🔒</span>
+                        <span style="font-size:10px;background:#d19a4e;color:black;padding:2px 8px;border-radius:10px;font-weight:700;">ULTRA</span>
+                    </div>
+                    {% elif movie.tier == 'medium' and plan == 'free' %}
+                    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+                        <span style="font-size:24px;">🔒</span>
+                        <span style="font-size:10px;background:#004bca;color:white;padding:2px 8px;border-radius:10px;font-weight:700;">CINEPHILE</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="movie-info">
+                    <h4>{{ movie.title }}</h4>
+                    <p class="year">{{ movie.year }}</p>
+                    {% for genre in movie.genres.all %}
+                    <span class="badge-genre">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p class="no-results">No se encontraron resultados</p>
+        {% endfor %}
+    </div>
+
+<footer style="text-align:center; padding:24px; font-family:'Inter',sans-serif; font-size:12px; color:#333; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px;">
+    © 2026 — Desarrollado por <span style="color:#d19a4e; font-weight:600;">Uneflix Team</span> · Todos los derechos reservados
+</footer>
+</body>
+</html>

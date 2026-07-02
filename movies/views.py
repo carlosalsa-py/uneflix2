@@ -4,12 +4,22 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Avg
+from django.http import Http404
 from .models import Movie, Genre, Watchlist, Episode, Review
 from users.models import Membership
 
 logger = logging.getLogger(__name__)
 
 TIER_LEVEL = {'free': 0, 'medium': 1, 'premium': 2}
+
+# Ordenamientos válidos del catálogo. 'rating' se maneja aparte porque necesita
+# annotate(). El default (sin query param o valor desconocido) es '-id'.
+CATALOGO_ORDEN = {
+    'titulo_asc': 'title',
+    'titulo_desc': '-title',
+    'anio_nuevo': '-year',
+    'anio_viejo': 'year',
+}
 
 # Fuente única de verdad de los planes pagos: el nombre visible y el precio se
 # derivan SIEMPRE del código de plan en el backend, nunca de lo que mande el
@@ -174,3 +184,53 @@ def review_delete(request, pk):
     movie_pk = review.movie.pk
     review.delete()
     return redirect('movie_detail', pk=movie_pk)
+
+
+@login_required(login_url='/users/login/')
+def catalogo(request, tipo):
+    # Solo 'movie' o 'series'; cualquier otra cosa es una URL que no existe.
+    if tipo not in (Movie.MOVIE, Movie.SERIES):
+        raise Http404('Tipo de catálogo inválido.')
+
+    resultados = Movie.objects.filter(type=tipo)
+
+    # Búsqueda por título (parcial, case-insensitive).
+    q = request.GET.get('q', '').strip()
+    if q:
+        resultados = resultados.filter(title__icontains=q)
+
+    # Filtros opcionales y combinables entre sí.
+    genero = request.GET.get('genero', '').strip()
+    if genero:
+        resultados = resultados.filter(genres__name=genero)
+
+    anio = request.GET.get('anio', '').strip()
+    if anio.isdigit():
+        # year es IntegerField: si viene basura no numérica ignoramos el
+        # filtro en vez de crashear con ValueError.
+        resultados = resultados.filter(year=int(anio))
+
+    tier = request.GET.get('tier', '').strip()
+    if tier in TIER_LEVEL:
+        resultados = resultados.filter(tier=tier)
+
+    # Ordenamiento server-side.
+    orden = request.GET.get('orden', '').strip()
+    if orden == 'rating':
+        resultados = resultados.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating')
+    elif orden in CATALOGO_ORDEN:
+        resultados = resultados.order_by(CATALOGO_ORDEN[orden])
+    else:
+        resultados = resultados.order_by('-id')
+
+    # El filtro M2M por género puede duplicar filas; distinct() lo evita.
+    resultados = resultados.distinct()
+
+    plan = get_user_plan(request.user)
+
+    return render(request, 'movies/catalogo.html', {
+        'resultados': resultados,
+        'genres': Genre.objects.all(),
+        'tipo': tipo,
+        'plan': plan,
+    })
