@@ -1,66 +1,10 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uneflix</title>
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --gutter: max(24px, calc((100% - 1280px - 4cm) / 2));
-            --bg-dark: #070b12;
-            --unefa-blue: #004bca;
-            --unefa-bronze: #d19a4e;
-            --unefa-yellow: #ffcc00;
-        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+{% block title %}Uneflix{% endblock %}
 
-        body {
-            background-color: var(--bg-dark);
-            font-family: 'Inter', sans-serif;
-            color: white;
-        }
-
-        /* LOGO CON "CAMBIAZO" A IMAGEN */
-        .logo {
-            display: inline-block;
-            width: 200px; /* Ajusta según sea necesario */
-            height: 50px;
-            background-image: url("{% static 'images/logo.png' %}");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            text-indent: -9999px;
-            overflow: hidden;
-            line-height: 0;
-            color: transparent !important;
-        }
-
-        .logo span { display: none; }
-
-        /* NAV */
-        nav {
-            background: linear-gradient(to bottom, rgba(7,11,18,0.95), transparent);
-            padding: 16px var(--gutter);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            transition: background 0.4s;
-        }
-
-        nav.scrolled { 
-            background: var(--bg-dark); 
-            border-bottom: 2px solid var(--unefa-bronze);
-        }
-
+{% block extra_css %}
+<style>
         /* BANNER */
         .banner { height: 85vh; position: relative; overflow: hidden; }
 
@@ -188,44 +132,9 @@
         @media (max-width: 768px) { .banner { height: 65vh; } .movies-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; } }
         @media (max-width: 480px) { .movies-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; } .banner { height: 55vh; } }
     </style>
-</head>
-<body>
+{% endblock %}
 
-    <nav id="navbar">
-        <!-- IZQUIERDA: logo + navegación de contenido -->
-        <div style="display:flex; align-items:center; gap:24px;">
-            <a href="{% url 'home' %}">
-                <img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" height="40" alt="Uneflix">
-            </a>
-            <span style="color:rgba(255,255,255,0.2); font-size:22px; font-weight:300; line-height:1;">|</span>
-            <a href="{% url 'catalogo' 'movie' %}" style="color:#ccc; text-decoration:none; font-size:14px;">
-                Películas
-            </a>
-            <a href="{% url 'catalogo' 'series' %}" style="color:#ccc; text-decoration:none; font-size:14px;">
-                Series
-            </a>
-            <a href="{% url 'watchlist' %}" style="color:#ccc; text-decoration:none; font-size:14px;">
-                Mi Lista
-            </a>
-        </div>
-
-        <!-- DERECHA: planes + cuenta -->
-        <div style="display:flex; align-items:center; gap:24px;">
-            <a href="{% url 'membresias' %}" style="color:var(--unefa-yellow); text-decoration:none; font-size:14px; font-weight:600;">
-                Planes
-            </a>
-            <a href="{% url 'perfil' %}" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:#ccc;">
-                {% if request.user.avatar %}
-                    <img src="{{ request.user.avatar.url }}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid var(--unefa-bronze);">
-                {% else %}
-                    <div style="width:32px; height:32px; border-radius:50%; background:var(--unefa-blue); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; border:2px solid var(--unefa-bronze);">
-                        {{ request.user.display_name|default:request.user.username|first|upper }}
-                    </div>
-                {% endif %}
-                <span style="font-size:14px;">{{ request.user.display_name|default:request.user.username }}</span>
-            </a>
-        </div>
-    </nav>
+{% block content %}
 
     {% if featured_movies %}
     <div class="banner" id="banner">
@@ -305,6 +214,13 @@
                     </div>
                     {% endif %}
                 </div>
+                <div class="movie-info">
+                    <h4>{{ movie.title }}</h4>
+                    <p class="year">{{ movie.year }}</p>
+                    {% for genre in movie.genres.all %}
+                    <span class="badge-genre">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
             </div>
         </a>
         {% empty %}
@@ -353,10 +269,6 @@
     {% endif %}
 
     <script>
-        window.addEventListener('scroll', function() {
-            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-        });
-
         const slides = document.querySelectorAll('.banner-slide');
         const dots = document.querySelectorAll('.dot');
         let current = 0;
@@ -738,9 +650,4 @@
         setTimeout(() => { if (b) b.style.display = 'none'; }, 500);
     }, 4000);
     </script>
-
-<footer style="text-align:center; padding:24px; font-family:'Inter',sans-serif; font-size:12px; color:#333; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px;">
-    © 2026 — Desarrollado por <span style="color:#d19a4e; font-weight:600;">Uneflix Team</span> · Todos los derechos reservados
-</footer>
-</body>
-</html>
+{% endblock %}
