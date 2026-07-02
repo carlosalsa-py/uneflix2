@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
+            --gutter: max(24px, calc((100% - 1280px - 4cm) / 2));
             --bg-dark: #070b12;        
             --unefa-blue: #004bca;     
             --unefa-bronze: #d19a4e;   
@@ -29,7 +30,7 @@
 
         nav {
             background: rgba(7, 11, 18, 0.95);
-            padding: 14px 4%;
+            padding: 14px var(--gutter);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -84,7 +85,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px 4%;
+            padding: 20px var(--gutter);
         }
 
         .player-container {

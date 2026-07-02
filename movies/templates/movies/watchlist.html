@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
+            --gutter: max(24px, calc((100% - 1280px - 4cm) / 2));
             --bg-dark: #070b12;        
             --unefa-blue: #004bca;     
             --unefa-bronze: #d19a4e;   
@@ -28,7 +29,7 @@
         nav {
             background: rgba(7, 11, 18, 0.9);
             backdrop-filter: blur(8px);
-            padding: 16px 4%;
+            padding: 16px var(--gutter);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -60,7 +61,7 @@
         .nav-links a { color: #ccc; text-decoration: none; font-size: 14px; transition: color 0.2s; }
         .nav-links a:hover { color: var(--unefa-bronze); }
 
-        .content { padding: 120px 4% 60px; }
+        .content { padding: 120px var(--gutter) 60px; }
 
         h1 {
             font-family: 'Bebas Neue', sans-serif;
