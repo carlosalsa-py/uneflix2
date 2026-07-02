@@ -11,6 +11,7 @@ staticfiles/
 .DS_Store
 *.log
 media/videos/
+media/avatars/
 *.mkv
 *.mp4
 *.avi
