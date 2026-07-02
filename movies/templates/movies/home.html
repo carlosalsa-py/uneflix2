@@ -141,10 +141,6 @@
         @media (max-width: 480px) { .banner-arrow { width: 48px; font-size: 38px; } }
 
         /* FILTROS Y GRID */
-        .genres-filter { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; padding: 24px var(--gutter) 20px; }
-
-        .genre-label { font-size: 11px; color: #66748f; text-transform: uppercase; letter-spacing: 0.8px; }
-
         .genre-select {
             background: rgba(0,0,0,0.35); color: white;
             border: 1px solid rgba(255,255,255,0.12);
@@ -160,6 +156,15 @@
         .genre-select option { background: #101726; color: white; }
 
         .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; padding: 0 var(--gutter) 16px; color: #e5e5e5; }
+
+        /* Cabecera de sección: título + filtro de género propio + link al catálogo */
+        .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; padding: 0 var(--gutter); margin-bottom: 16px; }
+        .section-head .section-title { padding: 0; }
+        .section-tools { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .see-all { font-size: 13px; color: var(--unefa-bronze); text-decoration: none; font-weight: 600; white-space: nowrap; transition: color 0.2s; }
+        .see-all:hover { color: white; }
+        /* Separación clara entre Películas y Series */
+        .series-section { border-top: 1px solid rgba(255,255,255,0.06); margin-top: 32px; padding-top: 28px; }
 
         .movies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; padding: 0 var(--gutter) 60px; }
 
@@ -265,18 +270,19 @@
     </div>
     {% endif %}
 
-    <div class="genres-filter">
-        <label for="genreSelect" class="genre-label">Género</label>
-        <select id="genreSelect" class="genre-select" onchange="filterGenre(this.value)">
-            <option value="all">Todos</option>
-            {% for genre in genres %}
-            <option value="{{ genre.name }}">{{ genre.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-
     <!-- PELÍCULAS -->
-    <p class="section-title" id="section-title">Todas las Películas</p>
+    <div class="section-head">
+        <p class="section-title" id="section-title">Películas</p>
+        <div class="section-tools">
+            <select class="genre-select" onchange="filterGrid('moviesGrid', this.value, 'section-title', 'Películas')">
+                <option value="all">Todos los géneros</option>
+                {% for genre in genres %}
+                <option value="{{ genre.name }}">{{ genre.name }}</option>
+                {% endfor %}
+            </select>
+            <a href="{% url 'catalogo' 'movie' %}" class="see-all">Ver todas →</a>
+        </div>
+    </div>
     <div class="movies-grid" id="moviesGrid">
         {% for movie in movies %}
         <a href="{% url 'movie_detail' movie.pk %}" style="text-decoration:none; color:inherit;">
@@ -308,8 +314,20 @@
 
     <!-- SERIES -->
     {% if series %}
-    <p class="section-title" style="margin-top:40px;">Series</p>
-    <div class="movies-grid">
+    <div class="series-section">
+    <div class="section-head">
+        <p class="section-title" id="series-title">Series</p>
+        <div class="section-tools">
+            <select class="genre-select" onchange="filterGrid('seriesGrid', this.value, 'series-title', 'Series')">
+                <option value="all">Todos los géneros</option>
+                {% for genre in genres %}
+                <option value="{{ genre.name }}">{{ genre.name }}</option>
+                {% endfor %}
+            </select>
+            <a href="{% url 'catalogo' 'series' %}" class="see-all">Ver todas →</a>
+        </div>
+    </div>
+    <div class="movies-grid" id="seriesGrid">
         {% for serie in series %}
         <a href="{% url 'movie_detail' serie.pk %}" style="text-decoration:none; color:inherit;">
         <div class="movie-card" data-genres="{% for g in serie.genres.all %}{{ g.name }},{% endfor %}">
@@ -330,6 +348,7 @@
         {% empty %}
         <p style="color:#555; grid-column:1/-1; text-align:center; padding:40px 0;">No hay series disponibles</p>
         {% endfor %}
+    </div>
     </div>
     {% endif %}
 
@@ -368,16 +387,12 @@
             resetAuto();
         }
 
-        function filterGenre(genre) {
-            const titulo = document.getElementById('section-title');
-            titulo.textContent = genre === 'all' ? 'Todas las Películas' : 'Películas de ' + genre;
-            document.querySelectorAll('.movie-card').forEach(card => {
+        function filterGrid(gridId, genre, titleId, baseLabel) {
+            const title = document.getElementById(titleId);
+            if (title) title.textContent = genre === 'all' ? baseLabel : baseLabel + ' de ' + genre;
+            document.querySelectorAll('#' + gridId + ' .movie-card').forEach(card => {
                 const link = card.closest('a');
-                if (genre === 'all' || card.dataset.genres.includes(genre)) {
-                    link.style.display = 'block';
-                } else {
-                    link.style.display = 'none';
-                }
+                link.style.display = (genre === 'all' || card.dataset.genres.includes(genre)) ? 'block' : 'none';
             });
         }
     </script>
