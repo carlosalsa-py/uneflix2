@@ -214,6 +214,13 @@
                     </div>
                     {% endif %}
                 </div>
+                <div class="movie-info">
+                    <h4>{{ movie.title }}</h4>
+                    <p class="year">{{ movie.year }}</p>
+                    {% for genre in movie.genres.all %}
+                    <span class="badge-genre">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
             </div>
         </a>
         {% empty %}
