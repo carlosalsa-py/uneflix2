@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from .models import Movie, Genre, Watchlist, Review
+from .views import extract_youtube_id
 from users.models import Membership
 
 User = get_user_model()
@@ -167,3 +168,63 @@ class CatalogoTest(TestCase):
     def test_invalid_tipo_returns_404(self):
         response = self.client.get('/catalogo/comida/')
         self.assertEqual(response.status_code, 404)
+
+
+class ExtractYoutubeIdTest(TestCase):
+    ID = 'dQw4w9WgXcQ'
+
+    def test_common_url_formats(self):
+        urls = [
+            'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            'https://youtu.be/dQw4w9WgXcQ?si=Ab12Cd34',           # botón Compartir
+            'https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=30s',
+            'https://www.youtube.com/watch?list=PLxyz&v=dQw4w9WgXcQ',  # v no primero
+            'https://m.youtube.com/watch?v=dQw4w9WgXcQ',
+            'https://music.youtube.com/watch?v=dQw4w9WgXcQ',
+            'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            'https://www.youtube.com/shorts/dQw4w9WgXcQ',
+            'dQw4w9WgXcQ',                                          # ID pelado
+            '<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe>',  # código Insertar
+        ]
+        for url in urls:
+            self.assertEqual(extract_youtube_id(url), self.ID, msg=url)
+
+    def test_non_youtube_returns_none(self):
+        for value in ['https://vimeo.com/74489527', 'https://example.com/x', '', None, 'no soy una url']:
+            self.assertIsNone(extract_youtube_id(value), msg=repr(value))
+
+
+class TrailerRenderTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='pass1234')
+        self.client.login(username='testuser', password='pass1234')
+
+    def _detail(self, movie):
+        return self.client.get(f'/movie/{movie.pk}/')
+
+    def test_youtube_trailer_renders_iframe(self):
+        movie = Movie.objects.create(title='Con Trailer', tier='free', type='movie', year=2020,
+                                     description='x', trailer_url='https://youtu.be/dQw4w9WgXcQ')
+        response = self._detail(movie)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'https://www.youtube.com/embed/dQw4w9WgXcQ')
+        # referrerpolicy evita el Error 153 de YouTube: Django manda
+        # Referrer-Policy: same-origin, que sin esto no enviaría Referer al
+        # iframe cross-origin y el reproductor no valida el origen.
+        self.assertContains(response, 'referrerpolicy="strict-origin-when-cross-origin"')
+
+    def test_non_youtube_trailer_does_not_break_page(self):
+        # Una URL no-YouTube (o basura) no debe romper la página: el trailer
+        # simplemente no se muestra, en vez de tirar 500 como hacía embed_video.
+        movie = Movie.objects.create(title='Trailer Vimeo', tier='free', type='movie', year=2020,
+                                     description='x', trailer_url='https://vimeo.com/74489527')
+        response = self._detail(movie)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'youtube.com/embed')
+
+    def test_no_trailer_url(self):
+        movie = Movie.objects.create(title='Sin Trailer', tier='free', type='movie', year=2020,
+                                     description='x')
+        response = self._detail(movie)
+        self.assertEqual(response.status_code, 200)

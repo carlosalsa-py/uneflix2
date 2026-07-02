@@ -1,4 +1,5 @@
 import logging
+import re
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -31,6 +32,30 @@ PLANES = {
 
 # Tiers que pueden dejar reseñas (Cinéfilo y Zerpanito). Los Unefista (free) no.
 TIERS_CON_REVIEWS = ('medium', 'premium')
+
+# Captura el ID (11 chars) de un video de YouTube en cualquier formato usual:
+# watch?v=, youtu.be, /shorts/, /embed/, /v/, subdominios (m., music.,
+# youtube-nocookie) e incluso pegado dentro del <iframe> de "Insertar".
+_YOUTUBE_ID_RE = re.compile(
+    r'(?:youtu\.be/|youtube(?:-nocookie)?\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|v/))'
+    r'([\w-]{11})'
+)
+
+
+def extract_youtube_id(value):
+    """Devuelve el ID de YouTube (11 chars) a partir de una URL, del código
+    <iframe> de 'Insertar' o de un ID pelado. None si no se reconoce —así el
+    template puede ocultar el trailer sin romper la página (vs. embed_video,
+    que lanza excepción y tira 500 ante una URL que no reconoce)."""
+    if not value:
+        return None
+    value = value.strip()
+    match = _YOUTUBE_ID_RE.search(value)
+    if match:
+        return match.group(1)
+    if re.fullmatch(r'[\w-]{11}', value):
+        return value
+    return None
 
 def get_user_plan(user):
     try:
@@ -82,6 +107,7 @@ def movie_detail(request, pk):
         'reviews': reviews,
         'user_review': user_review,
         'avg_rating': avg_rating,
+        'trailer_youtube_id': extract_youtube_id(movie.trailer_url),
     })
 
 @login_required(login_url='/users/login/')
