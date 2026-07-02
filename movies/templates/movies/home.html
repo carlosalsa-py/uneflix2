@@ -158,19 +158,28 @@
 <body>
 
     <nav id="navbar">
-        <a href="{% url 'home' %}">
-            <img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" height="40" alt="Uneflix">
-        </a>
-        <div style="display:flex; align-items:center; gap:16px;">
-            <!-- AQUÍ ESTÁ LA NUEVA PESTAÑA AÑADIDA -->
+        <!-- IZQUIERDA: logo + navegación de contenido -->
+        <div style="display:flex; align-items:center; gap:24px;">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" height="40" alt="Uneflix">
+            </a>
+            <span style="color:rgba(255,255,255,0.2); font-size:22px; font-weight:300; line-height:1;">|</span>
+            <a href="{% url 'catalogo' 'movie' %}" style="color:#ccc; text-decoration:none; font-size:14px;">
+                Películas
+            </a>
+            <a href="{% url 'catalogo' 'series' %}" style="color:#ccc; text-decoration:none; font-size:14px;">
+                Series
+            </a>
+            <a href="{% url 'watchlist' %}" style="color:#ccc; text-decoration:none; font-size:14px;">
+                Mi Lista
+            </a>
+        </div>
+
+        <!-- DERECHA: planes + cuenta -->
+        <div style="display:flex; align-items:center; gap:24px;">
             <a href="{% url 'membresias' %}" style="color:var(--unefa-yellow); text-decoration:none; font-size:14px; font-weight:600;">
                 Planes
             </a>
-            <!-- PESTAÑAS ORIGINALES -->
-            <a href="{% url 'watchlist' %}" style="color:#ccc; text-decoration:none; font-size:14px;">
-                ♥ Mi Lista
-            </a>
-            <!-- PERFIL -->
             <a href="{% url 'perfil' %}" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:#ccc;">
                 {% if request.user.avatar %}
                     <img src="{{ request.user.avatar.url }}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid var(--unefa-bronze);">
