@@ -64,12 +64,15 @@
         /* BANNER */
         .banner { height: 85vh; position: relative; overflow: hidden; }
 
+        /* Todos los slides quedan apilados; solo se cruza la opacidad (crossfade
+           real: el saliente hace fade-out mientras el entrante hace fade-in). */
         .banner-slide {
-            position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease;
+            position: absolute; inset: 0; opacity: 0; transition: opacity 1.1s ease;
             display: flex; align-items: flex-end; padding: 0 var(--gutter) 80px;
+            pointer-events: none; z-index: 1;
         }
 
-        .banner-slide.active { display: flex !important; opacity: 1; }
+        .banner-slide.active { opacity: 1; pointer-events: auto; z-index: 2; }
 
         .banner-bg {
             position: absolute; inset: 0; background-size: cover; background-position: center top;
@@ -222,7 +225,7 @@
     {% if featured_movies %}
     <div class="banner" id="banner">
         {% for movie in featured_movies %}
-        <div class="banner-slide" data-index="{{ forloop.counter0 }}" style="display:none;">
+        <div class="banner-slide" data-index="{{ forloop.counter0 }}">
             {% if movie.backdrop %}
             <div class="banner-bg" style="background-image: url('{{ movie.backdrop.url }}');"></div>
             {% elif movie.poster %}
@@ -340,10 +343,9 @@
         let current = 0;
 
         function showSlide(index) {
-            slides.forEach(s => { s.classList.remove('active'); s.style.opacity = 0; });
+            slides.forEach(s => s.classList.remove('active'));
             dots.forEach(d => d.classList.remove('active'));
             slides[index].classList.add('active');
-            slides[index].style.opacity = 1;
             dots[index].classList.add('active');
             current = index;
         }
