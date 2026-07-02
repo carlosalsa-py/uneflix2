@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Finalizar Suscripción — Uneflix{% endblock %}
 
@@ -12,10 +13,9 @@
     }
 
     .logo-center {
-        color: white; font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 4px;
-        text-align: center; margin-bottom: 24px; display: block; text-decoration: none;
+        display: flex; justify-content: center; margin-bottom: 24px; text-decoration: none;
     }
-    .logo-center span { color: var(--unefa-bronze); }
+    .logo-center img { height: 48px; display: block; }
 
     .payment-box h2 { font-size: 18px; font-weight: 500; margin-bottom: 16px; color: #fff; }
 
@@ -89,7 +89,7 @@
                 <a href="{% url 'home' %}" class="btn-pay">Volver al inicio</a>
             </div>
 
-            <a href="{% url 'home' %}" class="logo-center">UNE<span>FLIX</span></a>
+            <a href="{% url 'home' %}" class="logo-center"><img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" alt="Uneflix"></a>
 
             <h2>Detalles de la Suscripción</h2>
             <div class="plan-summary">
