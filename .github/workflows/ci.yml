@@ -29,5 +29,11 @@ jobs:
       - name: Django system check
         run: python manage.py check
 
+      # Genera staticfiles.json. Necesario porque STORAGES usa
+      # CompressedManifestStaticFilesStorage: sin el manifest, cualquier
+      # {% static %} (y el redirect de /favicon.ico) rompe al renderizar.
+      - name: Collect static files
+        run: python manage.py collectstatic --noinput
+
       - name: Run tests
         run: python manage.py test --verbosity 2
