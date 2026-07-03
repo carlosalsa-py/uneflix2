@@ -4,9 +4,11 @@
 
 {% block extra_css %}
 <style>
-    .page-wrapper { max-width: 960px; margin: 0 auto; padding: 48px var(--gutter) 80px; }
+    /* El wrapper paga el gutter a ancho completo (mismo borde que home);
+       el ancho máximo va en la tarjeta, alineada a la izquierda. */
+    .page-wrapper { padding: 48px var(--gutter) 80px; }
 
-    .profile-card { background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); }
+    .profile-card { max-width: 960px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); }
     .profile-banner { height: 110px; background: linear-gradient(135deg, #0a1628 0%, var(--unefa-blue) 60%, var(--unefa-bronze) 100%); position: relative; }
     .profile-body { padding: 0 32px 36px; }
 

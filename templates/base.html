@@ -75,6 +75,15 @@
 
         @media (max-width: 768px) { .movies-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; } }
         @media (max-width: 480px) { .movies-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; } }
+
+        /* Navbar compacto en pantallas chicas: logo y gaps más chicos, y se
+           oculta el nombre de usuario (queda el avatar) para que no se apile. */
+        @media (max-width: 600px) {
+            .site-nav { padding: 10px var(--gutter); gap: 8px 12px; }
+            .nav-group { gap: 14px; }
+            .nav-logo img { height: 32px; }
+            .nav-account > span:last-child { display: none; }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
