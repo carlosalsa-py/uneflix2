@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Avg, F
 from django.http import Http404
+from django.urls import reverse
 from django.utils import timezone
 from .models import Movie, Genre, Watchlist, Episode, Review
 from users.models import Membership
@@ -88,6 +89,34 @@ def home(request):
         .order_by('release_date')[:5]
     )
 
+    # Datos reales para el chatbot Miku: catálogo con géneros + listas del sidebar
+    # + plan del usuario. Se embeben con json_script en el template (seguro, sin
+    # endpoint aparte) para que Miku recomiende títulos que existen de verdad.
+    def _titulos(qs):
+        return [{'titulo': m.title, 'url': reverse('movie_detail', args=[m.pk])} for m in qs]
+
+    plan_nombres = {'free': 'Unefista', 'medium': 'Cinéfilo', 'premium': 'Zerpanito'}
+    miku_data = {
+        'usuario': request.user.display_name or request.user.username,
+        'plan': plan,
+        'plan_nombre': plan_nombres.get(plan, 'Unefista'),
+        'generos': [g.name for g in genres],
+        'catalogo': [{
+            'titulo': m.title,
+            'tipo': m.type,
+            'tier': m.tier,
+            'generos': [g.name for g in m.genres.all()],
+            'url': reverse('movie_detail', args=[m.pk]),
+        } for m in Movie.objects.prefetch_related('genres').all()],
+        'mejor_rateadas': _titulos(mejor_rateadas),
+        'mas_vistas': _titulos(mas_vistas),
+        'proximos': [{
+            'titulo': m.title,
+            'url': reverse('movie_detail', args=[m.pk]),
+            'fecha': m.release_date.strftime('%d/%m/%Y') if m.release_date else '',
+        } for m in proximos_estrenos],
+    }
+
     return render(request, 'movies/home.html', {
         'movies': movies,
         'series': series,
@@ -97,6 +126,7 @@ def home(request):
         'mas_vistas': mas_vistas,
         'mejor_rateadas': mejor_rateadas,
         'proximos_estrenos': proximos_estrenos,
+        'miku_data': miku_data,
     })
 
 @login_required(login_url='/users/login/')

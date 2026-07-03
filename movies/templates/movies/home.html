@@ -411,6 +411,8 @@
             });
         }
     </script>
+    {{ miku_data|json_script:"miku-data" }}
+
     <div id="miku-btn" onclick="toggleChat()" title="¡Habla con Miku!">
     <img src="{% static 'images/miku.png' %}" alt="Miku Unefista" id="miku-img">
     <div id="miku-bubble">¡Hola! ¿Te ayudo? 👋</div>
@@ -434,12 +436,12 @@
         </div>
 
         <div id="chat-suggestions">
+            <button class="suggestion" onclick="sendSuggestion(this)">🎬 Recomiéndame algo</button>
+            <button class="suggestion" onclick="sendSuggestion(this)">🔥 Lo más visto</button>
+            <button class="suggestion" onclick="sendSuggestion(this)">🗓️ Próximos estrenos</button>
             <button class="suggestion" onclick="sendSuggestion(this)">💳 Planes y precios</button>
-            <button class="suggestion" onclick="sendSuggestion(this)">💰 Métodos de pago</button>
             <button class="suggestion" onclick="sendSuggestion(this)">👥 ¿Quiénes somos?</button>
             <button class="suggestion" onclick="sendSuggestion(this)">❓ ¿Cómo funciona?</button>
-            <button class="suggestion" onclick="sendSuggestion(this)">🔒 ¿Cómo cancelo?</button>
-            <button class="suggestion" onclick="sendSuggestion(this)">📺 ¿Qué contenido hay?</button>
         </div>
 
         <div id="chat-input-area">
@@ -664,33 +666,135 @@
     </style>
 
     <script>
-    // ── RESPUESTAS PREDETERMINADAS ──────────────────────────────────
+    // ── DATOS REALES (catálogo, plan, listas) embebidos con json_script ──
+    const MIKU = JSON.parse(document.getElementById('miku-data').textContent);
+    const link = (m) => `• <a href="${m.url}" style="color:#d19a4e">${m.titulo}</a>`;
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
+    const nombre = MIKU.usuario ? (' ' + MIKU.usuario.split(' ')[0]) : '';
+
+    // ── PERSONALIDAD: variaciones aleatorias para que no suene robótica ──
+    const saludos = [
+        `¡Hola${nombre}! 👋 Soy Miku Unefista, tu guía en Uneflix. ¿Buscamos algo para ver?`,
+        `¡Hola${nombre}! 🎬 Estoy para ayudarte. ¿Película o serie hoy?`,
+        `¡Holaa! 💙 ¿Te recomiendo algo o quieres saber de los planes?`
+    ];
+    const gracias = [`¡De nada${nombre}! 💙`, `¡Para eso estoy! 😊`, `¡Cuando quieras! 🍿`, `¡Un placer! ✨`];
+    const despedidas = [`¡Hasta luego${nombre}! Que lo disfrutes 🎬`, `¡Nos vemos! 👋`, `¡Hasta la próxima! 💙`];
+    const chistes = [
+        `¿Por qué la peli de terror no fue al gimnasio? Ya tenía suficiente SUS-PENSO 😂`,
+        `Le pregunté a un director cómo filmaba... me dijo que era todo un ROLLO 🎥😆`,
+        `¿Qué le dice una serie a otra? "Te veo en el próximo episodio" 📺✨`
+    ];
+    const sobreMi = [
+        `Soy Miku Unefista, la asistente de Uneflix 🤖💙 No soy humana, ¡pero de pelis sé un montón! ¿Te recomiendo algo?`,
+        `¡Soy Miku Unefista, un bot con mucho corazón cinéfilo! 🎬 Pregúntame por géneros, estrenos o planes.`
+    ];
+    const comoEstas = [`¡Muy bien, con ganas de recomendarte películas! 🍿 ¿Y tú?`, `¡De diez! 😄 ¿Buscamos algo para ver?`];
+    const ayuda = [`Puedo ayudarte con esto 👇
+
+🎬 Recomendarte por género ("algo de acción")
+🔥 Lo más visto
+⭐ Las mejor calificadas
+🗓️ Próximos estrenos
+💳 Info de planes y pagos
+
+¿Por dónde empezamos?`];
+    const defaults = [
+        `Mmm, no entendí muy bien 🤔 Prueba con un género ("algo de acción"), "recomiéndame algo", "próximos estrenos" o "planes".`,
+        `No estoy segura de eso 😅 Puedo recomendarte por género, contarte de los planes o mostrarte lo más visto. ¿Qué prefieres?`
+    ];
+
+    // ── RESPUESTAS FIJAS (info institucional) ──
     const respuestas = {
-        "planes": `¡Tenemos 3 planes! 🎬\n\n<b>🆓 Unefista (Gratis)</b>\nAcceso al catálogo básico con anuncios.\n\n<b>🎞️ Cinéfilo — $2.99/mes</b>\nCatálogo completo, sin anuncios, descarga de películas.\n\n<b>⭐ Zerpanito — $4.99/mes</b>\nTodo lo anterior + hasta 3 pantallas simultáneas.\n\n¿Quieres <a href="/membresias/" style="color:#d19a4e">ver los planes</a>?`,
-
+        "planes": `¡Tenemos 3 planes! 🎬\n\n<b>🆓 Unefista (Gratis)</b>\nContenido gratuito, tu Mi Lista y tráilers.\n\n<b>🎞️ Cinéfilo — $2.99/mes</b>\nContenido de alta demanda + reseñas y calificaciones.\n\n<b>⭐ Zerpanito — $4.99/mes</b>\nTodo lo anterior + los últimos estrenos más demandados.\n\n¿Quieres <a href="/membresias/" style="color:#d19a4e">ver los planes</a>?`,
         "pago": `Aceptamos los siguientes métodos 💳\n\n<b>✅ Tarjeta internacional</b> — Disponible ahora\n<b>🕐 Pago móvil</b> — Próximamente\n<b>🕐 Transferencia bancaria</b> — Próximamente\n\nTodos los pagos son seguros y procesados manualmente por nuestro equipo.`,
-
         "quienes": `Somos <b>Uneflix</b> 🎬, una plataforma de streaming venezolana creada por estudiantes de la <b>UNEFA</b>.\n\nNuestro objetivo es ofrecer contenido de calidad adaptado a cualquier conexión, con precios accesibles para todos los unefistas. 💙`,
-
         "como": `¡Es muy fácil! 😊\n\n1️⃣ <b>Regístrate</b> gratis\n2️⃣ <b>Explora</b> el catálogo\n3️⃣ <b>Elige un plan</b> si quieres más contenido\n4️⃣ <b>Disfruta</b> tus películas y series\n\nCon el plan gratuito ya tienes acceso a una buena parte del catálogo.`,
-
         "cancelar": `Cancelar tu plan es sencillo 🔓\n\nPor ahora puedes contactarnos directamente y procesamos la cancelación en menos de 24 horas.\n\nNo hay penalidades ni cargos ocultos. Tu plan sigue activo hasta la fecha de vencimiento.`,
-
-        "contenido": `Tenemos películas y series de distintos géneros 🍿\n\nAcción, Drama, Comedia, Terror, Animación y más.\n\nEl contenido varía según tu plan:\n• <b>Gratis</b> — Catálogo básico\n• <b>Cinéfilo</b> — Catálogo completo\n• <b>Zerpanito</b> — Todo + estrenos`,
-
-        "default": `Mmm, no estoy segura de eso 🤔\n\nPuedes preguntarme sobre:\n• Planes y precios\n• Métodos de pago\n• Cómo funciona Uneflix\n• Quiénes somos\n\n¡O usa los botones de arriba! 😊`
+        "contenido": `Tenemos películas y series de distintos géneros 🍿\n\n${MIKU.generos.length ? MIKU.generos.join(', ') : 'Acción, Drama, Comedia y más'}.\n\nDime un género (ej: "algo de acción") y te recomiendo títulos reales. 🎬`
     };
 
-    function getResponse(text) {
-        const t = text.toLowerCase();
-        if (t.match(/plan|precio|suscri|membresía|cinef|zerpan|unefist/)) return respuestas.planes;
-        if (t.match(/pago|tarjeta|transfer|móvil|movil|cobr|pagar/))      return respuestas.pago;
-        if (t.match(/quién|quien|somos|empresa|unefa|equipo|sobre/))       return respuestas.quienes;
-        if (t.match(/cómo|como|funciona|registr|usar|empez/))             return respuestas.como;
-        if (t.match(/cancel|baja|dar de baja|suspender/))                 return respuestas.cancelar;
-        if (t.match(/contenido|película|serie|catálogo|catalogo|hay|ver/)) return respuestas.contenido;
-        return respuestas.default;
+    // ── RECOMENDACIONES CON DATOS REALES ──
+    function recomendarGenero(genero, tipo) {
+        const g = norm(genero);
+        let items = MIKU.catalogo.filter(m => m.generos.some(x => norm(x) === g));
+        if (tipo) items = items.filter(m => m.tipo === tipo);
+        return items;
     }
+    const listaTitulos = (items, n = 3) => shuffle(items).slice(0, n).map(link).join('\n');
+
+    function getResponse(text) {
+        const t = norm(text);
+
+        // Personalidad
+        if (/\b(hola|holaa|holis|buenas|buen dia|buenos dias|buenas tardes|buenas noches|hey|ey|que tal|que onda|saludos)\b/.test(t)) return pick(saludos);
+        if (/\b(gracias|grax|genial|groso|crack|de 10|excelente|perfecto|buenisimo|sos la mejor|eres la mejor)\b/.test(t)) return pick(gracias);
+        if (/\b(chau|chao|adios|nos vemos|bye|hasta luego|me voy)\b/.test(t)) return pick(despedidas);
+        if (/(chiste|hazme reir|algo gracioso|cuentame un chiste|reir un rato)/.test(t)) return pick(chistes);
+        if (/(sos un bot|eres un bot|sos real|eres real|quien sos|que sos|tu nombre|como te llamas)/.test(t)) return pick(sobreMi);
+        if (/(como estas|como andas|que tal estas|todo bien)/.test(t)) return pick(comoEstas);
+        if (/(ayuda|que puedes hacer|que sabes hacer|opciones|para que sirves|no se que preguntar|que hago|help)/.test(t)) return pick(ayuda);
+
+        // Mi plan
+        if (/(mi plan|que plan tengo|mi membres|mi suscri|mi cuenta)/.test(t)) {
+            const base = `Ahora tienes el plan <b>${MIKU.plan_nombre}</b> ✨`;
+            if (MIKU.plan === 'premium') return `${base}\n¡El más completo! Acceso a todo, incluidos los últimos estrenos 🎬`;
+            return `${base}\nSi quieres desbloquear más contenido, mira los <a href="/membresias/" style="color:#d19a4e">planes</a> 💳`;
+        }
+
+        // Próximos estrenos
+        if (/(estreno|proxim|que se viene|novedad|nuevo lanzamiento|que viene)/.test(t)) {
+            if (MIKU.proximos.length) return `Se vienen estos estrenos 🗓️\n\n${MIKU.proximos.map(m => `${link(m)} — ${m.fecha}`).join('\n')}`;
+            return `Por ahora no hay estrenos con fecha cargada, ¡pero se vienen cosas! 🎬 ¿Te recomiendo algo mientras tanto?`;
+        }
+
+        // Lo más visto
+        if (/(mas visto|mas vista|popular|tendencia|trending)/.test(t)) {
+            if (MIKU.mas_vistas.length) return `Lo más visto ahora mismo 🔥\n\n${MIKU.mas_vistas.map(link).join('\n')}`;
+            return `Todavía no hay suficientes reproducciones para un ranking 😅 ¿Te recomiendo por género?`;
+        }
+
+        // Mejor calificadas
+        if (/(mejor rate|mejor calific|mas gustad|puntuad|mejores pelis|top pelis|mejor valorad)/.test(t)) {
+            if (MIKU.mejor_rateadas.length) return `Las mejor calificadas ⭐\n\n${MIKU.mejor_rateadas.map(link).join('\n')}`;
+            return `Aún no hay suficientes reseñas para un top 😅 ¿Probamos por género?`;
+        }
+
+        // Recomendación por género (detecta cualquier género real del catálogo)
+        for (const genero of MIKU.generos) {
+            if (t.includes(norm(genero))) {
+                const tipo = /\bserie/.test(t) ? 'series' : (/(peli|pelicula|film)/.test(t) ? 'movie' : null);
+                const items = recomendarGenero(genero, tipo);
+                if (items.length) return `Aquí tienes ${Math.min(3, items.length)} de <b>${genero}</b> 🎬\n\n${listaTitulos(items)}\n\n¿Quieres de otro género?`;
+                return `Uy, por ahora no tengo títulos de <b>${genero}</b> 😅 ¿Probamos otro género?`;
+            }
+        }
+
+        // Recomendación general / sorpréndeme
+        if (/(recom|sorprend|algo para ver|que veo|no se que ver|sugerenc|dame una|algo bueno|que miro|quiero ver)/.test(t)) {
+            const base = MIKU.mejor_rateadas.length ? MIKU.mejor_rateadas : MIKU.catalogo;
+            if (!base.length) return `Todavía no hay títulos cargados en el catálogo 😅`;
+            return `¡Con gusto! Prueba con estas 🍿\n\n${shuffle(base).slice(0, 3).map(link).join('\n')}\n\n¿Buscas de un género en particular?`;
+        }
+
+        // Info institucional (respuestas fijas)
+        if (/(plan|precio|suscri|membresia|cinef|zerpan|unefist)/.test(t)) return respuestas.planes;
+        if (/(pago|tarjeta|transfer|movil|cobr|pagar|metodo de pago)/.test(t)) return respuestas.pago;
+        if (/(quien|somos|empresa|unefa|equipo|sobre uneflix|que es uneflix)/.test(t)) return respuestas.quienes;
+        if (/(como funciona|registr|como uso|como empiezo|como me suscribo)/.test(t)) return respuestas.como;
+        if (/(cancel|baja|dar de baja|suspender)/.test(t)) return respuestas.cancelar;
+        if (/(que contenido|que hay|catalogo|generos|que pelis|que series)/.test(t)) return respuestas.contenido;
+
+        return pick(defaults);
+    }
+
+    // Personaliza el saludo inicial con el nombre del usuario
+    (function () {
+        const first = document.querySelector('#chat-messages .msg.bot .bubble');
+        if (first && nombre) first.innerHTML = `¡Hola${nombre}! Soy <strong>Miku Unefista</strong> 🎬 Puedo recomendarte películas y series o contarte de los planes. ¿Empezamos?`;
+    })();
 
     function toggleChat() {
         const chat = document.getElementById('miku-chat');
