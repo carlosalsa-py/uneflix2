@@ -73,25 +73,25 @@
                 <div class="plan-title">Plan Unefista</div>
                 <div class="plan-price">$0<span>/por siempre</span></div>
                 <ul class="plan-features">
-                    <li>Acceso al catálogo completo</li>
-                    <li>Calidad fluida optimizada</li>
-                    <li>Incluye anuncios en la plataforma</li>
-                    <li class="disabled">Descarga directa de archivos</li>
-                    <li class="disabled">Reproducción simultánea</li>
+                    <li>Catálogo de contenido gratuito</li>
+                    <li>Tu lista personal (Mi Lista)</li>
+                    <li>Tráilers y fichas completas</li>
+                    <li class="disabled">Contenido de alta demanda</li>
+                    <li class="disabled">Reseñas y calificaciones</li>
                 </ul>
                 <a href="{% url 'home' %}" class="btn-select">{% if plan == 'free' %}✓ Plan Actual{% else %}Cambiar a Gratis{% endif %}</a>
             </div>
 
             <div class="plan-card featured">
                 <div class="badge">Más Popular</div>
-                <div class="plan-title">Plan Cinefilo</div>
+                <div class="plan-title">Plan Cinéfilo</div>
                 <div class="plan-price">$2.99<span>/mes</span></div>
                 <ul class="plan-features">
-                    <li>Acceso al catálogo completo</li>
-                    <li>Máxima fidelidad de audio y video</li>
-                    <li>Navegación 100% sin anuncios</li>
-                    <li>Descargar películas a tu PC</li>
-                    <li class="disabled">Ver en 3 pantallas al mismo tiempo</li>
+                    <li>Todo lo del plan Unefista</li>
+                    <li>Contenido de alta demanda (populares y destacados)</li>
+                    <li>Deja reseñas y califica películas</li>
+                    <li>Tu lista personal (Mi Lista)</li>
+                    <li class="disabled">Últimos estrenos premier</li>
                 </ul>
                 <a href="{% url 'pago' %}?plan=medium" class="btn-select">{% if plan == 'medium' %}✓ Plan Actual{% else %}Cambiar Plan{% endif %}</a>
             </div>
@@ -100,11 +100,11 @@
                 <div class="plan-title">Plan Zerpanito</div>
                 <div class="plan-price">$4.99<span>/mes</span></div>
                 <ul class="plan-features">
-                    <li>Acceso al catálogo completo</li>
-                    <li>Máxima fidelidad de audio y video</li>
-                    <li>Navegación 100% sin anuncios</li>
-                    <li>Descargar películas a tu PC</li>
-                    <li>Ver hasta en 3 pantallas a la vez</li>
+                    <li>Todo lo del plan Cinéfilo</li>
+                    <li>Los últimos estrenos más demandados, apenas salen</li>
+                    <li>Acceso a todo el catálogo, sin límites</li>
+                    <li>Reseñas y calificaciones</li>
+                    <li>Tu lista personal (Mi Lista)</li>
                 </ul>
                 <a href="{% url 'pago' %}?plan=premium" class="btn-select">{% if plan == 'premium' %}✓ Plan Actual{% else %}Cambiar Plan{% endif %}</a>
             </div>
