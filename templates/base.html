@@ -20,6 +20,12 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* Reserva siempre el ancho de la barra de scroll, tenga la página scroll
+           o no. Sin esto, las páginas altas (home, catálogo) pierden ~15px por
+           la barra y su --gutter queda más chico, corriendo el contenido a la
+           izquierda respecto de las páginas cortas. Así todas alinean igual. */
+        html { scrollbar-gutter: stable; }
+
         body {
             background-color: var(--bg-dark);
             font-family: 'Inter', sans-serif;
