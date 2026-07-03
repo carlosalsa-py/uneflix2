@@ -3,9 +3,15 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
+from django.views.generic.base import RedirectView
+from django.templatetags.static import static as static_url
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('healthz/', views.healthz, name='healthz'),
+    path('robots.txt', views.robots_txt, name='robots_txt'),
+    path('favicon.ico', RedirectView.as_view(url=static_url('images/favicon.ico'), permanent=True)),
     path('', include('movies.urls')),
     path('users/', include('users.urls')),
 ]

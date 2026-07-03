@@ -1,3 +1,4 @@
+from django import forms
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -20,9 +21,18 @@ User = get_user_model()
 AVATAR_MAX_BYTES = 128 * 1024  # 128KB
 AVATAR_SIZE = (128, 128)
 class CustomUserCreationForm(UserCreationForm):
+    # Email obligatorio: sin él no hay forma de recuperar la contraseña.
+    email = forms.EmailField(required=True, label='Correo electrónico')
+
     class Meta:
         model = User
-        fields = ('username', 'password1', 'password2')
+        fields = ('username', 'email', 'password1', 'password2')
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError('Ya existe una cuenta con este correo.')
+        return email
         
 def terms_view(request):
     return render(request, 'users/terms.html')
