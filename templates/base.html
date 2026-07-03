@@ -43,10 +43,25 @@
             background: var(--bg-dark);
             border-bottom: 2px solid var(--unefa-bronze);
             padding: 14px var(--gutter);
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex; align-items: center; justify-content: flex-start;
             gap: 12px 20px; flex-wrap: wrap;
         }
+        /* En desktop el menú ocupa el espacio restante; adentro, los links a la
+           izquierda y la cuenta empujada a la derecha. */
+        .nav-menu { display: flex; align-items: center; gap: 12px 20px; flex: 1; flex-wrap: wrap; }
         .nav-group { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+        .nav-secondary { margin-left: auto; }
+
+        /* Botón hamburguesa: oculto en desktop, visible en mobile */
+        .nav-toggle {
+            display: none; flex-direction: column; justify-content: center; gap: 5px;
+            width: 42px; height: 42px; padding: 9px; margin-left: auto;
+            background: none; border: none; cursor: pointer;
+        }
+        .nav-toggle span { display: block; width: 100%; height: 2px; background: #ccc; border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+        .site-nav.open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .site-nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
+        .site-nav.open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
         .nav-sep { color: rgba(255,255,255,0.2); font-size: 22px; font-weight: 300; line-height: 1; }
         .site-nav a { color: #ccc; text-decoration: none; font-size: 14px; transition: color 0.2s; }
         .site-nav a:hover { color: white; }
@@ -82,13 +97,21 @@
         @media (max-width: 768px) { .movies-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; } }
         @media (max-width: 480px) { .movies-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; } }
 
-        /* Navbar compacto en pantallas chicas: logo y gaps más chicos, y se
-           oculta el nombre de usuario (queda el avatar) para que no se apile. */
+        /* Navbar en mobile: logo (izq) + hamburguesa (der). El menú se despliega
+           vertical al tocar el botón (clase .open la agrega el JS). */
         @media (max-width: 600px) {
-            .site-nav { padding: 10px var(--gutter); gap: 8px 12px; }
-            .nav-group { gap: 14px; }
-            .nav-logo img { height: 32px; }
-            .nav-account > span:last-child { display: none; }
+            .site-nav { padding: 8px var(--gutter); gap: 8px; justify-content: space-between; }
+            .nav-logo img { height: 30px; }
+            .nav-toggle { display: flex; }
+            .nav-menu {
+                display: none; width: 100%; flex: none;
+                flex-direction: column; align-items: stretch; gap: 0; padding-top: 4px;
+            }
+            .site-nav.open .nav-menu { display: flex; }
+            .nav-group { flex-direction: column; align-items: stretch; gap: 0; width: 100%; }
+            .nav-secondary { margin-left: 0; }
+            .nav-sep { display: none; }
+            .nav-menu a { padding: 13px 4px; font-size: 15px; border-top: 1px solid rgba(255,255,255,0.06); }
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -97,23 +120,28 @@
 
     {% block nav %}
     <nav class="site-nav">
-        <div class="nav-group">
-            <a href="{% url 'home' %}" class="nav-logo"><img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" alt="Uneflix"></a>
-            <span class="nav-sep">|</span>
-            <a href="{% url 'catalogo' 'movie' %}">Películas</a>
-            <a href="{% url 'catalogo' 'series' %}">Series</a>
-            <a href="{% url 'watchlist' %}">Mi Lista</a>
-        </div>
-        <div class="nav-group">
-            <a href="{% url 'membresias' %}" class="nav-plans">Planes</a>
-            <a href="{% url 'perfil' %}" class="nav-account">
-                {% if request.user.avatar %}
-                    <img src="{{ request.user.avatar.url }}" class="avatar-img" alt="">
-                {% else %}
-                    <span class="avatar-fallback">{{ request.user.display_name|default:request.user.username|first|upper }}</span>
-                {% endif %}
-                <span>{{ request.user.display_name|default:request.user.username }}</span>
-            </a>
+        <a href="{% url 'home' %}" class="nav-logo"><img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" alt="Uneflix"></a>
+        <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-menu" id="nav-menu">
+            <div class="nav-group nav-primary">
+                <span class="nav-sep">|</span>
+                <a href="{% url 'catalogo' 'movie' %}">Películas</a>
+                <a href="{% url 'catalogo' 'series' %}">Series</a>
+                <a href="{% url 'watchlist' %}">Mi Lista</a>
+            </div>
+            <div class="nav-group nav-secondary">
+                <a href="{% url 'membresias' %}" class="nav-plans">Planes</a>
+                <a href="{% url 'perfil' %}" class="nav-account">
+                    {% if request.user.avatar %}
+                        <img src="{{ request.user.avatar.url }}" class="avatar-img" alt="">
+                    {% else %}
+                        <span class="avatar-fallback">{{ request.user.display_name|default:request.user.username|first|upper }}</span>
+                    {% endif %}
+                    <span>{{ request.user.display_name|default:request.user.username }}</span>
+                </a>
+            </div>
         </div>
     </nav>
     {% endblock %}
@@ -127,6 +155,29 @@
         © 2026 — Desarrollado por <span>Uneflix Team</span> · Todos los derechos reservados
     </footer>
     {% endblock %}
+
+    <script>
+        // Toggle del menú mobile (hamburguesa). Cerrar al tocar un link o fuera.
+        (function () {
+            var toggle = document.querySelector('.nav-toggle');
+            var nav = document.querySelector('.site-nav');
+            if (!toggle || !nav) return;
+            function setOpen(open) {
+                nav.classList.toggle('open', open);
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
+            toggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                setOpen(!nav.classList.contains('open'));
+            });
+            nav.querySelectorAll('.nav-menu a').forEach(function (a) {
+                a.addEventListener('click', function () { setOpen(false); });
+            });
+            document.addEventListener('click', function (e) {
+                if (nav.classList.contains('open') && !nav.contains(e.target)) setOpen(false);
+            });
+        })();
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>
