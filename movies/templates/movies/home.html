@@ -129,6 +129,39 @@
             font-size: 10px; padding: 2px 7px; border-radius: 10px; margin-top: 4px; font-weight: 500;
         }
 
+        /* ===== LAYOUT HOME: contenido + sidebar (#10) ===== */
+        .home-layout {
+            display: grid; grid-template-columns: minmax(0, 1fr) 300px;
+            gap: 40px; padding: 0 var(--gutter);
+        }
+        /* Dentro del layout las secciones ya no pagan el gutter (lo paga el wrapper) */
+        .home-main .section-head { padding: 0; }
+        .home-main .section-title { padding: 0 0 16px; }
+        .home-main .movies-grid { padding: 0 0 40px; }
+        .home-main .series-section { margin-top: 24px; padding-top: 24px; }
+
+        /* Sidebar sticky */
+        .home-sidebar { align-self: start; position: sticky; top: 88px; display: flex; flex-direction: column; gap: 24px; }
+        .sb-widget { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px 16px 8px; }
+        .sb-title { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 1px; color: #e5e5e5; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .sb-list { list-style: none; margin: 0; padding: 0; }
+        .sb-item { border-top: 1px solid rgba(255,255,255,0.05); }
+        .sb-item:first-child { border-top: none; }
+        .sb-link { display: flex; align-items: center; gap: 10px; padding: 9px 0; text-decoration: none; color: inherit; }
+        .sb-rank { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--unefa-bronze); width: 16px; text-align: center; flex-shrink: 0; }
+        .sb-poster { width: 38px; height: 57px; object-fit: cover; border-radius: 4px; flex-shrink: 0; background: #1a2540; }
+        .sb-meta { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+        .sb-name { font-size: 13px; font-weight: 500; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sb-link:hover .sb-name { color: white; }
+        .sb-sub { font-size: 11px; color: #66748f; }
+        .sb-sub.rating { color: var(--unefa-bronze); }
+        .sb-empty { font-size: 12px; color: #4a566e; padding: 6px 0 12px; font-style: italic; }
+
+        @media (max-width: 900px) {
+            .home-layout { grid-template-columns: 1fr; gap: 8px; }
+            .home-sidebar { position: static; flex-direction: column; margin-top: 24px; }
+        }
+
         @media (max-width: 768px) { .banner { height: 65vh; } .movies-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; } }
         @media (max-width: 480px) { .movies-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; } .banner { height: 55vh; } }
     </style>
@@ -178,6 +211,9 @@
         </div>
     </div>
     {% endif %}
+
+    <div class="home-layout">
+    <div class="home-main">
 
     <!-- PELÍCULAS -->
     <div class="section-head">
@@ -267,6 +303,73 @@
     </div>
     </div>
     {% endif %}
+
+    </div><!-- /.home-main -->
+
+    <!-- SIDEBAR (#10) -->
+    <aside class="home-sidebar">
+
+        <section class="sb-widget">
+            <h3 class="sb-title">Más vistas</h3>
+            <ol class="sb-list">
+                {% for m in mas_vistas %}
+                <li class="sb-item">
+                    <a href="{% url 'movie_detail' m.pk %}" class="sb-link">
+                        <span class="sb-rank">{{ forloop.counter }}</span>
+                        {% if m.poster %}<img class="sb-poster" src="{{ m.poster.url }}" alt="{{ m.title }}">{% else %}<span class="sb-poster"></span>{% endif %}
+                        <span class="sb-meta">
+                            <span class="sb-name">{{ m.title }}</span>
+                            <span class="sb-sub">{{ m.views }} vista{{ m.views|pluralize }}</span>
+                        </span>
+                    </a>
+                </li>
+                {% empty %}
+                <li class="sb-empty">Aún no hay reproducciones</li>
+                {% endfor %}
+            </ol>
+        </section>
+
+        <section class="sb-widget">
+            <h3 class="sb-title">Mejor rateadas</h3>
+            <ol class="sb-list">
+                {% for m in mejor_rateadas %}
+                <li class="sb-item">
+                    <a href="{% url 'movie_detail' m.pk %}" class="sb-link">
+                        <span class="sb-rank">{{ forloop.counter }}</span>
+                        {% if m.poster %}<img class="sb-poster" src="{{ m.poster.url }}" alt="{{ m.title }}">{% else %}<span class="sb-poster"></span>{% endif %}
+                        <span class="sb-meta">
+                            <span class="sb-name">{{ m.title }}</span>
+                            <span class="sb-sub rating">★ {{ m.avg_rating|floatformat:1 }}</span>
+                        </span>
+                    </a>
+                </li>
+                {% empty %}
+                <li class="sb-empty">Aún no hay reseñas</li>
+                {% endfor %}
+            </ol>
+        </section>
+
+        <section class="sb-widget">
+            <h3 class="sb-title">Próximos estrenos</h3>
+            <ol class="sb-list">
+                {% for m in proximos_estrenos %}
+                <li class="sb-item">
+                    <a href="{% url 'movie_detail' m.pk %}" class="sb-link">
+                        {% if m.poster %}<img class="sb-poster" src="{{ m.poster.url }}" alt="{{ m.title }}">{% else %}<span class="sb-poster"></span>{% endif %}
+                        <span class="sb-meta">
+                            <span class="sb-name">{{ m.title }}</span>
+                            <span class="sb-sub">{{ m.release_date|date:"d M Y" }}</span>
+                        </span>
+                    </a>
+                </li>
+                {% empty %}
+                <li class="sb-empty">Sin estrenos programados</li>
+                {% endfor %}
+            </ol>
+        </section>
+
+    </aside>
+    </div><!-- /.home-layout -->
 
     <script>
         const slides = document.querySelectorAll('.banner-slide');
