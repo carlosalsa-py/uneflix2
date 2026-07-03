@@ -143,6 +143,27 @@ Notas:
   desde el panel del servicio, no en un archivo `.env`.
 - `settings.py` usa default seguro: si `DEBUG` no está definida, vale `False`.
 
+### Deploy paso a paso (portable)
+
+El proyecto trae todo lo necesario para correr en cualquier host que soporte
+Python/gunicorn (Render, Railway, Fly.io, un VPS, etc.):
+
+1. **Variables de entorno** en el panel del host (ver `.env.example`):
+   `SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS`,
+   `DATABASE_URL` (Postgres) y, si querés emails reales, las `EMAIL_*`.
+2. **Base de datos**: creá un Postgres gestionado y pegá su `DATABASE_URL`.
+   Sin `DATABASE_URL` se usa SQLite, que **se borra en cada redeploy** en hosts
+   de disco efímero — no lo uses en producción.
+3. **Build**: corré `./build.sh` (instala deps, `collectstatic`, `migrate`).
+4. **Arranque**: `gunicorn uneflix.wsgi` (ya está en el `Procfile`).
+5. **Superusuario**: `python manage.py createsuperuser` una vez.
+6. **Media persistente**: los avatares que suben los usuarios se guardan en
+   `media/`. En hosts de disco efímero necesitás un disco persistente o mover
+   la media a la nube (S3/Cloudinary), o se pierden en cada redeploy.
+
+Endpoints útiles: `/healthz/` (healthcheck para el monitor del host) y
+`/robots.txt`. El `check --deploy` de Django pasa sin warnings.
+
 ---
 
 ## Guardar cambios en la base de datos

@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Recuperar contraseña{% endblock %} — Uneflix</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-dark: #070b12; --unefa-blue: #004bca; --unefa-bronze: #d19a4e; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif; color: white; min-height: 100vh; display: flex;
+            background: url("{% static 'images/fondo_uneflix.jpg' %}") center/cover no-repeat;
+            background-color: var(--bg-dark);
+        }
+        .overlay { position: fixed; inset: 0; background: linear-gradient(135deg, rgba(7,11,18,0.7) 0%, rgba(0,0,0,0.85) 100%); }
+        .right-panel {
+            position: relative; z-index: 2; margin-left: auto; width: 100%; max-width: 420px;
+            min-height: 100vh; background: rgba(7,11,18,0.92); backdrop-filter: blur(8px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 60px 40px; border-left: 2px solid var(--unefa-bronze);
+        }
+        .logo {
+            width: 250px; height: 60px; background-image: url("{% static 'images/logo.png' %}");
+            background-size: contain; background-repeat: no-repeat; background-position: center;
+            text-indent: -9999px; overflow: hidden; margin-bottom: 40px;
+        }
+        h2 { font-size: 22px; font-weight: 600; margin-bottom: 20px; align-self: flex-start; border-left: 3px solid var(--unefa-blue); padding-left: 10px; }
+        p.intro { font-size: 13px; color: #8898b5; line-height: 1.6; margin-bottom: 20px; align-self: flex-start; }
+        .field { margin-bottom: 16px; width: 100%; }
+        .field label { display: block; font-size: 13px; color: #8898b5; margin-bottom: 6px; }
+        .field input {
+            width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 6px; padding: 10px 14px; color: white; font-size: 14px; font-family: 'Inter', sans-serif; transition: all 0.2s;
+        }
+        .field input:focus { outline: none; border-color: var(--unefa-blue); background: rgba(0,75,202,0.05); box-shadow: 0 0 8px rgba(0,75,202,0.3); }
+        .btn {
+            width: 100%; background: var(--unefa-blue); color: white; border: none; padding: 12px;
+            border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+            margin-top: 8px; transition: background 0.2s; text-decoration: none; text-align: center; display: block;
+        }
+        .btn:hover { background: var(--unefa-bronze); color: black; }
+        .link { text-align: center; margin-top: 20px; font-size: 13px; color: #66748f; width: 100%; }
+        .link a { color: var(--unefa-bronze); text-decoration: none; font-weight: 500; }
+        .link a:hover { color: white; }
+        .errors, .field .errorlist { background: rgba(255,74,74,0.1); border: 1px solid rgba(255,74,74,0.3); border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #ff6b6b; margin-bottom: 16px; width: 100%; list-style: none; }
+        .field .helptext { font-size: 11px; color: #55617a; margin-top: 6px; display: block; }
+        @media (max-width: 480px) { .right-panel { max-width: 100%; padding: 40px 24px; border-left: none; border-top: 4px solid var(--unefa-bronze); } }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="right-panel">
+        <span class="logo">UNEFLIX</span>
+        <h2>{% block heading %}Recuperar contraseña{% endblock %}</h2>
+        {% block body %}{% endblock %}
+    </div>
+</body>
+</html>
