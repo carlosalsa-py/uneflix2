@@ -1,5 +1,8 @@
+from datetime import timedelta
+
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from .models import Movie, Genre, Watchlist, Review
 from .views import extract_youtube_id
 from users.models import Membership
@@ -228,3 +231,79 @@ class TrailerRenderTest(TestCase):
                                      description='x')
         response = self._detail(movie)
         self.assertEqual(response.status_code, 200)
+
+
+class ViewCountTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='viewer', password='pass1234')
+        self.client.login(username='viewer', password='pass1234')
+        self.movie = Movie.objects.create(title='Contada', tier='free', type='movie',
+                                          year=2020, description='x')
+
+    def test_detail_increments_views(self):
+        self.assertEqual(self.movie.views, 0)
+        self.client.get(f'/movie/{self.movie.pk}/')
+        self.movie.refresh_from_db()
+        self.assertEqual(self.movie.views, 1)
+        self.client.get(f'/movie/{self.movie.pk}/')
+        self.movie.refresh_from_db()
+        self.assertEqual(self.movie.views, 2)
+
+
+class SidebarTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='home', password='pass1234')
+        self.client.login(username='home', password='pass1234')
+        self.today = timezone.localdate()
+
+    def _home(self):
+        return self.client.get('/')
+
+    def test_mas_vistas_ordered_and_excludes_zero(self):
+        pop = Movie.objects.create(title='Popular', tier='free', type='movie', year=2020,
+                                   description='x', views=50)
+        mid = Movie.objects.create(title='Media', tier='free', type='movie', year=2020,
+                                   description='x', views=5)
+        Movie.objects.create(title='Nunca Vista', tier='free', type='movie', year=2020,
+                             description='x', views=0)
+        ctx = self._home().context
+        titles = [m.title for m in ctx['mas_vistas']]
+        self.assertEqual(titles, ['Popular', 'Media'])  # ordenadas desc, sin la de 0 vistas
+        self.assertNotIn('Nunca Vista', titles)
+
+    def test_mejor_rateadas_ordered_by_avg(self):
+        u2 = User.objects.create_user(username='critico', password='pass1234')
+        alta = Movie.objects.create(title='Obra Maestra', tier='free', type='movie', year=2020, description='x')
+        baja = Movie.objects.create(title='Mala', tier='free', type='movie', year=2020, description='x')
+        sin = Movie.objects.create(title='Sin Reseñas', tier='free', type='movie', year=2020, description='x')
+        Review.objects.create(movie=alta, user=self.user, rating=5, comment='top')
+        Review.objects.create(movie=alta, user=u2, rating=5, comment='top')
+        Review.objects.create(movie=baja, user=self.user, rating=1, comment='meh')
+        ctx = self._home().context
+        titles = [m.title for m in ctx['mejor_rateadas']]
+        self.assertEqual(titles, ['Obra Maestra', 'Mala'])  # 5.0 antes que 1.0
+        self.assertNotIn('Sin Reseñas', titles)  # las sin reseñas no aparecen
+
+    def test_proximos_estrenos_only_future_ascending(self):
+        pronto = Movie.objects.create(title='Pronto', tier='free', type='movie', year=2027,
+                                      description='x', release_date=self.today + timedelta(days=3))
+        lejos = Movie.objects.create(title='Lejos', tier='free', type='movie', year=2027,
+                                     description='x', release_date=self.today + timedelta(days=30))
+        Movie.objects.create(title='Ya Salio', tier='free', type='movie', year=2019,
+                             description='x', release_date=self.today - timedelta(days=10))
+        Movie.objects.create(title='Sin Fecha', tier='free', type='movie', year=2020, description='x')
+        ctx = self._home().context
+        titles = [m.title for m in ctx['proximos_estrenos']]
+        self.assertEqual(titles, ['Pronto', 'Lejos'])  # fecha futura, ascendente
+        self.assertNotIn('Ya Salio', titles)
+        self.assertNotIn('Sin Fecha', titles)
+
+    def test_empty_states_render(self):
+        # Sin datos, la home igual responde 200 y muestra los empty-states.
+        response = self._home()
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Aún no hay reproducciones')
+        self.assertContains(response, 'Aún no hay reseñas')
+        self.assertContains(response, 'Sin estrenos programados')

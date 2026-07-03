@@ -31,6 +31,8 @@ class Movie(models.Model):
     imdb_url = models.URLField(blank=True, null=True)
     duration = models.IntegerField(blank=True, null=True, help_text="Duración en minutos")
     trailer_url = models.URLField(blank=True, null=True, help_text="Pega cualquier enlace de YouTube aquí")
+    views = models.PositiveIntegerField(default=0, editable=False, help_text="Cantidad de visitas a la ficha")
+    release_date = models.DateField(blank=True, null=True, help_text="Fecha de estreno. Si es futura, aparece en 'Próximos estrenos'")
     TIER_CHOICES = [
         ('free', 'Gratuito'),
         ('medium', 'Cinéfilo'),

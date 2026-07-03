@@ -4,8 +4,9 @@ import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Avg
+from django.db.models import Avg, F
 from django.http import Http404
+from django.utils import timezone
 from .models import Movie, Genre, Watchlist, Episode, Review
 from users.models import Membership
 
@@ -72,17 +73,42 @@ def home(request):
     genres = Genre.objects.all()
     featured_movies = Movie.objects.filter(featured=True)
 
+    # Sidebar (#10). Cada lista puede venir vacía (sin visitas, sin reseñas o sin
+    # estrenos futuros cargados) y el template muestra un empty-state.
+    mas_vistas = Movie.objects.filter(views__gt=0).order_by('-views')[:5]
+    mejor_rateadas = (
+        Movie.objects
+        .annotate(avg_rating=Avg('reviews__rating'))
+        .filter(avg_rating__isnull=False)
+        .order_by('-avg_rating')[:5]
+    )
+    proximos_estrenos = (
+        Movie.objects
+        .filter(release_date__gt=timezone.localdate())
+        .order_by('release_date')[:5]
+    )
+
     return render(request, 'movies/home.html', {
         'movies': movies,
         'series': series,
         'genres': genres,
         'featured_movies': featured_movies,
         'plan': plan,
+        'mas_vistas': mas_vistas,
+        'mejor_rateadas': mejor_rateadas,
+        'proximos_estrenos': proximos_estrenos,
     })
 
 @login_required(login_url='/users/login/')
 def movie_detail(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
+
+    # Cuenta la visita sin traer una race condition (UPDATE atómico en la BD).
+    # refresh_from_db para que el valor mostrado en esta misma request ya incluya
+    # el +1 (si no, seguiría con el valor viejo cacheado en el objeto).
+    Movie.objects.filter(pk=movie.pk).update(views=F('views') + 1)
+    movie.refresh_from_db(fields=['views'])
+
     in_watchlist = Watchlist.objects.filter(user=request.user, movie=movie).exists()
     seasons = movie.seasons.prefetch_related('episodes').all() if movie.type == 'series' else None
 
