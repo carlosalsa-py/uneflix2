@@ -1,5 +1,6 @@
 import logging
 import re
+import requests
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -8,15 +9,44 @@ from django.db.models import Avg, F
 from django.http import Http404
 from django.urls import reverse
 from django.utils import timezone
+
 from .models import Movie, Genre, Watchlist, Episode, Review
 from users.models import Membership
 
+# --- IMPORTACIÓN ACTUALIZADA CON SCORING ---
+from .services import get_direct_link, get_stream_score 
+
 logger = logging.getLogger(__name__)
+
+# --- FUNCIÓN DE FILTRADO Y DEPURACIÓN ---
+def filtrar_streams_reproducibles(streams):
+    """
+    Filtra los streams para encontrar los archivos más ligeros y compatibles
+    con el navegador (MP4, evitar 4K/Remux).
+    """
+    compatibles = []
+    
+    for s in streams:
+        hints = s.get('behaviorHints', {})
+        filename = hints.get('filename', '').lower()
+        title = s.get('title', '').lower()
+        
+        # Criterios: Debe ser mp4 y NO debe tener términos de archivos pesados
+        es_mp4 = filename.endswith('.mp4')
+        es_ligero = "4k" not in title and "remux" not in title and "2160p" not in title
+        
+        if es_mp4 and es_ligero:
+            compatibles.append(s)
+            
+    return compatibles
+
+# Definimos los headers para evitar el error 403 de Torrentio
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+}
 
 TIER_LEVEL = {'free': 0, 'medium': 1, 'premium': 2}
 
-# Ordenamientos válidos del catálogo. 'rating' se maneja aparte porque necesita
-# annotate(). El default (sin query param o valor desconocido) es '-id'.
 CATALOGO_ORDEN = {
     'titulo_asc': 'title',
     'titulo_desc': '-title',
@@ -24,31 +54,19 @@ CATALOGO_ORDEN = {
     'anio_viejo': 'year',
 }
 
-# Fuente única de verdad de los planes pagos: el nombre visible y el precio se
-# derivan SIEMPRE del código de plan en el backend, nunca de lo que mande el
-# cliente. La clave es el código real del modelo Membership.
 PLANES = {
     'medium': {'nombre': 'Cinéfilo', 'precio': '2.99'},
     'premium': {'nombre': 'Zerpanito', 'precio': '4.99'},
 }
 
-# Tiers que pueden dejar reseñas (Cinéfilo y Zerpanito). Los Unefista (free) no.
 TIERS_CON_REVIEWS = ('medium', 'premium')
 
-# Captura el ID (11 chars) de un video de YouTube en cualquier formato usual:
-# watch?v=, youtu.be, /shorts/, /embed/, /v/, subdominios (m., music.,
-# youtube-nocookie) e incluso pegado dentro del <iframe> de "Insertar".
 _YOUTUBE_ID_RE = re.compile(
     r'(?:youtu\.be/|youtube(?:-nocookie)?\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|v/))'
     r'([\w-]{11})'
 )
 
-
 def extract_youtube_id(value):
-    """Devuelve el ID de YouTube (11 chars) a partir de una URL, del código
-    <iframe> de 'Insertar' o de un ID pelado. None si no se reconoce —así el
-    template puede ocultar el trailer sin romper la página (vs. embed_video,
-    que lanza excepción y tira 500 ante una URL que no reconoce)."""
     if not value:
         return None
     value = value.strip()
@@ -74,8 +92,6 @@ def home(request):
     genres = Genre.objects.all()
     featured_movies = Movie.objects.filter(featured=True)
 
-    # Sidebar (#10). Cada lista puede venir vacía (sin visitas, sin reseñas o sin
-    # estrenos futuros cargados) y el template muestra un empty-state.
     mas_vistas = Movie.objects.filter(views__gt=0).order_by('-views')[:5]
     mejor_rateadas = (
         Movie.objects
@@ -89,9 +105,6 @@ def home(request):
         .order_by('release_date')[:5]
     )
 
-    # Datos reales para el chatbot Miku: catálogo con géneros + listas del sidebar
-    # + plan del usuario. Se embeben con json_script en el template (seguro, sin
-    # endpoint aparte) para que Miku recomiende títulos que existen de verdad.
     def _titulos(qs):
         return [{'titulo': m.title, 'url': reverse('movie_detail', args=[m.pk])} for m in qs]
 
@@ -133,9 +146,6 @@ def home(request):
 def movie_detail(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
 
-    # Cuenta la visita sin traer una race condition (UPDATE atómico en la BD).
-    # refresh_from_db para que el valor mostrado en esta misma request ya incluya
-    # el +1 (si no, seguiría con el valor viejo cacheado en el objeto).
     Movie.objects.filter(pk=movie.pk).update(views=F('views') + 1)
     movie.refresh_from_db(fields=['views'])
 
@@ -185,7 +195,47 @@ def player_view(request, pk):
     plan = get_user_plan(request.user)
     if TIER_LEVEL.get(plan, 0) < TIER_LEVEL.get(movie.tier, 0):
         return redirect('membresias')
-    return render(request, 'movies/player.html', {'movie': movie})
+
+    direct_url = None
+
+    # --- LÓGICA DE PRIORIDAD ---
+    
+    # 1. ¿Existe un magnet manual configurado en el Admin?
+    if movie.manual_magnet:
+        logger.info(f"[INFO] Usando magnet manual para: {movie.title}")
+        direct_url = get_direct_link(movie.manual_magnet, movie.title)
+
+    # 2. Si no hay manual (o si el manual falló), buscar en Torrentio
+    if not direct_url and movie.is_stream and movie.imdb_id:
+        try:
+            url = f"https://torrentio.strem.fun/stream/movie/{movie.imdb_id}.json"
+            response = requests.get(url, headers=HEADERS, timeout=5)
+            
+            if response.status_code == 200:
+                streams = response.json().get('streams', [])
+                validados = filtrar_streams_reproducibles(streams)
+                
+                # Ordenar por scoring (calidad, seeders, etc)
+                streams_ordenados = sorted(
+                    validados, 
+                    key=lambda s: get_stream_score(s.get('title', ''), s.get('seeders', 0)), 
+                    reverse=True
+                )
+                
+                for stream in streams_ordenados:
+                    magnet_link = f"magnet:?xt=urn:btih:{stream.get('infoHash')}"
+                    alldebrid_url = get_direct_link(magnet_link, movie.title)
+                    if alldebrid_url:
+                        direct_url = alldebrid_url
+                        break 
+                        
+        except Exception as e:
+            logger.error(f"Error al conectar con Torrentio para {movie.title}: {e}")
+
+    return render(request, 'movies/player.html', {
+        'movie': movie,
+        'direct_url': direct_url
+    })
 
 @login_required(login_url='/users/login/')
 def membresias(request):
@@ -197,8 +247,6 @@ def pago(request):
     if request.method == 'POST':
         codigo = request.POST.get('plan')
 
-        # Validación server-side: solo se aceptan planes de la lista blanca.
-        # Cualquier 'precio' que venga del cliente se ignora por completo.
         if codigo not in PLANES:
             messages.error(request, 'Plan inválido.')
             return redirect('membresias')
@@ -235,10 +283,44 @@ def pago(request):
 def episode_player(request, pk):
     episode = get_object_or_404(Episode, pk=pk)
     plan = get_user_plan(request.user)
-    if TIER_LEVEL.get(plan, 0) < TIER_LEVEL.get(episode.season.series.tier, 0):
+    series = episode.season.series
+    
+    if TIER_LEVEL.get(plan, 0) < TIER_LEVEL.get(series.tier, 0):
         return redirect('membresias')
-    return render(request, 'movies/episode_player.html', {'episode': episode})
 
+    direct_url = None
+    
+    if series.is_stream and series.imdb_id:
+        try:
+            url = f"https://torrentio.strem.fun/stream/series/{series.imdb_id}:{episode.season.number}:{episode.number}.json"
+            response = requests.get(url, headers=HEADERS, timeout=5)
+            
+            if response.status_code == 200:
+                streams = response.json().get('streams', [])
+                validados = filtrar_streams_reproducibles(streams)
+                
+                # --- FAILOVER AUTOMÁTICO ---
+                streams_ordenados = sorted(
+                    validados, 
+                    key=lambda s: get_stream_score(s.get('title', ''), s.get('seeders', 0)), 
+                    reverse=True
+                )
+                
+                for stream in streams_ordenados:
+                    magnet_link = f"magnet:?xt=urn:btih:{stream.get('infoHash')}"
+                    # Aquí pasamos el título de la serie para filtrar
+                    alldebrid_url = get_direct_link(magnet_link, series.title)
+                    if alldebrid_url:
+                        direct_url = alldebrid_url
+                        break
+                        
+        except Exception as e:
+            logger.error(f"Error al conectar con Torrentio para {series.title} T{episode.season.number}E{episode.number}: {e}")
+
+    return render(request, 'movies/episode_player.html', {
+        'episode': episode,
+        'direct_url': direct_url
+    })
 
 @login_required(login_url='/users/login/')
 def review_submit(request, pk):
@@ -267,36 +349,29 @@ def review_delete(request, pk):
     review.delete()
     return redirect('movie_detail', pk=movie_pk)
 
-
 @login_required(login_url='/users/login/')
 def catalogo(request, tipo):
-    # Solo 'movie' o 'series'; cualquier otra cosa es una URL que no existe.
     if tipo not in (Movie.MOVIE, Movie.SERIES):
         raise Http404('Tipo de catálogo inválido.')
 
     resultados = Movie.objects.filter(type=tipo)
 
-    # Búsqueda por título (parcial, case-insensitive).
     q = request.GET.get('q', '').strip()
     if q:
         resultados = resultados.filter(title__icontains=q)
 
-    # Filtros opcionales y combinables entre sí.
     genero = request.GET.get('genero', '').strip()
     if genero:
         resultados = resultados.filter(genres__name=genero)
 
     anio = request.GET.get('anio', '').strip()
     if anio.isdigit():
-        # year es IntegerField: si viene basura no numérica ignoramos el
-        # filtro en vez de crashear con ValueError.
         resultados = resultados.filter(year=int(anio))
 
     tier = request.GET.get('tier', '').strip()
     if tier in TIER_LEVEL:
         resultados = resultados.filter(tier=tier)
 
-    # Ordenamiento server-side.
     orden = request.GET.get('orden', '').strip()
     if orden == 'rating':
         resultados = resultados.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating')
@@ -305,7 +380,6 @@ def catalogo(request, tipo):
     else:
         resultados = resultados.order_by('-id')
 
-    # El filtro M2M por género puede duplicar filas; distinct() lo evita.
     resultados = resultados.distinct()
 
     plan = get_user_plan(request.user)
