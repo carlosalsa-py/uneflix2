@@ -39,14 +39,8 @@
     <div class="player-wrapper">
         <div class="player-container">
             
-            {% if direct_url %}
-                <!-- Aquí se reproduce el enlace directo (AllDebrid) -->
-                <video controls autoplay style="width:100%; height:100%;">
-                    <source src="{{ direct_url }}" type="video/mp4">
-                </video>
-
-            {% elif movie.video_file %}
-                <!-- Aquí se mantienen tus videos locales intactos -->
+            {% if movie.video_file %}
+                <!-- Video local subido -->
                 <video controls autoplay preload="auto" style="width:100%; height:100%;">
                     <source src="{{ movie.video_file.url }}" type="video/mp4">
                 </video>

@@ -40,15 +40,8 @@
     <div class="player-wrapper">
         <div class="player-container">
             
-            {% if direct_url %}
-                <!-- MODO STREAM (AllDebrid / Torrentio) -->
-                <video controls autoplay style="width:100%; height:100%;">
-                    <source src="{{ direct_url }}" type="video/mp4">
-                    Tu navegador no soporta el reproductor.
-                </video>
-
-            {% elif episode.video_file %}
-                <!-- MODO LOCAL (.mp4 subido al server) -->
+            {% if episode.video_file %}
+                <!-- Video local (.mp4 subido al server) -->
                 <video controls autoplay style="width:100%; height:100%;">
                     <source src="{{ episode.video_file.url }}" type="video/mp4">
                 </video>

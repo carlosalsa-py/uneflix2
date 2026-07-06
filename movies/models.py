@@ -37,25 +37,6 @@ class Movie(models.Model):
             "Ejemplo incorrecto: https://archive.org/details/nosferatu_1922"
         ),
     )
-    
-    # --- NUEVOS CAMPOS PARA STREMIO / TORRENTIO ---
-    is_stream = models.BooleanField(
-        default=False, 
-        help_text="Activa esto si la película/serie se reproducirá vía Torrentio"
-    )
-    imdb_id = models.CharField(
-        max_length=20, 
-        blank=True, 
-        null=True, 
-        help_text="ID de IMDb (ej: tt0133093). Requerido si 'is_stream' está activado."
-    )
-    manual_magnet = models.URLField(
-        max_length=500, 
-        blank=True, 
-        null=True, 
-        help_text="Si se rellena, el player usará este link en lugar de buscar automáticamente."
-    )
-    
     featured = models.BooleanField(default=False)
     backdrop = models.ImageField(upload_to='backdrops/', blank=True, null=True)
     director = models.CharField(max_length=200, blank=True, null=True)
