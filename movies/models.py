@@ -23,6 +23,8 @@ class Movie(models.Model):
     poster = models.ImageField(upload_to='posters/')
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=MOVIE)
     genres = models.ManyToManyField(Genre)
+    
+    # --- REPRODUCCIÓN LOCAL ---
     video_file = models.FileField(upload_to='videos/', blank=True, null=True)
     video_url = models.URLField(
         blank=True,
@@ -35,6 +37,25 @@ class Movie(models.Model):
             "Ejemplo incorrecto: https://archive.org/details/nosferatu_1922"
         ),
     )
+    
+    # --- NUEVOS CAMPOS PARA STREMIO / TORRENTIO ---
+    is_stream = models.BooleanField(
+        default=False, 
+        help_text="Activa esto si la película/serie se reproducirá vía Torrentio"
+    )
+    imdb_id = models.CharField(
+        max_length=20, 
+        blank=True, 
+        null=True, 
+        help_text="ID de IMDb (ej: tt0133093). Requerido si 'is_stream' está activado."
+    )
+    manual_magnet = models.URLField(
+        max_length=500, 
+        blank=True, 
+        null=True, 
+        help_text="Si se rellena, el player usará este link en lugar de buscar automáticamente."
+    )
+    
     featured = models.BooleanField(default=False)
     backdrop = models.ImageField(upload_to='backdrops/', blank=True, null=True)
     director = models.CharField(max_length=200, blank=True, null=True)
@@ -45,6 +66,7 @@ class Movie(models.Model):
     trailer_url = models.URLField(blank=True, null=True, help_text="Pega cualquier enlace de YouTube aquí")
     views = models.PositiveIntegerField(default=0, editable=False, help_text="Cantidad de visitas a la ficha")
     release_date = models.DateField(blank=True, null=True, help_text="Fecha de estreno. Si es futura, aparece en 'Próximos estrenos'")
+    
     TIER_CHOICES = [
         ('free', 'Gratuito'),
         ('medium', 'Cinéfilo'),

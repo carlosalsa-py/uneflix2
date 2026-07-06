@@ -88,16 +88,22 @@ WSGI_APPLICATION = 'uneflix.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# Usa DATABASE_URL si está definida (Postgres en producción); si no, cae a
-# SQLite local para desarrollo. CONN_MAX_AGE reutiliza conexiones (importante
-# en Postgres); conn_health_checks evita usar conexiones muertas.
-DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+# Se utiliza una lógica condicional: si DATABASE_URL está en el entorno (.env),
+# se usa esa configuración (Postgres/MySQL); si no, se usa SQLite local.
+if os.environ.get('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -210,3 +216,4 @@ EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Uneflix <no-reply@uneflix.local>')
+ALLDEBRID_API_KEY = os.environ.get('ALLDEBRID_API_KEY', '')

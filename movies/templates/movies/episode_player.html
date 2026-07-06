@@ -16,13 +16,24 @@
     .player-container {
         width: 100%; max-width: 1100px; aspect-ratio: 16/9; background: #111;
         border-radius: 8px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.8); border: 1px solid #1a2540;
+        position: relative; /* Agregado para centrar el loader de torrent */
     }
-    .player-container video, .player-container iframe { width: 100%; height: 100%; border: none; }
+    .player-container video, .player-container iframe { width: 100%; height: 100%; border: none; outline: none; }
     .no-video { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; gap: 12px; }
 
     .episode-info-bar { width: 100%; max-width: 1100px; padding: 20px 0; }
     .episode-info-bar h2 { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; }
     .episode-meta { font-size: 13px; color: #888; margin-top: 4px; }
+
+    /* Estilos para el overlay de WebTorrent */
+    #webtorrent-loading {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        text-align: center; color: white; background: rgba(0,0,0,0.85);
+        padding: 30px; border-radius: 12px; z-index: 10;
+        border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px);
+    }
+    #webtorrent-loading h3 { margin: 0 0 10px 0; font-size: 20px; }
+    #webtorrent-stats { font-size: 14px; color: #aaa; margin: 0; line-height: 1.5; }
 
     @media (max-width: 768px) { .player-wrapper { padding: 10px 2% 30px; } }
 </style>
@@ -36,19 +47,34 @@
 
     <div class="player-wrapper">
         <div class="player-container">
-            {% if episode.video_file %}
-            <video controls autoplay>
-                <source src="{{ episode.video_file.url }}" type="video/mp4">
-                Tu navegador no soporta el reproductor.
-            </video>
+            
+            {% if magnet_link %}
+                <!-- MODO STREAM (WebTorrent) -->
+                <video id="video-player" controls style="width:100%; height:100%;"></video>
+                <div id="webtorrent-loading">
+                    <h3>⏳ Conectando a la red P2P...</h3>
+                    <p id="webtorrent-stats">Buscando semillas...</p>
+                </div>
+
+            {% elif episode.video_file %}
+                <!-- MODO LOCAL (.mp4) -->
+                <video controls autoplay style="width:100%; height:100%;">
+                    <source src="{{ episode.video_file.url }}" type="video/mp4">
+                    Tu navegador no soporta el reproductor.
+                </video>
+
             {% elif episode.video_url %}
-            <iframe src="{{ episode.video_url }}" allowfullscreen></iframe>
+                <!-- MODO URL/IFRAME EXTERNO -->
+                <iframe src="{{ episode.video_url }}" allowfullscreen></iframe>
+                
             {% else %}
-            <div class="no-video">
-                <p style="font-size:48px;">🎬</p>
-                <p>Próximamente</p>
-            </div>
+                <!-- SIN VIDEO ASIGNADO -->
+                <div class="no-video">
+                    <p style="font-size:48px;">🎬</p>
+                    <p>Próximamente</p>
+                </div>
             {% endif %}
+            
         </div>
 
         <div class="episode-info-bar">
@@ -58,4 +84,48 @@
             </p>
         </div>
     </div>
+
+    <!-- SCRIPT DE WEBTORRENT SOLO SI HAY UN MAGNET LINK -->
+    {% if magnet_link %}
+    <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var client = new WebTorrent();
+            var magnetURI = '{{ magnet_link|safe }}';
+            var loadingDiv = document.getElementById('webtorrent-loading');
+            var statsText = document.getElementById('webtorrent-stats');
+            var videoElement = document.getElementById('video-player');
+
+            client.add(magnetURI, function (torrent) {
+                // Buscar el archivo de video más pesado (el episodio)
+                var file = torrent.files.find(function (file) {
+                    return file.name.endsWith('.mp4') || file.name.endsWith('.mkv') || file.name.endsWith('.webm');
+                });
+
+                if (!file) {
+                    file = torrent.files.reduce((prev, current) => (prev.length > current.length) ? prev : current);
+                }
+
+                file.renderTo(videoElement, {
+                    autoplay: true
+                });
+
+                torrent.on('download', function (bytes) {
+                    var downloaded = (torrent.downloaded / 1024 / 1024).toFixed(1);
+                    var speed = (torrent.downloadSpeed / 1024 / 1024).toFixed(2);
+                    statsText.innerHTML = `Descargando: ${downloaded} MB <br> Velocidad: ${speed} MB/s <br> Semillas conectadas: ${torrent.numPeers}`;
+                });
+            });
+
+            videoElement.addEventListener('playing', function() {
+                loadingDiv.style.display = 'none';
+            });
+            
+            videoElement.addEventListener('waiting', function() {
+                loadingDiv.style.display = 'block';
+                statsText.innerHTML = 'Bufferizando para evitar pausas...';
+            });
+        });
+    </script>
+    {% endif %}
 {% endblock %}
