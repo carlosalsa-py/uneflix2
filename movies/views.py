@@ -1,6 +1,5 @@
 import logging
 import re
-import requests
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -13,37 +12,7 @@ from django.utils import timezone
 from .models import Movie, Genre, Watchlist, Episode, Review
 from users.models import Membership
 
-# --- IMPORTACIÓN ACTUALIZADA CON SCORING ---
-from .services import get_direct_link, get_stream_score 
-
 logger = logging.getLogger(__name__)
-
-# --- FUNCIÓN DE FILTRADO Y DEPURACIÓN ---
-def filtrar_streams_reproducibles(streams):
-    """
-    Filtra los streams para encontrar los archivos más ligeros y compatibles
-    con el navegador (MP4, evitar 4K/Remux).
-    """
-    compatibles = []
-    
-    for s in streams:
-        hints = s.get('behaviorHints', {})
-        filename = hints.get('filename', '').lower()
-        title = s.get('title', '').lower()
-        
-        # Criterios: Debe ser mp4 y NO debe tener términos de archivos pesados
-        es_mp4 = filename.endswith('.mp4')
-        es_ligero = "4k" not in title and "remux" not in title and "2160p" not in title
-        
-        if es_mp4 and es_ligero:
-            compatibles.append(s)
-            
-    return compatibles
-
-# Definimos los headers para evitar el error 403 de Torrentio
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-}
 
 TIER_LEVEL = {'free': 0, 'medium': 1, 'premium': 2}
 
@@ -195,47 +164,7 @@ def player_view(request, pk):
     plan = get_user_plan(request.user)
     if TIER_LEVEL.get(plan, 0) < TIER_LEVEL.get(movie.tier, 0):
         return redirect('membresias')
-
-    direct_url = None
-
-    # --- LÓGICA DE PRIORIDAD ---
-    
-    # 1. ¿Existe un magnet manual configurado en el Admin?
-    if movie.manual_magnet:
-        logger.info(f"[INFO] Usando magnet manual para: {movie.title}")
-        direct_url = get_direct_link(movie.manual_magnet, movie.title)
-
-    # 2. Si no hay manual (o si el manual falló), buscar en Torrentio
-    if not direct_url and movie.is_stream and movie.imdb_id:
-        try:
-            url = f"https://torrentio.strem.fun/stream/movie/{movie.imdb_id}.json"
-            response = requests.get(url, headers=HEADERS, timeout=5)
-            
-            if response.status_code == 200:
-                streams = response.json().get('streams', [])
-                validados = filtrar_streams_reproducibles(streams)
-                
-                # Ordenar por scoring (calidad, seeders, etc)
-                streams_ordenados = sorted(
-                    validados, 
-                    key=lambda s: get_stream_score(s.get('title', ''), s.get('seeders', 0)), 
-                    reverse=True
-                )
-                
-                for stream in streams_ordenados:
-                    magnet_link = f"magnet:?xt=urn:btih:{stream.get('infoHash')}"
-                    alldebrid_url = get_direct_link(magnet_link, movie.title)
-                    if alldebrid_url:
-                        direct_url = alldebrid_url
-                        break 
-                        
-        except Exception as e:
-            logger.error(f"Error al conectar con Torrentio para {movie.title}: {e}")
-
-    return render(request, 'movies/player.html', {
-        'movie': movie,
-        'direct_url': direct_url
-    })
+    return render(request, 'movies/player.html', {'movie': movie})
 
 @login_required(login_url='/users/login/')
 def membresias(request):
@@ -283,44 +212,9 @@ def pago(request):
 def episode_player(request, pk):
     episode = get_object_or_404(Episode, pk=pk)
     plan = get_user_plan(request.user)
-    series = episode.season.series
-    
-    if TIER_LEVEL.get(plan, 0) < TIER_LEVEL.get(series.tier, 0):
+    if TIER_LEVEL.get(plan, 0) < TIER_LEVEL.get(episode.season.series.tier, 0):
         return redirect('membresias')
-
-    direct_url = None
-    
-    if series.is_stream and series.imdb_id:
-        try:
-            url = f"https://torrentio.strem.fun/stream/series/{series.imdb_id}:{episode.season.number}:{episode.number}.json"
-            response = requests.get(url, headers=HEADERS, timeout=5)
-            
-            if response.status_code == 200:
-                streams = response.json().get('streams', [])
-                validados = filtrar_streams_reproducibles(streams)
-                
-                # --- FAILOVER AUTOMÁTICO ---
-                streams_ordenados = sorted(
-                    validados, 
-                    key=lambda s: get_stream_score(s.get('title', ''), s.get('seeders', 0)), 
-                    reverse=True
-                )
-                
-                for stream in streams_ordenados:
-                    magnet_link = f"magnet:?xt=urn:btih:{stream.get('infoHash')}"
-                    # Aquí pasamos el título de la serie para filtrar
-                    alldebrid_url = get_direct_link(magnet_link, series.title)
-                    if alldebrid_url:
-                        direct_url = alldebrid_url
-                        break
-                        
-        except Exception as e:
-            logger.error(f"Error al conectar con Torrentio para {series.title} T{episode.season.number}E{episode.number}: {e}")
-
-    return render(request, 'movies/episode_player.html', {
-        'episode': episode,
-        'direct_url': direct_url
-    })
+    return render(request, 'movies/episode_player.html', {'episode': episode})
 
 @login_required(login_url='/users/login/')
 def review_submit(request, pk):
