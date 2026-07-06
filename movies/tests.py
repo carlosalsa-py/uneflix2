@@ -1,7 +1,10 @@
+import tempfile
 from datetime import timedelta
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
 from .models import Movie, Genre, Watchlist, Review
 from .views import extract_youtube_id
@@ -307,3 +310,57 @@ class SidebarTest(TestCase):
         self.assertContains(response, 'Aún no hay reproducciones')
         self.assertContains(response, 'Aún no hay reseñas')
         self.assertContains(response, 'Sin estrenos programados')
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class MovieVideoUrlTest(TestCase):
+    """SPEC 007: el reproductor debe usar video_url como fallback cuando no hay
+    video_file, y video_file debe tener prioridad cuando ambos están."""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='player', password='pass1234')
+        self.client.login(username='player', password='pass1234')
+
+    def test_video_url_renders_iframe(self):
+        movie = Movie.objects.create(
+            title='Nosferatu', tier='free', type='movie', year=1922, description='x',
+            video_url='https://archive.org/embed/nosferatu_1922',
+        )
+        response = self.client.get(f'/movie/{movie.pk}/play/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<iframe')
+        self.assertContains(response, 'https://archive.org/embed/nosferatu_1922')
+
+    def test_video_file_takes_priority(self):
+        movie = Movie.objects.create(
+            title='Con Archivo', tier='free', type='movie', year=2020, description='x',
+            video_file=SimpleUploadedFile('clip.mp4', b'fakebytes', content_type='video/mp4'),
+            video_url='https://archive.org/embed/algo',
+        )
+        response = self.client.get(f'/movie/{movie.pk}/play/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<video')          # prioriza el archivo local
+        self.assertNotContains(response, '<iframe')       # no cae al fallback
+
+    def test_no_source_still_renders(self):
+        # Sin video_file ni video_url el player no debe romperse (200, sin iframe/video).
+        movie = Movie.objects.create(title='Sin Video', tier='free', type='movie',
+                                     year=2020, description='x')
+        response = self.client.get(f'/movie/{movie.pk}/play/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_clean_rejects_archive_details_url(self):
+        movie = Movie(title='Mala URL', tier='free', type='movie', year=1922, description='x',
+                      video_url='https://archive.org/details/nosferatu_1922')
+        with self.assertRaises(ValidationError):
+            movie.full_clean()
+
+    def test_clean_accepts_archive_embed_url(self):
+        movie = Movie(title='Buena URL', tier='free', type='movie', year=1922, description='x',
+                      video_url='https://archive.org/embed/nosferatu_1922')
+        # No debe lanzar por el video_url (el embed es válido).
+        try:
+            movie.full_clean()
+        except ValidationError as e:
+            self.assertNotIn('video_url', e.message_dict)
