@@ -78,16 +78,9 @@
 },
 {
   "model": "movies.genre",
-  "pk": 13,
-  "fields": {
-    "name": "Comedia"
-  }
-},
-{
-  "model": "movies.genre",
   "pk": 14,
   "fields": {
-    "name": "Animaci�n Para Adultos"
+    "name": "Animación Para Adultos"
   }
 },
 {
@@ -101,14 +94,7 @@
   "model": "movies.genre",
   "pk": 16,
   "fields": {
-    "name": "S�tira"
-  }
-},
-{
-  "model": "movies.genre",
-  "pk": 17,
-  "fields": {
-    "name": "Aventura"
+    "name": "Sátira"
   }
 },
 {
@@ -140,6 +126,20 @@
   }
 },
 {
+  "model": "movies.genre",
+  "pk": 25,
+  "fields": {
+    "name": "Documental"
+  }
+},
+{
+  "model": "movies.genre",
+  "pk": 26,
+  "fields": {
+    "name": "Animación"
+  }
+},
+{
   "model": "movies.movie",
   "pk": 1,
   "fields": {
@@ -148,15 +148,19 @@
     "year": 2002,
     "poster": "posters/51Izb2wxNDL._AC_UF8941000_QL80_.jpg",
     "type": "movie",
-    "video_file": "videos/xXx.2002.1080p-dual-lat.mp4",
+    "video_file": "",
+    "video_url": "https://archive.org/embed/xXx.480P.CASTELLANO",
     "featured": true,
     "backdrop": "backdrops/rpUsBxLikFfy5Y6fRUF5QX_zyltvCa.jpg",
     "director": "Rob Cohen",
-    "cast": "Vin Diesel,\r\nSamuel Jackson,\r\nAsia Argento,\r\nMarton Csokas,\r\nRichy Müller,",
+    "cast": "Vin Diesel,\r\nSamuel Jackson,\r\nAsia Argento,\r\nMarton Csokas,\r\nRichy Müller",
     "rotten_tomatoes_url": null,
     "imdb_url": "https://www.imdb.com/es-es/title/tt0295701/",
     "duration": 124,
-    "trailer_url": "https://vimeo.com/74489527",
+    "trailer_url": "https://www.youtube.com/watch?v=NgPdDDzVhkA",
+    "views": 3,
+    "release_date": "2002-08-09",
+    "tier": "free",
     "genres": [
       1,
       4,
@@ -169,11 +173,12 @@
   "pk": 2,
   "fields": {
     "title": "Como si fuera la primera vez",
-    "description": "La historia sigue a Henry, un bi�logo marino que se enamora de Lucy, una chica que sufre de amnesia anter�grada (pierde la memoria cada noche). Esto genera una mezcla perfecta entre momentos de humor caracter�sticos del g�nero c�mico y una emotiva trama donde �l debe conquistarla todos los d�as.",
+    "description": "La historia sigue a Henry, un biólogo marino que se enamora de Lucy, una chica que sufre de amnesia anterógrada (pierde la memoria cada noche). Esto genera una mezcla perfecta entre momentos de humor característicos del género cómico y una emotiva trama donde él debe conquistarla todos los días.",
     "year": 2004,
     "poster": "posters/como_si_fuer_XINxLt4.png",
     "type": "movie",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/back_drop.jpg",
     "director": null,
@@ -182,10 +187,13 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       2,
-      11,
-      13
+      3,
+      11
     ]
   }
 },
@@ -199,18 +207,22 @@
     "poster": "posters/poster_GTONjzC.jpg",
     "type": "movie",
     "video_file": "",
-    "featured": false,
+    "video_url": "https://archive.org/embed/yummy_202105/-+Click+Perdiendo+el+control.mp4",
+    "featured": true,
     "backdrop": "backdrops/backdrop_PkAo9oI.jpg",
-    "director": null,
-    "cast": null,
-    "rotten_tomatoes_url": null,
-    "imdb_url": null,
-    "duration": null,
+    "director": "Frank Coraci",
+    "cast": "Adam",
+    "rotten_tomatoes_url": "https://www.rottentomatoes.com/m/click",
+    "imdb_url": "https://www.imdb.com/title/tt0389860/",
+    "duration": 107,
     "trailer_url": null,
+    "views": 0,
+    "release_date": "2006-06-23",
+    "tier": "free",
     "genres": [
       2,
-      12,
-      13
+      3,
+      12
     ]
   }
 },
@@ -219,11 +231,12 @@
   "pk": 4,
   "fields": {
     "title": "Teen Wolf",
-    "description": "Relata la historia de un chico t�mido de instituto cuya existencia pasa del anonimato a la popularidad al ser mordido por un hombre lobo en la oscuridad del bosque. Su vida nunca volver� a ser la misma",
+    "description": "Relata la historia de un chico tímido de instituto cuya existencia pasa del anonimato a la popularidad al ser mordido por un hombre lobo en la oscuridad del bosque. Su vida nunca volverá a ser la misma",
     "year": 2011,
     "poster": "posters/poster_JCIJjw7.jpg",
     "type": "series",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/backdrop.webp",
     "director": null,
@@ -232,11 +245,14 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       2,
+      3,
       11,
-      12,
-      13
+      12
     ]
   }
 },
@@ -245,11 +261,12 @@
   "pk": 5,
   "fields": {
     "title": "Una Esposa de Mentira",
-    "description": "En un viaje a Hawai, un cirujano pl�stico convence a su leal asistente para que se haga pasar por su casi ex esposa con el fin de encubrir una mentira que le cont� a su novia.",
+    "description": "En un viaje a Hawai, un cirujano plástico convence a su leal asistente para que se haga pasar por su casi ex esposa con el fin de encubrir una mentira que le contó a su novia.",
     "year": 2011,
     "poster": "posters/poster_Rqzub2b.jpg",
     "type": "movie",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/backdrop_5meiUMt.jpg",
     "director": null,
@@ -258,9 +275,12 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
-      11,
-      13
+      3,
+      11
     ]
   }
 },
@@ -268,12 +288,13 @@
   "model": "movies.movie",
   "pk": 6,
   "fields": {
-    "title": "Mortadelo y Filem�n contra Jimmy el Cachondo",
-    "description": "Los no tan superagentes Mortadelo y Filem�n entran en acci�n cuando un tr�o de villanos amenaza con sembrar el caos en su amada agencia de espionaje, la TIA.",
+    "title": "Mortadelo y Filemón contra Jimmy el Cachondo",
+    "description": "Los no tan superagentes Mortadelo y Filemón entran en acción cuando un trío de villanos amenaza con sembrar el caos en su amada agencia de espionaje, la TIA.",
     "year": 2014,
     "poster": "posters/back.jpg",
     "type": "movie",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/descarga.jpg",
     "director": null,
@@ -282,6 +303,9 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       14
     ]
@@ -292,11 +316,12 @@
   "pk": 7,
   "fields": {
     "title": "La Ultima Cancion",
-    "description": "Una chica rebelde para el verano en la casa de su padre en un pueblo costero. A trav�s de su compartida pasi�n por la m�sica, ambos reconectan.",
+    "description": "Una chica rebelde para el verano en la casa de su padre en un pueblo costero. A través de su compartida pasión por la música, ambos reconectan.",
     "year": 2010,
     "poster": "posters/the_last_song-620416793-large.jpg",
     "type": "movie",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/cancion.jpg",
     "director": null,
@@ -305,6 +330,9 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       2,
       11,
@@ -316,12 +344,13 @@
   "model": "movies.movie",
   "pk": 8,
   "fields": {
-    "title": "La La Land: ciudad de sue�os",
-    "description": "Sebastian, un pianista de jazz, y Mia, una aspirante a actriz, se enamoran locamente; pero la ambici�n desmedida que tienen por triunfar en sus respectivas carreras, en una ciudad como Los �ngeles, repleta de competencia y carente de piedad, pone en peligro su amor.",
+    "title": "La La Land: ciudad de sueños",
+    "description": "Sebastian, un pianista de jazz, y Mia, una aspirante a actriz, se enamoran locamente; pero la ambición desmedida que tienen por triunfar en sus respectivas carreras, en una ciudad como Los Ángeles, repleta de competencia y carente de piedad, pone en peligro su amor.",
     "year": 2016,
     "poster": "posters/La_La_Land_film.png",
     "type": "movie",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/WhatsApp-Image-2024-09-19-at-12.03.05.jpeg",
     "director": null,
@@ -330,9 +359,12 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       2,
-      13,
+      3,
       15
     ]
   }
@@ -342,21 +374,25 @@
   "pk": 9,
   "fields": {
     "title": "The Boys",
-    "description": "Un grupo de vigilantes se dispuso a acabar con los superh�roes corruptos que abusan de sus superpoderes.",
+    "description": "Un grupo de vigilantes se dispuso a acabar con los superhéroes corruptos que abusan de sus superpoderes.",
     "year": 2019,
     "poster": "posters/The_Boys_Season_2.jpg",
     "type": "series",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/backdrop_7cqKGQMnNabzOpi7qaIgZvQ7NGV.jpg",
     "director": null,
-    "cast": null,
+    "cast": "",
     "rotten_tomatoes_url": null,
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "premium",
     "genres": [
-      13,
+      3,
       16
     ]
   }
@@ -366,11 +402,12 @@
   "pk": 10,
   "fields": {
     "title": "Divergente",
-    "description": "En un mundo dividido en facciones seg�n virtudes, a Tris le dicen que es Divergente y no encajar�. Cuando descubre que hay una trama para destruir a los Divergentes, Tris y los Misteriosos Cuatro deber�n descubrir porqu� los Divergentes son peligrosos antes de que sea tarde.",
+    "description": "En un mundo dividido en facciones según virtudes, a Tris le dicen que es Divergente y no encajará. Cuando descubre que hay una trama para destruir a los Divergentes, Tris y los Misteriosos Cuatro deberán descubrir porqué los Divergentes son peligrosos antes de que sea tarde.",
     "year": 2014,
     "poster": "posters/Divergente-707619981-large.jpg",
     "type": "movie",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/650_1200.jpg",
     "director": null,
@@ -379,6 +416,9 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       1,
       2,
@@ -396,6 +436,7 @@
     "poster": "posters/MV5BNjAyNGMwMjktNTkzYy00MzZmLWJiOTUtNWQ2NjUyZTJiYmZiXkEyXkFqcGc._V1_.jpg",
     "type": "movie",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/hunger-games-background-h3x6cit6n2aqvt8y.jpg",
     "director": null,
@@ -404,6 +445,9 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       1,
       10,
@@ -416,19 +460,23 @@
   "pk": 12,
   "fields": {
     "title": "Maze Runner: correr o morir",
-    "description": "Thomas es dejado en una comunidad de ni�os despu�s de que se borra su memoria, y pronto se entera de que todos est�n atrapados en un laberinto que le obligar� a unir fuerzas con sus compa�eros para intentar escapar.",
+    "description": "Thomas es dejado en una comunidad de niños después de que se borra su memoria, y pronto se entera de que todos están atrapados en un laberinto que le obligará a unir fuerzas con sus compañeros para intentar escapar.",
     "year": 2014,
     "poster": "posters/MV5BNTM4OTZlNzYtODA2NS00NmQ5LTg2OGQtN2ViZGE2YzE1ZGYwXkEyXkFqcGc._V1_FMjpg_UX1000_.jpg",
     "type": "movie",
     "video_file": "",
-    "featured": false,
+    "video_url": null,
+    "featured": true,
     "backdrop": "backdrops/a.jpg",
     "director": null,
-    "cast": null,
+    "cast": "",
     "rotten_tomatoes_url": null,
     "imdb_url": null,
     "duration": null,
-    "trailer_url": null,
+    "trailer_url": "https://www.youtube.com/watch?v=AwwbhhjQ9Xk",
+    "views": 2,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       1,
       4,
@@ -441,12 +489,13 @@
   "model": "movies.movie",
   "pk": 13,
   "fields": {
-    "title": "El verano en que me enamor�",
-    "description": "Un tri�ngulo amoroso entre una chica y dos hermanos. Una historia sobre el primer amor, el primer desamor y la magia de ese verano perfecto.",
+    "title": "El verano en que me enamoré",
+    "description": "Un triángulo amoroso entre una chica y dos hermanos. Una historia sobre el primer amor, el primer desamor y la magia de ese verano perfecto.",
     "year": 2022,
     "poster": "posters/.jpg",
     "type": "series",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/.avif",
     "director": null,
@@ -455,10 +504,13 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       2,
-      11,
-      13
+      3,
+      11
     ]
   }
 },
@@ -467,11 +519,12 @@
   "pk": 14,
   "fields": {
     "title": "From",
-    "description": "Revela el misterio de un pueblo del centro de los EE.UU que atrapa a todos los que entran. Mientras sus residentes luchan por mantener una sensaci�n de normalidad y buscan una salida, deben sobrevivir a las amenazas del bosque circundante.",
+    "description": "Revela el misterio de un pueblo del centro de los EE.UU que atrapa a todos los que entran. Mientras sus residentes luchan por mantener una sensación de normalidad y buscan una salida, deben sobrevivir a las amenazas del bosque circundante.",
     "year": 2022,
     "poster": "posters/From_Serie_de_TV-265636059-large.jpg",
     "type": "series",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/from-695739328-large.jpg",
     "director": null,
@@ -480,6 +533,9 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 1,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       2,
       5,
@@ -493,11 +549,12 @@
   "pk": 15,
   "fields": {
     "title": "Dr. House",
-    "description": "Un antisocial doctor especialista en medicina de diagn�stico hace todo lo que sea para resolver enigm�ticos casos junto con su equipo de doctores.",
+    "description": "Un antisocial doctor especialista en medicina de diagnóstico hace todo lo que sea para resolver enigmáticos casos junto con su equipo de doctores.",
     "year": 2004,
     "poster": "posters/954fd525-781a-472b-8bf6-3b8f052e3a8b.jpg",
     "type": "series",
     "video_file": "",
+    "video_url": null,
     "featured": true,
     "backdrop": "backdrops/house-md-evzr2ufxppqcnc6t.jpg",
     "director": null,
@@ -506,9 +563,12 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       2,
-      13
+      3
     ]
   }
 },
@@ -522,6 +582,7 @@
     "poster": "posters/aaa.jpg",
     "type": "series",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/ss.jpg",
     "director": null,
@@ -530,6 +591,9 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       2,
       12
@@ -546,6 +610,7 @@
     "poster": "posters/MV5BNjQ0Mzk0OTE5MF5BMl5BanBnXkFtZTgwNDkyOTI0NTM._V1_QL75_UX190_CR00190281_.jpg",
     "type": "movie",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/s.jpg",
     "director": null,
@@ -554,9 +619,12 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
-      11,
-      13
+      3,
+      11
     ]
   }
 },
@@ -564,12 +632,13 @@
   "model": "movies.movie",
   "pk": 18,
   "fields": {
-    "title": "El sorprendente Hombre Ara�a",
-    "description": "Despu�s de que Peter Parker es mordido por una ara�a alterada gen�ticamente, como resultado obtiene nuevos poderes de ara�a y se aventura a resolver la misteriosa muerte de su padre.",
+    "title": "El sorprendente Hombre Araña",
+    "description": "Después de que Peter Parker es mordido por una araña alterada genéticamente, como resultado obtiene nuevos poderes de araña y se aventura a resolver la misteriosa muerte de su padre.",
     "year": 2012,
     "poster": "posters/Captura_de_pantalla_2026-05-15_235720.png",
     "type": "movie",
     "video_file": "",
+    "video_url": null,
     "featured": true,
     "backdrop": "backdrops/andrew-garfield-the-amazing-spider-man-i0afw95b1nz42ozo.jpg",
     "director": null,
@@ -578,6 +647,9 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 1,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       1,
       20
@@ -589,11 +661,12 @@
   "pk": 19,
   "fields": {
     "title": "True Beauty",
-    "description": "Despu�s de ser intimidada y discriminada por su aspecto feo, una chica de secundaria se transforma en una hermosa \"diosa\" y r�pidamente se eleva a la fama despu�s de dominar el arte del maquillaje a trav�s de videos tutoriales en l�nea.",
+    "description": "Después de ser intimidada y discriminada por su aspecto feo, una chica de secundaria se transforma en una hermosa \"diosa\" y rápidamente se eleva a la fama después de dominar el arte del maquillaje a través de videos tutoriales en línea.",
     "year": 2020,
     "poster": "posters/saa.jpg",
     "type": "series",
     "video_file": "",
+    "video_url": null,
     "featured": false,
     "backdrop": "backdrops/b39552a31cb04b43b45580db6bffddbf.avif",
     "director": null,
@@ -602,33 +675,254 @@
     "imdb_url": null,
     "duration": null,
     "trailer_url": null,
+    "views": 0,
+    "release_date": null,
+    "tier": "free",
     "genres": [
       2,
-      13,
+      3,
       21
     ]
   }
 },
 {
-  "model": "movies.watchlist",
-  "pk": 29,
+  "model": "movies.movie",
+  "pk": 20,
   "fields": {
-    "user": [
-      "admin"
-    ],
-    "movie": 10,
-    "added_at": "2026-05-16T04:15:29.242Z"
+    "title": "Otra película de huevos y un pollo",
+    "description": "Toto, ahora transformado en un joven pollo, intenta adaptarse a su nueva vida en la granja, pero sus planes cambian drásticamente cuando un huevo brujo lo secuestra para utilizar su corazón en un oscuro hechizo. Sus viejos amigos, Willy y Bibi, tendrán que viajar al desierto para rescatarlo.",
+    "year": 2009,
+    "poster": "posters/179-poster-otra-pelicula-de-huevos-y-un-pollo-buenos_FAlUavM.webp",
+    "type": "movie",
+    "video_file": "",
+    "video_url": "https://archive.org/embed/yummy_202105/Otra+pel%C3%ADcula+de+huevos+y+un+pollo.mp4",
+    "featured": true,
+    "backdrop": "backdrops/poolos_EC0bbBY.jpg",
+    "director": "Rodolfo Riva Palacio Alatriste y Gabriel Riva Palacio Alatriste",
+    "cast": "Bruno Bichir,\r\nCarlos Espejel,  \r\nAngélica Vale, \r\nDarío T. Pie,\r\nLucila Mariscal,  \r\nHumberto Vélez,  \r\nPatricio Castillo",
+    "rotten_tomatoes_url": "https://www.rottentomatoes.com/m/otra_pelicula_de_huevos_y_un_pollo",
+    "imdb_url": "https://www.imdb.com/title/tt1289417/",
+    "duration": 100,
+    "trailer_url": "https://www.youtube.com/watch?v=CVPJLm6v7SE",
+    "views": 3,
+    "release_date": "2009-03-20",
+    "tier": "free",
+    "genres": [
+      1,
+      3,
+      6
+    ]
   }
 },
 {
-  "model": "movies.watchlist",
-  "pk": 30,
+  "model": "movies.movie",
+  "pk": 21,
   "fields": {
+    "title": "Bean",
+    "description": "El torpe guardia de seguridad de la National Gallery de Londres, Mr. Bean, es enviado a Los Ángeles como un supuesto \"prestigioso doctor\" para la presentación del cuadro La madre de Whistler. Una vez allí, arruina la valiosa pintura por accidente y debe improvisar un plan caótico para que nadie note el desastre.",
+    "year": 1997,
+    "poster": "posters/Bean_movie_poster_vIIVkE2.jpg",
+    "type": "movie",
+    "video_file": "",
+    "video_url": "https://archive.org/embed/yummy_202105/-+Mr.+Bean.mp4",
+    "featured": false,
+    "backdrop": "backdrops/188860-Rowan_Atkinson-Mr_4G6PRpF._Bean.jpg",
+    "director": "Mel Smith",
+    "cast": "Rowan Atkinson,\r\nPeter MacNicol,\r\nJohn Mills,\r\nPamela Reed,\r\nHarris Yulin,\r\nBurt Reynolds,\r\nLarry Drake,\r\nSandra Oh",
+    "rotten_tomatoes_url": "https://www.rottentomatoes.com/m/bean",
+    "imdb_url": "https://www.imdb.com/title/tt0118689/",
+    "duration": 89,
+    "trailer_url": "https://www.youtube.com/watch?v=OxLQZVmKWEo",
+    "views": 3,
+    "release_date": "1997-08-02",
+    "tier": "free",
+    "genres": [
+      3
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 22,
+  "fields": {
+    "title": "High School Musical 2",
+    "description": "Durante las vacaciones de verano, Troy Bolton consigue trabajo en el exclusivo club de campo de la familia de Sharpay Evans. Pronto descubre que el empleo es parte de un plan de Sharpay para alejarlo de Gabriella Montez y convencerlo de cantar con ella en el próximo show de talentos del club, poniendo a prueba sus relaciones y sus valores.",
+    "year": 2007,
+    "poster": "posters/MV5BNjI5ODI4NTc1MF5BMl5BanBnXkFtZTgwMDg3ODYzMjE._V1_FMjpg_UX1000_.jpg",
+    "type": "movie",
+    "video_file": "",
+    "video_url": "https://archive.org/embed/yummy_202105/High+School+Musical+2.mp4",
+    "featured": false,
+    "backdrop": "",
+    "director": "Kenny Ortega",
+    "cast": "Zac Efron,\r\nVanessa Hudgens,\r\nAshley Tisdale,\r\nLucas Grabeel,\r\nCorbin Bleu,\r\nMonique Coleman,\r\nBart Johnson,\r\nAlyson Reed",
+    "rotten_tomatoes_url": "https://www.rottentomatoes.com/m/high_school_musical_2",
+    "imdb_url": "https://www.imdb.com/title/tt0810900/",
+    "duration": 104,
+    "trailer_url": "https://www.youtube.com/watch?v=kiDJWHpARvY",
+    "views": 3,
+    "release_date": "2007-08-17",
+    "tier": "free",
+    "genres": [
+      2,
+      3,
+      15
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 23,
+  "fields": {
+    "title": "Killing Michael Jackson",
+    "description": "Documental que se enfoca en las extrañas circunstancias que rodearon la muerte del rey del pop, Michael Jackson, centrándose principalmente en los testimonios y revelaciones de Orlando Martinez, Dan Myers y Scott Smith, los tres detectives encargados de liderar la investigación inicial sobre el fallecimiento del cantante.",
+    "year": 2019,
+    "poster": "posters/MV5BYzBhOWRmOWItODk0ZS00ODJhLWE0ZjAtNTBmZTViYjRkNzk0XkEyXkFqcGc._V1_.jpg",
+    "type": "movie",
+    "video_file": "",
+    "video_url": "https://archive.org/embed/yummy_202105/Killing+Michael+Jackson.mp4",
+    "featured": false,
+    "backdrop": "backdrops/aa66ee82ec8e4ea393a5550bdc310024596d57ad22676001849bcd4ac9f0298d_X9faUBh.jpg",
+    "director": "Sam Eastall",
+    "cast": "Orlando Martinez,\r\nDan Myers,\r\nScott Smith,\r\nMichael Jackson,\r\nConrad Murray",
+    "rotten_tomatoes_url": "https://www.rottentomatoes.com/m/killing_michael_jackson",
+    "imdb_url": "https://www.imdb.com/title/tt10444588/",
+    "duration": 44,
+    "trailer_url": "https://www.youtube.com/watch?v=RX4sN2PTg_M",
+    "views": 2,
+    "release_date": "2019-06-22",
+    "tier": "free",
+    "genres": [
+      25
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 24,
+  "fields": {
+    "title": "Las vacaciones de Mr. Bean",
+    "description": "Mr. Bean gana una rifa para viajar de vacaciones a las playas de Cannes, Francia, armado con una cámara de video. Sin embargo, su viaje se convierte en un completo caos rodante cuando, tras varios despistes en los trenes, termina separando accidentalmente a un niño de su padre, un famoso director de cine ruso, lo que desencadena una divertida persecución.",
+    "year": 2007,
+    "poster": "posters/mr_bean_s_holiday_mr_bean_2-388423288-large_48mWstn.jpg",
+    "type": "movie",
+    "video_file": "",
+    "video_url": "https://archive.org/embed/yummy_202105/Mr.+Bean+2.mp4",
+    "featured": false,
+    "backdrop": "backdrops/Mr_Bean_s_Holiday_Mr_Bean_2-280618551-large_ECogP5g.jpg",
+    "director": "Steve Bendelack",
+    "cast": "Rowan Atkinson,\r\nMax Baldry,\r\nEmma de Caunes,\r\nWillem Dafoe,\r\nJean Rochefort,\r\nKarel Roden,\r\nSteve Pemberton,\r\nLily Atkinson",
+    "rotten_tomatoes_url": "https://www.rottentomatoes.com/m/mr_beans_holiday",
+    "imdb_url": "https://www.imdb.com/title/tt0453451/",
+    "duration": 89,
+    "trailer_url": "https://www.youtube.com/watch?v=LZfIzJ6XwPQ",
+    "views": 2,
+    "release_date": "2007-03-24",
+    "tier": "free",
+    "genres": [
+      3
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 25,
+  "fields": {
+    "title": "Terminator",
+    "description": "Un asesino cíborg indestructible es enviado desde el año 2029 a 1984 con la misión de asesinar a Sarah Connor, una joven cuyo futuro hijo se convertirá en el líder de la resistencia humana contra las máquinas. Para intentar salvarla, un soldado del futuro también viaja al pasado para protegerla de la implacable máquina.",
+    "year": 1984,
+    "poster": "posters/MV5BMjAyMTk3ODA2MF5BMl5BanBnXkFtZTcwMTkzNDQyNA._V1_.jpg",
+    "type": "movie",
+    "video_file": "",
+    "video_url": "https://archive.org/embed/terminator-1-1984-espanol-latino-redoblaje-ldrip-fullscreen",
+    "featured": false,
+    "backdrop": "backdrops/6UCESWPRCLPFY7WG6OLP2ILW6A_iBYX7tr.jpg",
+    "director": "James Cameron",
+    "cast": "Arnold Schwarzenegger,\r\nLinda Hamilton,\r\nMichael Biehn,\r\nPaul Winfield,\r\nLance Henriksen,\r\nEarl Boen,\r\nBess Motta,\r\nRick Rossovich",
+    "rotten_tomatoes_url": "https://www.rottentomatoes.com/m/terminator",
+    "imdb_url": "https://www.imdb.com/title/tt0088247/",
+    "duration": 107,
+    "trailer_url": "https://www.youtube.com/watch?v=nGrW-OR2uDk",
+    "views": 2,
+    "release_date": "1984-10-26",
+    "tier": "free",
+    "genres": [
+      1,
+      5
+    ]
+  }
+},
+{
+  "model": "movies.movie",
+  "pk": 26,
+  "fields": {
+    "title": "Wallace y Gromit: La batalla de los vegetales",
+    "description": "A pocos días del concurso anual de vegetales gigantes de su pueblo, Wallace y su fiel perro Gromit descubren que una misteriosa y enorme bestia está destruyendo los huertos locales por las noches. Con su negocio de control de plagas en juego, la pareja debe idear un ingenioso plan para capturar al monstruo antes de que arruine la competencia.",
+    "year": 2005,
+    "poster": "posters/Wallace26Gromit.webp",
+    "type": "movie",
+    "video_file": "",
+    "video_url": "https://archive.org/embed/wallace-y-gromit-la-batalla-de-los-vegetales-cine-watch_202407",
+    "featured": false,
+    "backdrop": "backdrops/Wallace-y-Gromit-la-batalla-de-los-vegetales-La-plastilina-al-poder-01_g6nCuKz.jpg",
+    "director": "Nick Park y Steve Box",
+    "cast": "Peter Sallis,\r\nRalph Fiennes,\r\nHelena Bonham Carter,\r\nPeter Kay,\r\nNicholas Smith,\r\nLiz Smith,\r\nJohn Thomson,\r\nMark Gatiss",
+    "rotten_tomatoes_url": "https://www.rottentomatoes.com/m/wallace_and_gromit_the_curse_of_the_wererabbit",
+    "imdb_url": "https://www.imdb.com/title/tt0312004/",
+    "duration": 85,
+    "trailer_url": "https://www.youtube.com/watch?v=egniDznA5yY",
+    "views": 3,
+    "release_date": "2005-10-07",
+    "tier": "free",
+    "genres": [
+      3,
+      26
+    ]
+  }
+},
+{
+  "model": "movies.season",
+  "pk": 1,
+  "fields": {
+    "series": 9,
+    "number": 1
+  }
+},
+{
+  "model": "movies.episode",
+  "pk": 1,
+  "fields": {
+    "season": 1,
+    "number": 1,
+    "title": "Piloto",
+    "video_file": "",
+    "video_url": null
+  }
+},
+{
+  "model": "movies.review",
+  "pk": 1,
+  "fields": {
+    "movie": 1,
     "user": [
       "admin"
     ],
-    "movie": 5,
-    "added_at": "2026-05-16T04:15:36.241Z"
+    "rating": 4,
+    "comment": "La pelicula mas dificil de encontrar en internet",
+    "created_at": "2026-06-05T23:43:42.161Z"
+  }
+},
+{
+  "model": "movies.review",
+  "pk": 3,
+  "fields": {
+    "movie": 8,
+    "user": [
+      "oliver23"
+    ],
+    "rating": 3,
+    "comment": "muy triste",
+    "created_at": "2026-06-06T05:16:51.296Z"
   }
 }
 ]
