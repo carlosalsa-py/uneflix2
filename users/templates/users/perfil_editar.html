@@ -1,186 +1,198 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Perfil — Uneflix</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #070b12;
-            --card-bg: #101726;
-            --unefa-blue: #004bca;
-            --unefa-bronze: #d19a4e;
-        }
+{% extends 'base.html' %}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+{% block title %}Editar Perfil — Uneflix{% endblock %}
 
-        body {
-            background-color: var(--bg-dark);
-            font-family: 'Inter', sans-serif;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+<style>
+    .edit-wrap { display: flex; justify-content: center; padding: 48px var(--gutter); }
+    .box {
+        background: var(--card-bg); width: 100%; max-width: 440px; border-radius: 8px;
+        padding: 40px 32px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+    }
+    .box h2 { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; margin-bottom: 6px; }
+    .subtitle { font-size: 13px; color: #555; margin-bottom: 28px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 20px; }
+    .form-group { margin-bottom: 20px; }
+    .box label { display: block; font-size: 11px; color: #66748f; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.8px; }
+    .box input[type="text"], .box input[type="file"] {
+        width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08);
+        padding: 12px 14px; border-radius: 4px; color: white; font-family: 'Inter', sans-serif;
+        font-size: 14px; transition: border-color 0.2s;
+    }
+    .box input[type="text"]:focus { outline: none; border-color: var(--unefa-blue); background: rgba(0,0,0,0.5); }
+    .box input[type="file"] { padding: 10px 14px; cursor: pointer; color: #888; }
+    .hint { font-size: 11px; color: #444; margin-top: 5px; }
+    .btn-row { display: flex; gap: 12px; margin-top: 28px; }
+    .btn-primary {
+        flex: 1; background: var(--unefa-blue); color: white; border: none; padding: 13px;
+        border-radius: 4px; font-size: 15px; font-weight: 600; cursor: pointer;
+        font-family: 'Inter', sans-serif; transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--unefa-bronze); color: black; }
+    .btn-cancel {
+        background: rgba(255,255,255,0.04); color: #666; text-decoration: none; padding: 13px 20px;
+        border-radius: 4px; font-size: 14px; border: 1px solid rgba(255,255,255,0.08);
+        transition: all 0.2s; display: flex; align-items: center;
+    }
+    .btn-cancel:hover { color: white; border-color: rgba(255,255,255,0.2); }
 
-        .logo {
-            display: inline-block;
-            width: 180px;
-            height: 44px;
-            background-image: url("{% static 'images/logo.png' %}");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            text-indent: -9999px;
-            overflow: hidden;
-            line-height: 0;
-            color: transparent !important;
-            text-decoration: none;
-            margin: 0 auto 28px;
-            display: block;
-        }
-        .logo span { display: none; }
+    /* --- Modal del cropper --- */
+    .cropper-overlay {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+        z-index: 2000; align-items: center; justify-content: center; padding: 20px;
+    }
+    .cropper-overlay.open { display: flex; }
+    /* Nombre propio (crop-dialog) para no chocar con .cropper-modal, que es la
+       clase interna que Cropper.js usa para su overlay. */
+    .crop-dialog {
+        background: var(--card-bg); width: 100%; max-width: 380px; border-radius: 8px;
+        padding: 28px 24px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+    }
+    .crop-dialog h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; margin-bottom: 16px; }
+    .cropper-stage { width: 100%; aspect-ratio: 1 / 1; background: rgba(0,0,0,0.4); border-radius: 4px; overflow: hidden; }
+    .cropper-stage img { display: block; max-width: 100%; }
+    .crop-dialog .btn-row { margin-top: 20px; }
+    .btn-cancel-modal {
+        flex: 1; background: rgba(255,255,255,0.04); color: #aaa; padding: 13px; border-radius: 4px;
+        font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+        border: 1px solid rgba(255,255,255,0.08); transition: all 0.2s;
+    }
+    .btn-cancel-modal:hover { color: white; border-color: rgba(255,255,255,0.2); }
+</style>
+{% endblock %}
 
-        .box {
-            background: var(--card-bg);
-            width: 100%;
-            max-width: 440px;
-            border-radius: 8px;
-            padding: 40px 32px;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-        }
+{% block content %}
+    <div class="edit-wrap">
+        <div class="box">
+            <h2>Editar Perfil</h2>
+            <p class="subtitle">Actualiza tu nombre y foto de perfil</p>
 
-        h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 26px;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-        }
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
 
-        .subtitle {
-            font-size: 13px;
-            color: #555;
-            margin-bottom: 28px;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            padding-bottom: 20px;
-        }
+                <div class="form-group">
+                    <label for="display_name">Nombre de visualización</label>
+                    <input type="text" id="display_name" name="display_name"
+                           value="{{ request.user.display_name|default:'' }}"
+                           placeholder="Tu nombre público" maxlength="100">
+                    <p class="hint">Este es el nombre que verán otros usuarios.</p>
+                </div>
 
-        .form-group { margin-bottom: 20px; }
+                <div class="form-group">
+                    <label for="avatar">Foto de perfil</label>
+                    <input type="file" id="avatar" name="avatar" accept="image/*">
+                    <p class="hint">JPG, PNG o GIF. Se mostrará como círculo.</p>
+                </div>
 
-        label {
-            display: block;
-            font-size: 11px;
-            color: #66748f;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-
-        input[type="text"], input[type="file"] {
-            width: 100%;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 12px 14px;
-            border-radius: 4px;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            transition: border-color 0.2s;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: var(--unefa-blue);
-            background: rgba(0,0,0,0.5);
-        }
-
-        input[type="file"] {
-            padding: 10px 14px;
-            cursor: pointer;
-            color: #888;
-        }
-
-        .hint {
-            font-size: 11px;
-            color: #444;
-            margin-top: 5px;
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 28px;
-        }
-
-        .btn-primary {
-            flex: 1;
-            background: var(--unefa-blue);
-            color: white;
-            border: none;
-            padding: 13px;
-            border-radius: 4px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: background 0.2s;
-        }
-        .btn-primary:hover { background: var(--unefa-bronze); color: black; }
-
-        .btn-cancel {
-            background: rgba(255,255,255,0.04);
-            color: #666;
-            text-decoration: none;
-            padding: 13px 20px;
-            border-radius: 4px;
-            font-size: 14px;
-            border: 1px solid rgba(255,255,255,0.08);
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-        }
-        .btn-cancel:hover { color: white; border-color: rgba(255,255,255,0.2); }
-    </style>
-</head>
-<body>
-    <div class="box">
-        <a href="{% url 'home' %}" class="logo"><span>UNEFLIX</span></a>
-
-        <h2>Editar Perfil</h2>
-        <p class="subtitle">Actualiza tu nombre y foto de perfil</p>
-
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <div class="form-group">
-                <label for="display_name">Nombre de visualización</label>
-                <input type="text" id="display_name" name="display_name"
-                       value="{{ request.user.display_name|default:'' }}"
-                       placeholder="Tu nombre público" maxlength="100">
-                <p class="hint">Este es el nombre que verán otros usuarios.</p>
-            </div>
-
-            <div class="form-group">
-                <label for="avatar">Foto de perfil</label>
-                <input type="file" id="avatar" name="avatar" accept="image/*">
-                <p class="hint">JPG, PNG o GIF. Se mostrará como círculo.</p>
-            </div>
-
-            <div class="btn-row">
-                <button type="submit" class="btn-primary">Guardar cambios</button>
-                <a href="{% url 'perfil' %}" class="btn-cancel">Cancelar</a>
-            </div>
-        </form>
+                <div class="btn-row">
+                    <button type="submit" class="btn-primary">Guardar cambios</button>
+                    <a href="{% url 'perfil' %}" class="btn-cancel">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
 
-<footer style="text-align:center; padding:24px; font-family:'Inter',sans-serif; font-size:12px; color:#333; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px;">
-    © 2026 — Desarrollado por <span style="color:#d19a4e; font-weight:600;">Uneflix Team</span> · Todos los derechos reservados
-</footer>
-</body>
-</html>
+    <!-- Modal de recorte de avatar -->
+    <div class="cropper-overlay" id="cropperOverlay">
+        <div class="crop-dialog">
+            <h3>Recortar foto de perfil</h3>
+            <div class="cropper-stage">
+                <img id="cropperImage" alt="">
+            </div>
+            <div class="btn-row">
+                <button type="button" class="btn-primary" id="cropConfirm">Confirmar</button>
+                <button type="button" class="btn-cancel-modal" id="cropCancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script>
+    (function () {
+        const EXPORT_SIZE = 128; // resolución final del avatar (128x128)
+
+        const input = document.getElementById('avatar');
+        const overlay = document.getElementById('cropperOverlay');
+        const image = document.getElementById('cropperImage');
+        const confirmBtn = document.getElementById('cropConfirm');
+        const cancelBtn = document.getElementById('cropCancel');
+
+        let cropper = null;
+        let objectUrl = null;
+
+        // Evita re-disparar el cambio cuando inyectamos el archivo recortado
+        // de vuelta en el input.
+        let injecting = false;
+
+        function cleanup() {
+            if (cropper) { cropper.destroy(); cropper = null; }
+            if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = null; }
+            image.src = '';
+        }
+
+        function closeModal() {
+            overlay.classList.remove('open');
+            cleanup();
+        }
+
+        input.addEventListener('change', function () {
+            if (injecting) { injecting = false; return; }
+
+            const file = input.files && input.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                input.value = '';
+                return;
+            }
+
+            cleanup();
+            objectUrl = URL.createObjectURL(file);
+            image.src = objectUrl;
+            overlay.classList.add('open');
+
+            cropper = new Cropper(image, {
+                aspectRatio: 1,          // recorte cuadrado 1:1
+                viewMode: 1,
+                autoCropArea: 1,
+                background: false,
+                modal: false,            // sin fade sobre la imagen; solo oscurece el fondo de la página
+                responsive: true,
+            });
+        });
+
+        cancelBtn.addEventListener('click', function () {
+            // No se sube nada: limpiamos el input.
+            input.value = '';
+            closeModal();
+        });
+
+        confirmBtn.addEventListener('click', function () {
+            if (!cropper) return;
+
+            const canvas = cropper.getCroppedCanvas({
+                width: EXPORT_SIZE,
+                height: EXPORT_SIZE,
+                imageSmoothingQuality: 'high',
+            });
+
+            canvas.toBlob(function (blob) {
+                if (!blob) { closeModal(); return; }
+
+                const cropped = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
+
+                // Reinyectamos el archivo recortado en el <input> original
+                // vía DataTransfer, sin tocar la estructura del <form>.
+                const dt = new DataTransfer();
+                dt.items.add(cropped);
+                injecting = true;
+                input.files = dt.files;
+
+                closeModal();
+            }, 'image/jpeg', 0.9);
+        });
+    })();
+    </script>
+{% endblock %}

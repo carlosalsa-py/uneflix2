@@ -1,82 +1,16 @@
-{% load static %}
-{% load embed_video_tags %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ movie.title }} - Uneflix</title>
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #070b12;
-            --unefa-blue: #004bca;
-            --unefa-bronze: #d19a4e;
-            --unefa-yellow: #ffcc00;
-        }
+{% extends 'base.html' %}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+{% block title %}{{ movie.title }} — Uneflix{% endblock %}
 
-        body {
-            background: var(--bg-dark);
-            font-family: 'Inter', sans-serif;
-            color: white;
-            min-height: 100vh;
-        }
-
-        .logo {
-            display: inline-block;
-            width: 200px;
-            height: 50px;
-            background-image: url("{% static 'images/logo.png' %}");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            text-indent: -9999px;
-            overflow: hidden;
-            line-height: 0;
-            color: transparent !important;
-            text-decoration: none;
-        }
-        .logo span { display: none; }
-
-        nav {
-            background: rgba(7, 11, 18, 0.9);
-            backdrop-filter: blur(8px);
-            padding: 16px 4%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 2px solid var(--unefa-bronze);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .back-btn {
-            background: rgba(255,255,255,0.05);
-            color: #ccc;
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 6px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .back-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+{% block extra_css %}
+<style>
 
         .hero {
             height: 60vh;
             position: relative;
             display: flex;
             align-items: flex-end;
-            padding: 0 4% 40px;
-            margin-top: 60px;
+            padding: 0 var(--gutter) 40px;
             overflow: hidden;
         }
 
@@ -147,7 +81,7 @@
         }
         .btn-watchlist:hover { background: rgba(209, 154, 78, 0.15); color: white; }
 
-        .content { padding: 40px 4%; }
+        .content { padding: 40px var(--gutter); }
         .description { font-size: 15px; color: #ccc; font-weight: 300; line-height: 1.8; max-width: 700px; margin-bottom: 30px; }
         .info-row { display: flex; gap: 16px; margin-bottom: 12px; max-width: 700px; }
         .info-label { color: #66748f; font-size: 14px; min-width: 80px; font-weight: 500; }
@@ -216,9 +150,11 @@
         .review-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 18px 0; }
         .review-item:last-child { border-bottom: none; }
         .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .review-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--unefa-blue); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; overflow: hidden; }
+        .review-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--unefa-blue); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; overflow: hidden; color: white; text-decoration: none; cursor: pointer; transition: box-shadow 0.2s; }
+        .review-avatar:hover { box-shadow: 0 0 0 2px var(--unefa-bronze); }
         .review-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .review-username { font-size: 14px; font-weight: 600; color: #ddd; }
+        .review-username { font-size: 14px; font-weight: 600; color: #ddd; text-decoration: none; transition: color 0.2s; }
+        .review-username:hover { color: var(--unefa-bronze); }
         .review-date { font-size: 12px; color: #444; margin-left: auto; }
         .review-stars { font-size: 14px; color: var(--unefa-bronze); letter-spacing: 1px; }
         .review-comment { font-size: 14px; color: #aaa; line-height: 1.7; margin-top: 6px; }
@@ -231,27 +167,9 @@
             .btn-watchlist { margin-left: 0; margin-top: 10px; }
         }
     </style>
-</head>
-<body>
+{% endblock %}
 
-    <nav>
-        <a href="{% url 'home' %}">
-            <img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" height="40" alt="Uneflix">
-        </a>
-        <div style="display:flex; align-items:center; gap:16px;">
-            <a href="{% url 'home' %}" class="back-btn">← Volver</a>
-            <a href="{% url 'perfil' %}" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:#ccc;">
-                {% if request.user.avatar %}
-                    <img src="{{ request.user.avatar.url }}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid var(--unefa-bronze);">
-                {% else %}
-                    <div style="width:32px; height:32px; border-radius:50%; background:var(--unefa-blue); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; border:2px solid var(--unefa-bronze);">
-                        {{ request.user.display_name|default:request.user.username|first|upper }}
-                    </div>
-                {% endif %}
-                <span style="font-size:14px;">{{ request.user.display_name|default:request.user.username }}</span>
-            </a>
-        </div>
-    </nav>
+{% block content %}
 
     <div class="hero">
         {% if movie.backdrop %}
@@ -272,12 +190,14 @@
                 {% endfor %}
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
-                {% if can_watch %}
-                    <a href="#" class="btn-play" onclick="abrirAnuncioYReproductor(event, '{% url 'player' movie.pk %}')">▶ Ver Ahora</a>
-                {% else %}
-                    <a href="{% url 'membresias' %}" class="btn-play" style="background:#d19a4e; color:black;">
-                        🔒 Requiere Plan {% if movie.tier == 'premium' %}Ultra{% else %}Cinephile{% endif %}
-                    </a>
+                {% if movie.type == 'movie' %}
+                    {% if can_watch %}
+                        <a href="{% url 'player' movie.pk %}" class="btn-play">▶ Ver Ahora</a>
+                    {% else %}
+                        <a href="{% url 'membresias' %}" class="btn-play" style="background:#d19a4e; color:black;">
+                            🔒 Requiere Plan {% if movie.tier == 'premium' %}Ultra{% else %}Cinephile{% endif %}
+                        </a>
+                    {% endif %}
                 {% endif %}
                 <form method="post" action="{% url 'watchlist_toggle' movie.pk %}" style="display:inline;">
                     {% csrf_token %}
@@ -326,11 +246,14 @@
                     </div>
                 {% endif %}
 
-                {% if movie.trailer_url %}
+                {% if trailer_youtube_id %}
                 <div class="trailer-container">
                     <h3 class="trailer-title">Tráiler Oficial</h3>
                     <div class="trailer-wrapper">
-                        {% video movie.trailer_url '100% x 100%' %}
+                        <iframe src="https://www.youtube.com/embed/{{ trailer_youtube_id }}"
+                                loading="lazy" allowfullscreen
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                     </div>
                 </div>
                 {% endif %}
@@ -435,15 +358,15 @@
                         {% for review in reviews %}
                         <div class="review-item">
                             <div class="review-header">
-                                <div class="review-avatar">
+                                <a href="{% url 'perfil_publico' review.user.username %}" class="review-avatar">
                                     {% if review.user.avatar %}
                                         <img src="{{ review.user.avatar.url }}" alt="">
                                     {% else %}
                                         {{ review.user.display_name|default:review.user.username|first|upper }}
                                     {% endif %}
-                                </div>
+                                </a>
                                 <div>
-                                    <div class="review-username">{{ review.user.display_name|default:review.user.username }}</div>
+                                    <a href="{% url 'perfil_publico' review.user.username %}" class="review-username">{{ review.user.display_name|default:review.user.username }}</a>
                                     <div class="review-stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
                                 </div>
                                 <span class="review-date">{{ review.created_at|date:"d/m/Y" }}</span>
@@ -459,7 +382,9 @@
             </div>
         </div>
     </div>
+{% endblock %}
 
+{% block extra_js %}
     <script>
     function toggleSeason(number) {
         const episodes = document.getElementById('season-' + number);
@@ -472,26 +397,5 @@
             arrow.classList.remove('open');
         }
     }
-
-    function abrirAnuncioYReproductor(event, urlReproductor) {
-        event.preventDefault();
-        const numeroAleatorio = Math.floor(Math.random() * 3) + 1;
-        let urlAnuncio = "";
-        if (numeroAleatorio === 1) { 
-            urlAnuncio = "{% url 'anuncio1' %}"; 
-        } else if (numeroAleatorio === 2) { 
-            urlAnuncio = "{% url 'anuncio2' %}"; 
-        } else { 
-            urlAnuncio = "{% url 'anuncio3' %}"; 
-        }
-        window.open(urlAnuncio, '_blank');
-        window.location.href = urlReproductor;
-    }
     </script>
-
-
-<footer style="text-align:center; padding:24px; font-family:'Inter',sans-serif; font-size:12px; color:#333; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px;">
-    © 2026 — Desarrollado por <span style="color:#d19a4e; font-weight:600;">Uneflix Team</span> · Todos los derechos reservados
-</footer>
-</body>
-</html>
+{% endblock %}

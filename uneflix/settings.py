@@ -11,21 +11,31 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&w_8m_^we3f(bzas@m*zre64b5e$q2e6j3(6*9_8uuqa@rsz_a'
+SECRET_KEY = os.environ['SECRET_KEY']
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Filtramos vacíos: si la env no está seteada, queda [] (no ['']), lo que evita
+# el 400 silencioso "Bad Request" con DEBUG=False y deja a Django usar los
+# defaults de localhost cuando DEBUG=True.
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h.strip()]
 
-ALLOWED_HOSTS = []
+# Orígenes de confianza para POST vía HTTPS (login, formularios). Sin esto,
+# Django 4+ rechaza los POST del dominio de producción con 403 CSRF. Deben
+# incluir el esquema. Ej: https://uneflix.com,https://www.uneflix.com
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
 
 
 # Application definition
@@ -44,6 +54,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # WhiteNoise sirve los estáticos en producción (colectados en STATIC_ROOT).
+    # Debe ir inmediatamente después de SecurityMiddleware.
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,7 +70,7 @@ ROOT_URLCONF = 'uneflix.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,12 +88,22 @@ WSGI_APPLICATION = 'uneflix.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Se utiliza una lógica condicional: si DATABASE_URL está en el entorno (.env),
+# se usa esa configuración (Postgres/MySQL); si no, se usa SQLite local.
+if os.environ.get('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -107,7 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-mx'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Caracas'
 
 USE_I18N = True
 
@@ -118,12 +141,79 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+# Destino de `collectstatic`. Debe existir para que WhiteNoise sirva en prod.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        # Comprime y versiona los estáticos (cache-busting por hash). Requiere
+        # correr `collectstatic` en el deploy.
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 AUTH_USER_MODEL = 'users.Usuario'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/'
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-ALLOWED_HOSTS = ['*']
+
+
+# Endurecimiento de seguridad SOLO en producción (DEBUG=False). En desarrollo
+# (HTTP/localhost) estos flags romperían el login, por eso van condicionados.
+if not DEBUG:
+    # Detrás de un proxy/load-balancer (Render, Railway, nginx) que termina TLS:
+    # así Django sabe que la request original fue HTTPS y evita loops de redirect.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True          # fuerza HTTP -> HTTPS
+    SESSION_COOKIE_SECURE = True        # cookie de sesión solo por HTTPS
+    CSRF_COOKIE_SECURE = True           # cookie CSRF solo por HTTPS
+    SECURE_CONTENT_TYPE_NOSNIFF = True  # X-Content-Type-Options: nosniff
+    # HSTS: obliga HTTPS por 1 año. Arrancá con un valor bajo si no estás seguro
+    # de servir SIEMPRE por SSL; una vez confiado, subilo.
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+
+# PK por defecto para nuevos modelos (evita el warning de Django y soporta
+# tablas grandes).
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Logging: manda todo a la consola (stdout), que es lo que capturan los hosts
+# (Render, Railway, Docker). Sin esto, los logger.error(...) del código no se
+# ven en producción.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {'format': '[{asctime}] {levelname} {name}: {message}', 'style': '{'},
+    },
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler', 'formatter': 'verbose'},
+    },
+    'root': {'handlers': ['console'], 'level': 'INFO'},
+    'loggers': {
+        'django': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
+    },
+}
+
+
+# Email: por defecto imprime a consola (dev, y funciona out-of-the-box para el
+# reset de contraseña). En producción, definí EMAIL_BACKEND=smtp + credenciales
+# por env para mandar correos de verdad.
+EMAIL_BACKEND = os.environ.get(
+    'EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend'
+)
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Uneflix <no-reply@uneflix.local>')
+ALLDEBRID_API_KEY = os.environ.get('ALLDEBRID_API_KEY', '')

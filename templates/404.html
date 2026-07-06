@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página no encontrada — Uneflix</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif; background: #070b12; color: #fff;
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center; padding: 24px;
+        }
+        .code { font-family: 'Bebas Neue', sans-serif; font-size: 120px; line-height: 1; color: #004bca; letter-spacing: 4px; }
+        h1 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 2px; margin: 8px 0 12px; }
+        p { color: #8898b5; font-weight: 300; max-width: 440px; line-height: 1.6; margin-bottom: 28px; }
+        a {
+            background: #004bca; color: #fff; text-decoration: none; padding: 12px 28px;
+            border-radius: 6px; font-weight: 600; transition: background 0.2s, color 0.2s;
+        }
+        a:hover { background: #d19a4e; color: #000; }
+    </style>
+</head>
+<body>
+    <div class="code">404</div>
+    <h1>Página no encontrada</h1>
+    <p>El contenido que buscás no existe o fue movido. Puede que el enlace esté roto o que la película ya no esté disponible.</p>
+    <a href="/">Volver al inicio</a>
+</body>
+</html>

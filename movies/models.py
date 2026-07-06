@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from embed_video.fields import EmbedVideoField
 
 class Genre(models.Model):
@@ -22,7 +23,39 @@ class Movie(models.Model):
     poster = models.ImageField(upload_to='posters/')
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=MOVIE)
     genres = models.ManyToManyField(Genre)
+    
+    # --- REPRODUCCIÓN LOCAL ---
     video_file = models.FileField(upload_to='videos/', blank=True, null=True)
+    video_url = models.URLField(
+        blank=True,
+        null=True,
+        help_text=(
+            "Enlace externo para reproducción completa (Archive.org, Vimeo, etc.). "
+            "Solo usar con contenido de dominio público o licencia libre. "
+            "Para Archive.org, usar el formato /embed/, no /details/. "
+            "Ejemplo correcto: https://archive.org/embed/nosferatu_1922 "
+            "Ejemplo incorrecto: https://archive.org/details/nosferatu_1922"
+        ),
+    )
+    
+    # --- NUEVOS CAMPOS PARA STREMIO / TORRENTIO ---
+    is_stream = models.BooleanField(
+        default=False, 
+        help_text="Activa esto si la película/serie se reproducirá vía Torrentio"
+    )
+    imdb_id = models.CharField(
+        max_length=20, 
+        blank=True, 
+        null=True, 
+        help_text="ID de IMDb (ej: tt0133093). Requerido si 'is_stream' está activado."
+    )
+    manual_magnet = models.URLField(
+        max_length=500, 
+        blank=True, 
+        null=True, 
+        help_text="Si se rellena, el player usará este link en lugar de buscar automáticamente."
+    )
+    
     featured = models.BooleanField(default=False)
     backdrop = models.ImageField(upload_to='backdrops/', blank=True, null=True)
     director = models.CharField(max_length=200, blank=True, null=True)
@@ -31,12 +64,25 @@ class Movie(models.Model):
     imdb_url = models.URLField(blank=True, null=True)
     duration = models.IntegerField(blank=True, null=True, help_text="Duración en minutos")
     trailer_url = models.URLField(blank=True, null=True, help_text="Pega cualquier enlace de YouTube aquí")
+    views = models.PositiveIntegerField(default=0, editable=False, help_text="Cantidad de visitas a la ficha")
+    release_date = models.DateField(blank=True, null=True, help_text="Fecha de estreno. Si es futura, aparece en 'Próximos estrenos'")
+    
     TIER_CHOICES = [
         ('free', 'Gratuito'),
-        ('medium', 'Cinephile'),
-        ('premium', 'Ultra - Estreno'),
+        ('medium', 'Cinéfilo'),
+        ('premium', 'Zerpanito'),
     ]
     tier = models.CharField(max_length=10, choices=TIER_CHOICES, default='free')
+
+    def clean(self):
+        super().clean()
+        # Archive.org solo embebe con /embed/. Un /details/ carga la página,
+        # no el reproductor, y el iframe queda roto. Lo frenamos en el admin.
+        if self.video_url and 'archive.org/details/' in self.video_url:
+            raise ValidationError({
+                'video_url': 'Para Archive.org usa el formato /embed/, no /details/. '
+                             'Ej: https://archive.org/embed/nosferatu_1922'
+            })
 
     def __str__(self):
         return self.title

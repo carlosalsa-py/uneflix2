@@ -5,13 +5,16 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.sqlite3
+*.bak
 staticfiles/
 .vscode/
 .idea/
 .DS_Store
 *.log
 media/videos/
+media/avatars/
 *.mkv
 *.mp4
 *.avi
 *.mov
+.claude/

@@ -1,183 +1,79 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <link rel="icon" type="image/x-icon" href="{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ episode.title }} - Uneflix</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #070b12;
-            --unefa-blue: #004bca;
-            --unefa-bronze: #d19a4e;
-        }
+{% extends 'base.html' %}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+{% block title %}{{ episode.title }} — Uneflix{% endblock %}
 
-        body {
-            background: #000;
-            font-family: 'Inter', sans-serif;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+{% block extra_css %}
+<style>
+    .player-back { padding: 16px var(--gutter) 0; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .player-back a {
+        background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.15);
+        padding: 6px 16px; border-radius: 20px; font-size: 13px; text-decoration: none; transition: all 0.2s;
+    }
+    .player-back a:hover { background: rgba(255,255,255,0.15); color: white; }
+    .episode-label { font-size: 14px; color: #aaa; }
 
-        nav {
-            background: rgba(7,11,18,0.95);
-            padding: 14px 4%;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            border-bottom: 2px solid var(--unefa-bronze);
-        }
+    .player-wrapper { display: flex; flex-direction: column; align-items: center; padding: 20px var(--gutter) 40px; }
+    .player-container {
+        width: 100%; max-width: 1100px; aspect-ratio: 16/9; background: #020408;
+        border-radius: 8px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.8); 
+        border: 1px solid rgba(255,255,255,0.05);
+        position: relative;
+    }
+    .player-container video, .player-container iframe { width: 100%; height: 100%; border: none; outline: none; }
+    .no-video { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #44516a; gap: 12px; }
 
-        .logo {
-            font-family: 'Bebas Neue', sans-serif;
-            color: white;
-            font-size: 26px;
-            letter-spacing: 3px;
-            text-decoration: none;
-        }
+    .episode-info-bar { width: 100%; max-width: 1100px; padding: 20px 0; }
+    .episode-info-bar h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; }
+    .episode-meta { font-size: 14px; color: #888; margin-top: 4px; display: flex; gap: 10px; align-items: center; }
+    .badge-episode { background: rgba(0, 75, 202, 0.2); color: white; border: 1px solid var(--unefa-blue); font-size: 11px; padding: 2px 8px; border-radius: 4px; }
 
-        .logo span { color: var(--unefa-bronze); }
+    @media (max-width: 768px) { .player-wrapper { padding: 10px 2% 30px; } }
+</style>
+{% endblock %}
 
-        .back-btn {
-            background: rgba(255,255,255,0.05);
-            color: #ccc;
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 6px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .back-btn:hover { background: rgba(255,255,255,0.15); color: white; }
-
-        .episode-label {
-            font-size: 14px;
-            color: #aaa;
-        }
-
-        .player-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px 4%;
-        }
-
-        .player-container {
-            width: 100%;
-            max-width: 1100px;
-            aspect-ratio: 16/9;
-            background: #111;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            border: 1px solid #1a2540;
-        }
-
-        .player-container video {
-            width: 100%;
-            height: 100%;
-        }
-
-        .player-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .no-video {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            gap: 12px;
-        }
-
-        .episode-info-bar {
-            width: 100%;
-            max-width: 1100px;
-            padding: 20px 0;
-        }
-
-        .episode-info-bar h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 26px;
-            letter-spacing: 2px;
-        }
-
-        .episode-meta {
-            font-size: 13px;
-            color: #888;
-            margin-top: 4px;
-        }
-
-        @media (max-width: 768px) {
-            .player-wrapper { padding: 10px 2%; }
-        }
-    </style>
-</head>
-<body>
-
-    <nav>
-        <a href="{% url 'home' %}">
-            <img src="{% static 'images/fb70e4fa-39c3-4c76-9f04-7b832c633e38-removebg-preview.png' %}" height="40" alt="Uneflix">
-        </a>
-        <a href="{% url 'movie_detail' episode.season.series.pk %}" class="back-btn">← Volver a la serie</a>
-        <span class="episode-label">T{{ episode.season.number }} · E{{ episode.number }} · {{ episode.title }}</span>
-            <!-- PERFIL -->
-            <a href="{% url 'perfil' %}" style="display:flex; align-items:center; gap:8px; text-decoration:none; color:#ccc;">
-                {% if request.user.avatar %}
-                    <img src="{{ request.user.avatar.url }}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid var(--unefa-bronze);">
-                {% else %}
-                    <div style="width:32px; height:32px; border-radius:50%; background:var(--unefa-blue); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; border:2px solid var(--unefa-bronze);">
-                        {{ request.user.display_name|default:request.user.username|first|upper }}
-                    </div>
-                {% endif %}
-                <span style="font-size:14px;">{{ request.user.display_name|default:request.user.username }}</span>
-            </a>
-    </nav>
+{% block content %}
+    <div class="player-back">
+        <a href="{% url 'movie_detail' episode.season.series.pk %}">← Volver a la serie</a>
+        <span class="episode-label">T{{ episode.season.number }} · E{{ episode.number }}</span>
+    </div>
 
     <div class="player-wrapper">
         <div class="player-container">
-            {% if episode.video_file %}
-            <video controls autoplay>
-                <source src="{{ episode.video_file.url }}" type="video/mp4">
-                Tu navegador no soporta el reproductor.
-            </video>
+            
+            {% if direct_url %}
+                <!-- MODO STREAM (AllDebrid / Torrentio) -->
+                <video controls autoplay style="width:100%; height:100%;">
+                    <source src="{{ direct_url }}" type="video/mp4">
+                    Tu navegador no soporta el reproductor.
+                </video>
+
+            {% elif episode.video_file %}
+                <!-- MODO LOCAL (.mp4 subido al server) -->
+                <video controls autoplay style="width:100%; height:100%;">
+                    <source src="{{ episode.video_file.url }}" type="video/mp4">
+                </video>
+
             {% elif episode.video_url %}
-            <iframe src="{{ episode.video_url }}" allowfullscreen></iframe>
+                <!-- MODO URL/IFRAME EXTERNO -->
+                <iframe src="{{ episode.video_url }}" allowfullscreen></iframe>
+                
             {% else %}
-            <div class="no-video">
-                <p style="font-size:48px;">🎬</p>
-                <p>Próximamente</p>
-            </div>
+                <!-- SIN VIDEO ASIGNADO -->
+                <div class="no-video">
+                    <p style="font-size:48px;">🎬</p>
+                    <p>Este episodio aún no está disponible</p>
+                </div>
             {% endif %}
+            
         </div>
 
         <div class="episode-info-bar">
             <h2>{{ episode.title }}</h2>
-            <p class="episode-meta">
-                {{ episode.season.series.title }} · Temporada {{ episode.season.number }} · Episodio {{ episode.number }}
-            </p>
+            <div class="episode-meta">
+                <span class="badge-episode">T{{ episode.season.number }} - Episodio {{ episode.number }}</span>
+                <span>•</span>
+                <span>{{ episode.season.series.title }}</span>
+            </div>
         </div>
     </div>
-
-
-<footer style="text-align:center; padding:24px; font-family:'Inter',sans-serif; font-size:12px; color:#333; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px;">
-    © 2026 — Desarrollado por <span style="color:#d19a4e; font-weight:600;">Uneflix Team</span> · Todos los derechos reservados
-</footer>
-</body>
-</html>
+{% endblock %}

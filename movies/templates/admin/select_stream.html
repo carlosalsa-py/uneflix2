@@ -1,0 +1,41 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<div id="content-main">
+    <h1>Seleccionar Stream Manual para: <strong>{{ movie.title }}</strong></h1>
+    <p>Haz clic en "Usar este" para forzar este enlace en el reproductor.</p>
+    
+    <div class="results">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f8f8f8; border-bottom: 2px solid #ccc;">
+                    <th style="padding: 10px; text-align: left;">Calidad / Título</th>
+                    <th style="padding: 10px; text-align: center;">Seeders</th>
+                    <th style="padding: 10px; text-align: right;">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in streams %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px;">{{ s.title }}</td>
+                    <td style="padding: 10px; text-align: center;">{{ s.seeders|default:"-" }}</td>
+                    <td style="padding: 10px; text-align: right;">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="seleccionar_stream_manual">
+                            <input type="hidden" name="select_across" value="0">
+                            <input type="hidden" name="_selected_action" value="{{ movie.pk }}">
+                            <input type="hidden" name="magnet_link" value="magnet:?xt=urn:btih:{{ s.infoHash }}">
+                            <button type="submit" style="background: #79aec8; color: white; border: none; padding: 5px 15px; cursor: pointer; border-radius: 4px;">Usar este</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" style="padding: 20px; text-align: center;">No se encontraron streams en Torrentio.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <a href="." class="button" style="background: #666;">Cancelar y volver</a>
+</div>
+{% endblock %}

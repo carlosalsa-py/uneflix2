@@ -54,8 +54,8 @@
 
         .logo {
             display: inline-block;
-            width: 500px; 
-            height: 500px;
+            width: min(200px, 55vw);
+            height: min(200px, 55vw);
             background-image: url("{% static 'images/Untitled-04-de-junio-de-2026-a-las-16.01.06-_1_.ico' %}");
             background-size: contain;
             background-repeat: no-repeat;
@@ -121,6 +121,10 @@
 
         .link-back { font-size: 14px; color: var(--text-muted); text-decoration: none; }
         .link-back:hover { color: white; }
+
+        @media (max-width: 480px) {
+            .terms-panel { padding: 24px 18px; width: 100%; max-height: 100vh; border-radius: 0; }
+        }
     </style>
 </head>
 <body>
@@ -187,8 +191,5 @@
         </div>
     </div>
 
-<footer style="text-align:center; padding:24px; font-family:'Inter',sans-serif; font-size:12px; color:#333; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px;">
-    © 2026 — Desarrollado por <span style="color:#d19a4e; font-weight:600;">Uneflix Team</span> · Todos los derechos reservados
-</footer>
 </body>
 </html>

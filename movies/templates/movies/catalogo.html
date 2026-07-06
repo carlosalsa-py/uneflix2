@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if tipo == 'movie' %}Catálogo de Películas{% else %}Catálogo de Series{% endif %} — Uneflix{% endblock %}
+
+{% block extra_css %}
+<style>
+    .catalog-header { padding: 28px var(--gutter) 8px; }
+    .catalog-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 2px; }
+
+    .catalog-tabs { display: flex; gap: 10px; padding: 12px var(--gutter) 0; }
+    .catalog-tabs a {
+        text-decoration: none; font-size: 13px; font-weight: 500; color: #ccc;
+        background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+        padding: 6px 18px; border-radius: 20px; transition: all 0.2s;
+    }
+    .catalog-tabs a.active, .catalog-tabs a:hover { background: var(--unefa-blue); border-color: var(--unefa-blue); color: white; }
+
+    .filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; padding: 20px var(--gutter); margin-top: 8px; }
+    .filters .field { display: flex; flex-direction: column; gap: 5px; }
+    .filters label { font-size: 10px; color: #66748f; text-transform: uppercase; letter-spacing: 0.8px; }
+    .filters input, .filters select {
+        background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.1);
+        padding: 9px 12px; border-radius: 4px; color: white;
+        font-family: 'Inter', sans-serif; font-size: 13px; outline: none; min-width: 150px;
+    }
+    .filters input:focus, .filters select:focus { border-color: var(--unefa-blue); }
+    .filters select option { background: var(--card-bg); }
+    .filters .btn-apply {
+        background: var(--unefa-blue); color: white; border: none; padding: 10px 22px;
+        border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer;
+        font-family: 'Inter', sans-serif; transition: background 0.2s;
+    }
+    .filters .btn-apply:hover { background: var(--unefa-bronze); color: black; }
+
+    .no-results { color: #555; grid-column: 1/-1; text-align: center; padding: 60px 0; font-size: 15px; }
+
+    @media (max-width: 480px) { .filters input, .filters select { min-width: 120px; } }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="catalog-header">
+        <h1>{% if tipo == 'movie' %}Catálogo de Películas{% else %}Catálogo de Series{% endif %}</h1>
+    </div>
+
+    <div class="catalog-tabs">
+        <a href="{% url 'catalogo' 'movie' %}" class="{% if tipo == 'movie' %}active{% endif %}">Películas</a>
+        <a href="{% url 'catalogo' 'series' %}" class="{% if tipo == 'series' %}active{% endif %}">Series</a>
+    </div>
+
+    <form method="get" class="filters">
+        <div class="field">
+            <label for="q">Buscar</label>
+            <input type="text" id="q" name="q" value="{{ request.GET.q }}" placeholder="Título...">
+        </div>
+
+        <div class="field">
+            <label for="genero">Género</label>
+            <select id="genero" name="genero">
+                <option value="">Todos</option>
+                {% for g in genres %}
+                <option value="{{ g.name }}" {% if request.GET.genero == g.name %}selected{% endif %}>{{ g.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="anio">Año</label>
+            <input type="number" id="anio" name="anio" value="{{ request.GET.anio }}" placeholder="Ej: 2020">
+        </div>
+
+        <div class="field">
+            <label for="tier">Plan</label>
+            <select id="tier" name="tier">
+                <option value="">Todos</option>
+                <option value="free" {% if request.GET.tier == 'free' %}selected{% endif %}>Gratuito</option>
+                <option value="medium" {% if request.GET.tier == 'medium' %}selected{% endif %}>Cinéfilo</option>
+                <option value="premium" {% if request.GET.tier == 'premium' %}selected{% endif %}>Zerpanito</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="orden">Ordenar por</label>
+            <select id="orden" name="orden">
+                <option value="">Más recientes</option>
+                <option value="titulo_asc" {% if request.GET.orden == 'titulo_asc' %}selected{% endif %}>Título (A–Z)</option>
+                <option value="titulo_desc" {% if request.GET.orden == 'titulo_desc' %}selected{% endif %}>Título (Z–A)</option>
+                <option value="anio_nuevo" {% if request.GET.orden == 'anio_nuevo' %}selected{% endif %}>Año (más nuevo)</option>
+                <option value="anio_viejo" {% if request.GET.orden == 'anio_viejo' %}selected{% endif %}>Año (más viejo)</option>
+                <option value="rating" {% if request.GET.orden == 'rating' %}selected{% endif %}>Mejor valorados</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-apply">Aplicar</button>
+    </form>
+
+    <div class="movies-grid">
+        {% for movie in resultados %}
+        <a href="{% url 'movie_detail' movie.pk %}" style="text-decoration:none; color:inherit;">
+            <div class="movie-card">
+                <div style="position:relative;">
+                    {% if movie.poster %}
+                    <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" {% if movie.tier == 'premium' and plan != 'premium' or movie.tier == 'medium' and plan == 'free' %}style="filter:brightness(0.4);"{% endif %}>
+                    {% else %}
+                    <img src="https://via.placeholder.com/160x240/1a1a1a/555?text={{ movie.title }}" alt="{{ movie.title }}">
+                    {% endif %}
+                    {% if movie.tier == 'premium' and plan != 'premium' %}
+                    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+                        <span style="font-size:24px;">🔒</span>
+                        <span style="font-size:10px;background:#d19a4e;color:black;padding:2px 8px;border-radius:10px;font-weight:700;">ULTRA</span>
+                    </div>
+                    {% elif movie.tier == 'medium' and plan == 'free' %}
+                    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+                        <span style="font-size:24px;">🔒</span>
+                        <span style="font-size:10px;background:#004bca;color:white;padding:2px 8px;border-radius:10px;font-weight:700;">CINEPHILE</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="movie-info">
+                    <h4>{{ movie.title }}</h4>
+                    <p class="year">{{ movie.year }}</p>
+                    {% for genre in movie.genres.all %}
+                    <span class="badge-genre">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p class="no-results">No se encontraron resultados</p>
+        {% endfor %}
+    </div>
+{% endblock %}
