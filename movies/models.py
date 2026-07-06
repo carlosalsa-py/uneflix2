@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from embed_video.fields import EmbedVideoField
 
 class Genre(models.Model):
@@ -23,6 +24,17 @@ class Movie(models.Model):
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=MOVIE)
     genres = models.ManyToManyField(Genre)
     video_file = models.FileField(upload_to='videos/', blank=True, null=True)
+    video_url = models.URLField(
+        blank=True,
+        null=True,
+        help_text=(
+            "Enlace externo para reproducción completa (Archive.org, Vimeo, etc.). "
+            "Solo usar con contenido de dominio público o licencia libre. "
+            "Para Archive.org, usar el formato /embed/, no /details/. "
+            "Ejemplo correcto: https://archive.org/embed/nosferatu_1922 "
+            "Ejemplo incorrecto: https://archive.org/details/nosferatu_1922"
+        ),
+    )
     featured = models.BooleanField(default=False)
     backdrop = models.ImageField(upload_to='backdrops/', blank=True, null=True)
     director = models.CharField(max_length=200, blank=True, null=True)
@@ -39,6 +51,16 @@ class Movie(models.Model):
         ('premium', 'Zerpanito'),
     ]
     tier = models.CharField(max_length=10, choices=TIER_CHOICES, default='free')
+
+    def clean(self):
+        super().clean()
+        # Archive.org solo embebe con /embed/. Un /details/ carga la página,
+        # no el reproductor, y el iframe queda roto. Lo frenamos en el admin.
+        if self.video_url and 'archive.org/details/' in self.video_url:
+            raise ValidationError({
+                'video_url': 'Para Archive.org usa el formato /embed/, no /details/. '
+                             'Ej: https://archive.org/embed/nosferatu_1922'
+            })
 
     def __str__(self):
         return self.title
