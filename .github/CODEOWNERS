@@ -1,0 +1,5 @@
+# Code owners de Uneflix.
+# @carlosalsa-py es dueño de TODO el repo: todo Pull Request requiere su
+# aprobación para poder mergearse (con la regla "Require review from Code
+# Owners" activada en la protección de la rama main).
+* @carlosalsa-py
